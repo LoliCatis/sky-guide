@@ -1,10 +1,10 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Card, Empty, Badge, Tabs, Progress } from '../components/ui.jsx';
-import { coins, useHashTab, saveLocal, useProfileStore } from '../api.js';
+import { coins, useHashTab } from '../api.js';
+import { useHiddenSteps } from '../hiddenSteps.js';
 import { ItemIcon } from '../components/ItemIcon.jsx';
 import { useApp } from '../App.jsx';
 
-const KEY = 'sb-roadmap-done';
 const STATUS = { done: 'пройдено', current: 'сейчас', available: 'доступно', locked: 'закрыто' };
 
 function ProgressMap({ map, goStep }) {
@@ -51,22 +51,21 @@ function PurchasePlan({ plan, onStep }) {
 export default function Roadmap({ state, sub }) {
   const [view, setView] = useHashTab('roadmap', sub, ['steps', 'map', 'plan'], 'steps');
   const { openItem } = useApp();
-  const [done, setDone] = useProfileStore(KEY, {}); // отметки «сделано» — свои у каждого профиля
+  // Скрытые шаги: у вошедшего владельца — на сервере, у гостя — в этом браузере, в чужом плане скрывать нельзя
+  const { hidden, mode, hide, unhide, error } = useHiddenSteps(state);
   const [cat, setCat] = useState('all');
-  const [hideDone, setHideDone] = useState(() => localStorage.getItem('sb-roadmap-hide-done') === '1');
+  const [showHidden, setShowHidden] = useState(false);
   const [flash, setFlash] = useState(null);
   const steps = state.analysis?.roadmap || [];
   const cats = useMemo(() => {
     const n = new Map();
-    for (const s of steps) n.set(s.cat, (n.get(s.cat) || 0) + (done[s.id] ? 0 : 1));
+    for (const s of steps) if (!hidden[s.id]) n.set(s.cat, (n.get(s.cat) || 0) + 1);
     return [...n];
-  }, [steps, done]);
-  const toggle = id => { const n = { ...done, [id]: !done[id] }; if (!n[id]) delete n[id]; setDone(n); };
-  const setHide = v => { setHideDone(v); saveLocal('sb-roadmap-hide-done', v ? '1' : '0'); };
+  }, [steps, hidden]);
   const goStep = id => {
     setView('steps'); setCat('all');
-    // Шаг отмечен сделанным и скрыт — показываем сделанные на этот раз (настройку не трогаем), иначе прокручивать некуда
-    if (done[id]) setHideDone(false);
+    // Шаг скрыт — раскрываем список скрытых, иначе прокручивать некуда
+    if (hidden[id]) setShowHidden(true);
     setTimeout(() => { document.getElementById('step-' + id)?.scrollIntoView({ behavior: 'smooth', block: 'center' }); setFlash(id); setTimeout(() => setFlash(null), 1800); }, 80);
   };
   // Переход с главной: #/roadmap/<id шага> — прокрутить к шагу и подсветить его
@@ -78,10 +77,8 @@ export default function Roadmap({ state, sub }) {
     else goStep(v);
   }, [sub, steps.length]);
   if (!steps.length) return <Empty>Нет рекомендаций — профиль не загружен.</Empty>;
-  const doneCount = steps.filter(s => done[s.id]).length;
-  // Сделанные уходят в конец списка (или скрываются), чтобы сверху всегда было то, что делать дальше
-  const shown = steps.filter(s => (cat === 'all' || s.cat === cat) && !(hideDone && done[s.id]))
-    .sort((x, y) => (done[x.id] ? 1 : 0) - (done[y.id] ? 1 : 0));
+  const hiddenSteps = steps.filter(s => hidden[s.id]);
+  const shown = steps.filter(s => (cat === 'all' || s.cat === cat) && !hidden[s.id]);
   const a = state.analysis;
   return (
     <div className="grid">
@@ -90,19 +87,22 @@ export default function Roadmap({ state, sub }) {
         {view === 'map' && <ProgressMap map={a?.map} goStep={goStep} />}
         {view === 'plan' && <PurchasePlan plan={a?.plan} onStep={goStep} />}
         {view === 'steps' && <div className="chips">
-          <button className={cat === 'all' ? 'chip active' : 'chip'} onClick={() => setCat('all')}>Все ({steps.length - doneCount})</button>
-          {cats.map(([c, n]) => <button key={c} className={cat === c ? 'chip active' : 'chip'} onClick={() => setCat(c)}>{c}{n ? ` (${n})` : ' ✓'}</button>)}
+          <button className={cat === 'all' ? 'chip active' : 'chip'} onClick={() => setCat('all')}>Все ({steps.length - hiddenSteps.length})</button>
+          {cats.map(([c, n]) => <button key={c} className={cat === c ? 'chip active' : 'chip'} onClick={() => setCat(c)}>{c} ({n})</button>)}
         </div>}
-        {view === 'steps' && doneCount > 0 && (
-          <div className="done-bar small">
-            <span>Отмечено сделанным: <b>{doneCount}</b> из {steps.length}</span>
-            <label className="check"><input type="checkbox" checked={hideDone} onChange={e => setHide(e.target.checked)} /> скрыть сделанные</label>
-          </div>
+        {view === 'steps' && (
+          <p className="muted small plan-note">
+            Шаги уходят из плана сами, когда по данным игры видно, что они сделаны (профиль обновляется раз в несколько минут).{' '}
+            {mode === 'server' && 'Шаг, который тебе сейчас не нужен, можно скрыть: это сохраняется в твоём аккаунте и видно на всех твоих устройствах.'}
+            {mode === 'local' && 'Шаг, который тебе сейчас не нужен, можно скрыть: это видно только в этом браузере, сам игрок и другие люди план не теряют.'}
+            {mode === 'none' && 'Это чужой план: скрывать в нём шаги может только сам игрок, когда войдёт на сайт.'}
+          </p>
         )}
+        {error && <div className="step-undo small warn" role="alert">{error}</div>}
       </Card>
       {view === 'steps' && <div className="span-12 roadmap">
         {shown.map((s, i) => (
-          <div key={s.id} id={'step-' + s.id} className={`road-step stars-${Math.max(1, Math.round(s.priority / 20))} ${i === 0 && !done[s.id] ? 'top' : ''} ${done[s.id] ? 'done' : ''} ${flash === s.id ? 'flash' : ''}`} style={{ animationDelay: `${Math.min(i, 12) * 40}ms` }}>
+          <div key={s.id} id={'step-' + s.id} className={`road-step stars-${Math.max(1, Math.round(s.priority / 20))} ${i === 0 ? 'top' : ''} ${flash === s.id ? 'flash' : ''}`} style={{ animationDelay: `${Math.min(i, 12) * 40}ms` }}>
             <div className="road-line"><div className="road-dot" style={{ '--p': s.priority }} /></div>
             <div className="road-card card">
               <div className="road-head">
@@ -110,7 +110,7 @@ export default function Roadmap({ state, sub }) {
                   <div className="step-cat">{s.cat} <Badge>{s.effort}</Badge> <span className="prio" title="Приоритет">{'★'.repeat(Math.max(1, Math.round(s.priority / 20)))}</span></div>
                   <h4>{s.title}</h4>
                 </div>
-                <label className="check"><input type="checkbox" checked={!!done[s.id]} onChange={() => toggle(s.id)} /> сделано</label>
+                {mode !== 'none' && <button className="chip tiny" title={mode === 'local' ? 'Скрыть шаг (только в этом браузере)' : 'Скрыть шаг'} onClick={() => hide(s.id)}>скрыть</button>}
               </div>
               <p className="why">{s.why}</p>
               {(() => {
@@ -125,7 +125,18 @@ export default function Roadmap({ state, sub }) {
             </div>
           </div>
         ))}
-        {!shown.length && <Empty>{hideDone ? 'Всё в этой категории отмечено сделанным.' : 'В этой категории нет шагов.'}</Empty>}
+        {!shown.length && <Empty>{hiddenSteps.length ? 'В этой категории остались только скрытые шаги.' : 'В этой категории нет шагов.'}</Empty>}
+        {hiddenSteps.length > 0 && (
+          <details className="hidden-steps card" open={showHidden} onToggle={e => setShowHidden(e.currentTarget.open)}>
+            <summary>Скрытые шаги ({hiddenSteps.length}){mode === 'local' ? ' · только в этом браузере' : ''}</summary>
+            <ul>{hiddenSteps.map(s => (
+              <li key={s.id} id={'step-' + s.id} className={flash === s.id ? 'flash' : ''}>
+                <span><span className="muted small">{s.cat} · </span>{s.title}</span>
+                <button className="chip tiny" onClick={() => unhide(s.id)}>вернуть</button>
+              </li>
+            ))}</ul>
+          </details>
+        )}
       </div>}
     </div>
   );

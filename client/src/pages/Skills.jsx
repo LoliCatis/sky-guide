@@ -1,5 +1,6 @@
 import { Card, Progress, Stat, Badge } from '../components/ui.jsx';
-import { num, plural, profileKey } from '../api.js';
+import { num, plural } from '../api.js';
+import { useHiddenSteps } from '../hiddenSteps.js';
 import { SKILL_ICON } from './Overview.jsx';
 import ProgressExtras from './ProgressExtras.jsx';
 import TrophyTiers from '../components/TrophyTiers.jsx';
@@ -10,16 +11,15 @@ const SLAYER_ICON = { zombie: 'rotten_flesh', spider: 'cobweb', wolf: 'mutton', 
 const FLOOR_BOSS = ['Вход', 'Bonzo', 'Scarf', 'The Professor', 'Thorn', 'Livid', 'Sadan', 'Necron'];
 
 // Ссылка «в плане: N →» на шаги нужной категории: увидел слабое место — сразу видно, что с ним делать
-function PlanLink({ steps, cat }) {
-  let done = {};
-  try { done = JSON.parse(localStorage.getItem(profileKey('sb-roadmap-done')) || '{}'); } catch { /* нет отметок */ }
-  const n = steps.filter(s => s.cat === cat && !done[s.id]).length;
+function PlanLink({ steps, cat, hidden }) {
+  const n = steps.filter(s => s.cat === cat && !hidden[s.id]).length;
   if (!n) return null;
   return <a className="link small" href={`#/roadmap/cat:${encodeURIComponent(cat)}`}>шагов в плане: {n} →</a>;
 }
 
 export default function Skills({ state, sub }) {
   const steps = state.analysis?.roadmap || [];
+  const { hidden } = useHiddenSteps(state); // скрытые шаги плана не считаем
   const m = state.member;
   // #/skills/history — ссылка «все графики» с «Обзора»: сразу к истории
   useEffect(() => {
@@ -31,7 +31,7 @@ export default function Skills({ state, sub }) {
   const d = m.dungeons;
   return (
     <div className="grid">
-      <Card title="Skills" className="span-7" right={<PlanLink steps={steps} cat="Skills" />}>
+      <Card title="Skills" className="span-7" right={<PlanLink steps={steps} hidden={hidden} cat="Skills" />}>
         <div className="skill-grid">
           {Object.entries(m.skills).map(([k, s]) => (
             <div key={k} className={`skill-card ${s.level >= s.maxLevel ? 'maxed' : ''}`}>
@@ -48,7 +48,7 @@ export default function Skills({ state, sub }) {
         <div className="muted small" style={{ marginTop: 10 }}>Кап Farming: {m.farmingCap}/60 (медали Jacob у Anita) · Кап Taming: {m.tamingCap}/60 (сдано типов питомцев: {m.tamingSacrificed})</div>
       </Card>
 
-      <Card title="Slayers" className="span-5" right={<PlanLink steps={steps} cat="Slayers" />}>
+      <Card title="Slayers" className="span-5" right={<PlanLink steps={steps} hidden={hidden} cat="Slayers" />}>
         {Object.entries(m.slayers).map(([k, s]) => (
           <div key={k} className="slayer-row">
             <img src={`/api/texture/${SLAYER_ICON[k]}`} alt="" />
@@ -61,7 +61,7 @@ export default function Skills({ state, sub }) {
         ))}
       </Card>
 
-      <Card title="Dungeons — Catacombs" className="span-7" right={<PlanLink steps={steps} cat="Dungeons" />}>
+      <Card title="Dungeons — Catacombs" className="span-7" right={<PlanLink steps={steps} hidden={hidden} cat="Dungeons" />}>
         <div className="stats-row">
           <Stat label="Catacombs" value={d.catacombs.level} sub={`${Math.round(d.catacombs.progress * 100)}% до следующего`} accent="#ff5e5e" icon={<img src="/api/texture/bone" alt="" />} />
           <Stat label="Class Average" value={d.classAverage.toFixed(1).replace('.', ',')} sub={`выбран: ${d.classes[d.selectedClass]?.name || '—'}`} accent="#f59e0b" icon={<img src="/api/texture/bow" alt="" />} />
@@ -86,7 +86,7 @@ export default function Skills({ state, sub }) {
         </div>
       </Card>
 
-      <Card title="Mining и Crimson Isle" className="span-5" right={<PlanLink steps={steps} cat="Mining" />}>
+      <Card title="Mining и Crimson Isle" className="span-5" right={<PlanLink steps={steps} hidden={hidden} cat="Mining" />}>
         <div className="kv">
           <span>Heart of the Mountain</span><b>{m.mining.hotm.level}/10</b>
           <span>Mithril Powder</span><b>{num(m.mining.powder.mithril)}</b>

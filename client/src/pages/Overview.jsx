@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, Stat, Sparkline, Progress, Empty } from '../components/ui.jsx';
 import { ItemIcon } from '../components/ItemIcon.jsx';
-import { coins, itemValue, num, ago, saveLocal, me, prettyId, useProfileStore } from '../api.js';
+import { coins, itemValue, num, ago, saveLocal, me, prettyId } from '../api.js';
+import { useHiddenSteps } from '../hiddenSteps.js';
 import { useApp } from '../App.jsx';
 import { pricesLoaded } from './Gear.jsx';
 import PlayerModel from '../components/PlayerModel.jsx';
@@ -17,18 +18,21 @@ export default function Overview({ state }) {
   const a = state.analysis;
   const { openItem } = useApp();
   const [share, setShare] = useState(false);
-  const [doneMarks, setDoneMarks] = useProfileStore('sb-roadmap-done', {}); // свои у каждого профиля
+  // Скрытые шаги: у вошедшего владельца — на сервере, у гостя — в этом браузере, в чужом плане скрывать нельзя
+  const hs = useHiddenSteps(state);
+  const [undo, setUndo] = useState(null); // только что скрытый шаг: «Отменить» несколько секунд
+  useEffect(() => { if (!undo) return; const t = setTimeout(() => setUndo(null), 8000); return () => clearTimeout(t); }, [undo]);
   if (!m || !a) return <Empty>Профиль ещё не загружен.</Empty>;
   const nw = a.gear.networth;
   const nwHist = state.history.map(h => [h.t, h.nw]);
-  // Шаги, отмеченные «сделано» на странице плана, на главной не показываем
-  // «✓» прямо на главной: шаг уходит, на его место встаёт следующий — не нужно идти в план
-  const markDone = (e, id) => {
+  // Шаги, скрытые на странице плана, на главной не показываем.
+  // «✕» прямо на главной: шаг уходит, на его место встаёт следующий, а «Отменить» возвращает его
+  const hideStep = (e, s) => {
     e.preventDefault(); e.stopPropagation();
-    const n = { ...doneMarks, [id]: true };
-    setDoneMarks(n);
+    hs.hide(s.id);
+    setUndo(s);
   };
-  const top = a.roadmap.filter(s => !doneMarks[s.id]).slice(0, 6);
+  const top = a.roadmap.filter(s => !hs.hidden[s.id]).slice(0, 6);
   return (
     <div className="grid">
       <div className="hero card span-12">
@@ -60,6 +64,13 @@ export default function Overview({ state }) {
 
       <Card title="Что делать прямо сейчас" className="span-8" right={<a href="#/roadmap" className="link">весь план →</a>}>
         <div className="next-steps">
+          {undo && (
+            <div className="step-undo small" role="status">
+              <span>Шаг «{undo.title}» скрыт{hs.mode === 'local' ? ' (только в этом браузере)' : ''}.</span>
+              <button className="chip tiny" onClick={() => { hs.unhide(undo.id); setUndo(null); }}>Отменить</button>
+            </div>
+          )}
+          {hs.error && <div className="step-undo small warn" role="alert">{hs.error}</div>}
           {top.map((s, i) => (
             <a key={s.id} href={`#/roadmap/${encodeURIComponent(s.id)}`} className="next-step" style={{ animationDelay: `${i * 60}ms` }}>
               <div className="step-num">{i + 1}</div>
@@ -69,7 +80,7 @@ export default function Overview({ state }) {
                 <div className="muted small">{s.why}</div>
               </div>
               {s.items?.[0] && <ItemIcon id={s.items[0]} size={44} />}
-              <button className="step-done" title="Отметить сделанным" aria-label="Отметить сделанным" onClick={e => markDone(e, s.id)}>✓</button>
+              {hs.mode !== 'none' && <button className="step-done" title={hs.mode === 'local' ? 'Скрыть шаг (только в этом браузере)' : 'Скрыть шаг'} aria-label="Скрыть шаг" onClick={e => hideStep(e, s)}>✕</button>}
             </a>
           ))}
         </div>

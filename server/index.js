@@ -43,6 +43,7 @@ import { enrichGuide } from './guides/refs.js';
 import { GUI_ITEMS } from './lib/gui-items.js';
 import { mountRiftRoutes, setRiftOwner } from './rift/marks.js';
 import { mountCollectRoutes } from './collectibles/marks.js';
+import { mountHiddenRoutes } from './roadmap/hidden.js';
 import { summarizeForCompare } from './compare.js';
 import { mountMuseumRoutes } from './museum/index.js';
 import { mountStashRoutes } from './stash/index.js';
@@ -462,6 +463,8 @@ setRiftOwner(() => state.player?.uuid);
 mountRiftRoutes(app, { getUuid: async req => (await req.sbView()).member?.uuid || null, canWrite: async req => !!(await req.sbView()).self });
 // Ручные отметки Fairy Souls для гайда «Души и коллекции» (Hypixel отдаёт только их число)
 mountCollectRoutes(app, { getUuid: async req => (await req.sbView()).member?.uuid || null, canWrite: async req => !!(await req.sbView()).self });
+// Скрытые шаги плана: у вошедшего владельца профиля хранятся на сервере (видны на всех его устройствах)
+mountHiddenRoutes(app, { getView: req => req.sbView(), isGuest: req => !!req.sbGuest });
 // Чек-лист улучшений своих экземпляров предмета: /api/item/:id/upgrades (для выбранного игрока — своего или друга)
 mountNewsRoutes(app, { // «Новости»: журнал изменений сайта, GET /api/news (записи — server/news/entries.js)
   textRefs: text => enrichGuide({ status: 'ok', sections: [{ kind: 'text', text }] }, { items: neu.items, constants: neu.constants, price: priceOf }).refs,

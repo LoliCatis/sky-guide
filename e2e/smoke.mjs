@@ -77,6 +77,45 @@ function watch(page) {
 const barriers = new Set();
 
 // Телефон пальцем (сенсорный экран 320px, как iPhone SE): то, что ловили «вживую» на маленьком экране
+// Скрытые шаги плана: владелец скрывает шаг (на главной и в плане), «Отменить»/«вернуть» возвращают, после перезагрузки
+// скрытое на месте (хранится на сервере); гость по нику тоже может скрыть — у себя в браузере
+async function hiddenStepsChecks() {
+  console.log('\n— скрытые шаги плана');
+  const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
+  const errs = watch(page);
+  const title = () => page.locator('.next-step .step-title').first().innerText();
+  await page.goto(`${BASE}/#/overview`); await page.waitForSelector('.next-step .step-done', { timeout: 15000 });
+  const t1 = await title();
+  await page.locator('.next-step .step-done').first().click(); await page.waitForTimeout(400);
+  const gone = (await title()) !== t1 && (await page.locator('.step-undo').count()) === 1;
+  gone ? ok('«✕» на главной убирает шаг и показывает «Отменить»') : fail('скрытые', 'шаг не скрылся на главной');
+  await page.click('.step-undo button:has-text("Отменить")'); await page.waitForTimeout(400);
+  (await title()) === t1 ? ok('«Отменить» возвращает шаг') : fail('скрытые', '«Отменить» не вернуло шаг');
+  await page.goto(`${BASE}/#/roadmap`); await page.waitForSelector('.road-step', { timeout: 15000 });
+  const r1 = await page.locator('.road-step h4').first().innerText();
+  await page.locator('.road-step button:has-text("скрыть")').first().click(); await page.waitForTimeout(800);
+  await page.reload(); await page.waitForSelector('.hidden-steps summary', { timeout: 10000 }).catch(() => {});
+  const sum = await page.locator('.hidden-steps summary').innerText().catch(() => '');
+  /Скрытые шаги \(1\)/.test(sum) && (await page.locator('.road-step h4').first().innerText()) !== r1 ? ok('шаг скрыт в плане и остался скрытым после перезагрузки') : fail('скрытые', `в плане не скрылось или не сохранилось: «${sum}»`);
+  await page.click('.hidden-steps summary'); await page.click('.hidden-steps button:has-text("вернуть")'); await page.waitForTimeout(800);
+  await page.reload(); await page.waitForSelector('.road-step', { timeout: 15000 }); await page.waitForTimeout(800);
+  !(await page.locator('.hidden-steps').count()) ? ok('«вернуть» возвращает шаг в план') : fail('скрытые', '«вернуть» не сработало');
+  errs.length ? fail('скрытые', errs.slice(0, 3).join('; ')) : ok('скрытые шаги: без ошибок JS');
+  await page.close();
+  // Гость скрывает у себя: подпись «только в этом браузере», на сервер ничего не уходит
+  const ctx = await browser.newContext({ extraHTTPHeaders: { 'X-Forwarded-For': '203.0.113.9' } });
+  const gp = await ctx.newPage();
+  const name = (await (await fetch(`${BASE}/api/state`)).json()).player?.name || 'OwnerCat';
+  await gp.goto(`${BASE}/?player=${encodeURIComponent(name)}#/roadmap`); await gp.waitForSelector('.road-step', { timeout: 15000 });
+  const note = await gp.locator('.plan-note').innerText().catch(() => '');
+  /только в этом браузере/.test(note) ? ok('гостю: «скрыть» видно только в этом браузере') : fail('скрытые/гость', `нет подписи: «${note.slice(0, 80)}»`);
+  await gp.locator('.road-step button:has-text("скрыть")').first().click(); await gp.waitForTimeout(400);
+  const local = await gp.evaluate(() => Object.keys(localStorage).some(k => k.startsWith('sb-roadmap-done@') && localStorage.getItem(k) !== '{}'));
+  const srv = await (await fetch(`${BASE}/api/roadmap/hidden`)).json();
+  local && !Object.keys(srv.hidden || {}).length ? ok('гость скрыл шаг у себя, на сервере пусто') : fail('скрытые/гость', `local=${local}, на сервере ${JSON.stringify(srv.hidden)}`);
+  await ctx.close();
+}
+
 // Гость (зашёл через туннель, без входа) открывает профиль по нику: страницы показываются, а не уводят на /login
 async function guestChecks() {
   console.log('\n— гость по нику');
@@ -483,6 +522,7 @@ try {
   await widthChecks();
   await phoneChecks();
   await guestChecks();
+  await hiddenStepsChecks();
 } catch (e) {
   fail('прогон', e.message);
 } finally {

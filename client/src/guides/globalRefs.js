@@ -5,6 +5,7 @@
 
 let phrases = null;   // Map: фраза (с ' вместо ’) → ref
 let loading = false;
+let refetch = false; // словарь был неполным (сервер грузил базу) — перезапросить
 let version = 0;
 const subs = new Set();
 const data = new Map();
@@ -17,7 +18,8 @@ export const subscribe = f => { subs.add(f); return () => subs.delete(f); };
 export const getVersion = () => version;
 
 export function ensureLexicon() {
-  if (phrases || loading || typeof fetch === 'undefined') return;
+  if ((phrases && !refetch) || loading || typeof fetch === 'undefined') return;
+  refetch = false;
   loading = true;
   fetch('/api/refs/lexicon')
     .then(r => (r.ok ? r.json() : null))
@@ -25,8 +27,11 @@ export function ensureLexicon() {
       if (!j?.phrases) throw new Error('нет словаря');
       phrases = new Map(Object.entries(j.phrases).map(([p, r]) => [p.replace(/’/g, '\''), r]));
       bump();
+      // Сервер только что запустился и ещё грузит предметы: пока пользуемся тем, что есть, и спросим ещё раз
+      if (j.ready === false) setTimeout(() => { loading = false; refetch = true; ensureLexicon(); }, 30_000);
+      else loading = false;
     })
-    .catch(() => { setTimeout(() => { loading = false; }, 60_000); }); // сервер ещё грузит базу — попробуем позже
+    .catch(() => { setTimeout(() => { loading = false; ensureLexicon(); }, 60_000); }); // сервер недоступен — попробуем позже
 }
 
 function flush() {
@@ -36,9 +41,10 @@ function flush() {
   if (pending.size) timer = setTimeout(flush, 0);
   if (!list.length) return;
   fetch(`/api/refs/data?r=${encodeURIComponent(list.join('|'))}`)
-    .then(r => (r.ok ? r.json() : {}))
+    .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
     .then(j => { for (const r of list) { if (j[r]) data.set(r, j[r]); else missing.add(r); } bump(); })
-    .catch(() => { list.forEach(r => missing.add(r)); });
+    // Сеть или сервер подвели — ref не помечаем отсутствующими: следующий показ запросит их снова
+    .catch(() => {});
 }
 
 /** Данные подсказки или null (тогда запрос уже в пути, компонент перерисуется по subscribe). */

@@ -227,8 +227,10 @@ app.use('/api', (req, res, next) => {
 
 // Подсказки по тексту для всего сайта: общий словарь терминов и данные подсказок (server/guides/refs.js)
 app.get('/api/refs/lexicon', (req, res) => {
-  res.set('Cache-Control', 'public, max-age=3600');
-  res.json({ v: neu.loadedAt || 0, phrases: lexiconPhrases(neu.items, neu.constants) });
+  // Пока база NEU грузится (сразу после запуска), словарь неполный: без кеша и с ready:false — клиент спросит ещё раз
+  const ready = neu.items.size > 0;
+  res.set('Cache-Control', ready ? 'public, max-age=3600' : 'no-store');
+  res.json({ v: neu.loadedAt || 0, ready, phrases: lexiconPhrases(neu.items, neu.constants) });
 });
 app.get('/api/refs/data', (req, res) => {
   const list = String(req.query.r || '').split('|').filter(Boolean).slice(0, 300);

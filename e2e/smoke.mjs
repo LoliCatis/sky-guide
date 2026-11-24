@@ -396,6 +396,14 @@ try {
       if (id === 'news') {
         await page.waitForTimeout(300);
         (await page.evaluate(() => !document.querySelector('.nav-badge') && !document.querySelector('.news-pop') && !document.title.startsWith('('))) ? ok('после захода в «Новости» значок, окошко и число в заголовке пропали') : fail(where, 'оповещение о новостях не гаснет после захода');
+        // Ссылка в новости открывает раздел, прокручивает к блоку и подсвечивает его
+        const link = page.locator('.news-link[href="#/stash/essence"]').first();
+        if (await link.count()) {
+          await link.click();
+          const hl = await page.waitForSelector('[data-news="essence"].news-hl', { timeout: 8000 }).then(() => true, () => false);
+          hl ? ok('ссылка из новости открыла «Запасы» и подсветила плитку Essence') : fail(where, 'ссылка из новости не подсветила блок');
+          await page.goto(`${BASE}/#/news`); await page.waitForSelector('.news-item', { timeout: 15_000 });
+        } else fail(where, 'в новостях нет ссылки на Essence');
       }
       const bad = text.match(BAD_TEXT);
       if (bad) fail(where, `в тексте «${bad[0]}»: …${text.slice(Math.max(0, bad.index - 60), bad.index + 30).replace(/\s+/g, ' ')}…`);

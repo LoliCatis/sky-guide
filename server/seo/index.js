@@ -4,6 +4,7 @@
 // Профили игроков (?player=…) не индексируются: noindex + Clean-param для Яндекса. Ники в эти страницы не попадают:
 // гайды собираются как для гостя без профиля, рейтинг и сравнение отдают только общее описание.
 import { SECTIONS, HOME, GUIDE_DESCRIPTIONS, ITEM_SKIP, SITE_NAME } from './pages.js';
+import { plainNews } from '../news/links.js';
 import { esc, publicSections, sectionHtml, sectionMd, itemParts } from './render.js';
 
 export const INDEXNOW_KEY = process.env.INDEXNOW_KEY || '00000000000000000000000000000000';
@@ -64,7 +65,7 @@ export function createSeo(deps) {
     if (sec) {
       let extra = '';
       if (sec.page === 'guides') extra = guideLinks();
-      if (sec.page === 'news') extra = news.slice(0, 30).map(e => `<article><h2>${esc(e.title)}</h2><p><time datetime="${esc(e.date)}">${esc(e.date)}</time></p><ul>${e.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul></article>`).join('');
+      if (sec.page === 'news') extra = news.slice(0, 30).map(e => `<article><h2>${esc(plainNews(e.title))}</h2><p><time datetime="${esc(e.date)}">${esc(e.date)}</time></p><ul>${e.items.map(i => `<li>${esc(plainNews(i))}</li>`).join('')}</ul></article>`).join('');
       return {
         ...sec, ogType: 'website',
         body: `<h1>${esc(sec.h1)}</h1>${sec.intro.map(t => `<p>${esc(t)}</p>`).join('')}${extra}${nav()}`,

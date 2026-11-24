@@ -37,16 +37,16 @@ export default function Stash({ state, sub }) {
   const buyable = ed ? ed.types.reduce((s, t) => s + t.buyable, 0) : 0;
   const essCount = ed ? ed.types.filter(t => t.amount > 0).length : 0;
   const tiles = [
-    { id: 'sacks', icon: 'LARGE_ENCHANTED_MINING_SACK', title: 'Мешки', value: sd ? coins(sd.total) : '…',
+    { id: 'sacks', news: 'sacks', icon: 'LARGE_ENCHANTED_MINING_SACK', title: 'Мешки', value: sd ? coins(sd.total) : '…',
       sub: sd ? (sd.kinds ? `${num(sd.kinds)} ${plural(sd.kinds, 'позиция', 'позиции', 'позиций')} · что продать, каких мешков нет` : 'мешки пусты') : 'считаю…' },
-    { id: 'essence', icon: 'ESSENCE_WITHER', title: 'Essence и перки', value: ed ? coins(ed.total) : '…',
+    { id: 'essence', news: 'essence', icon: 'ESSENCE_WITHER', title: 'Essence и перки', value: ed ? coins(ed.total) : '…',
       sub: ed ? `${essCount} ${plural(essCount, 'вид', 'вида', 'видов')} · ${buyable ? `можно купить ${num(buyable)} ${plural(buyable, 'уровень', 'уровня', 'уровней')} перков` : 'перки, звёзды, продажа'}` : 'считаю…' },
   ];
   return (
     <div className="grid stash">
       <div className="span-12 stash-switch" role="tablist">
         {tiles.map(t => (
-          <button key={t.id} role="tab" aria-selected={tab === t.id} className={`stash-switch-btn ${tab === t.id ? 'active' : ''}`} onClick={() => setTab(t.id)}>
+          <button key={t.id} role="tab" aria-selected={tab === t.id} className={`stash-switch-btn ${tab === t.id ? 'active' : ''}`} data-news={t.news} onClick={() => setTab(t.id)}>
             <ItemIcon id={t.icon} size={36} />
             <span><b>{t.title}</b><span className="stash-switch-val">{t.value}</span><span className="tiny muted">{t.sub}</span></span>
           </button>

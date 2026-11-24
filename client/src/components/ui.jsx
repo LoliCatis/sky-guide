@@ -1,8 +1,8 @@
 import { useEffect, useId, useRef, useState } from 'react';
 
-export function Card({ title, icon, right, children, className = '', style }) {
+export function Card({ title, icon, right, children, className = '', style, news }) {
   return (
-    <section className={`card ${className}`} style={style}>
+    <section className={`card ${className}`} style={style} data-news={news}>
       {(title || right) && (
         <header className="card-head">
           <h3>{icon && <span className="card-icon">{icon}</span>}{title}</h3>

@@ -890,3 +890,9 @@ a.acct.acct-login:hover { background: rgba(124,92,255,.16); border-color: rgba(1
 .btn.donate, .fb-btn, .mobile-foot .fb-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 .fb-btn .ico, .btn.donate .ico { opacity: .85; }
 .sidebar-foot .btn.donate, .sidebar-foot .fb-btn { display: flex; }
+/* Ссылки в новостях и подсветка блока, к которому привела ссылка (client/src/newsLinks.jsx) */
+.news-link { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.news-link:hover { text-decoration-thickness: 2px; }
+.news-hl { animation: newsHl 2.4s ease; border-radius: 12px; }
+@keyframes newsHl { 0%, 60% { box-shadow: 0 0 0 2px var(--accent), 0 0 30px rgba(124,92,255,.45); } 100% { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .news-hl { animation: none; outline: 2px solid var(--accent); } }

@@ -3,6 +3,7 @@
 // GET /api/news/latest → { latest, ids, top, refs } — лёгкий запрос: число непрочитанных на кнопке меню
 //   и окошко «Что нового» при заходе (top — самая свежая запись, refs — подсказки только к ней)
 import { NEWS, KIND_RU } from './entries.js';
+import { plainNews } from './links.js';
 
 export function newsView(list = NEWS) {
   return {
@@ -27,8 +28,8 @@ export function mountNewsRoutes(app, { textRefs = null } = {}) {
     };
   };
   const top = newsView().entries[0] || null;
-  const allRefs = cached(NEWS.flatMap(e => [e.title, ...e.items]).join('\n'));
-  const topRefs = cached(top ? [top.title, ...top.items].join('\n') : '');
+  const allRefs = cached(plainNews(NEWS.flatMap(e => [e.title, ...e.items]).join('\n')));
+  const topRefs = cached(top ? plainNews([top.title, ...top.items].join('\n')) : '');
   app.get('/api/news/latest', (req, res) => res.json({ latest: top?.id || null, ids: NEWS.map(e => e.id), top, refs: top ? topRefs() : null }));
   app.get('/api/news', (req, res) => res.json({ ...newsView(), refs: allRefs() }));
 }

@@ -130,7 +130,7 @@ export default function Roadmap({ state, sub }) {
         ))}
         {!shown.length && <Empty>{hiddenSteps.length ? 'В этой категории остались только скрытые шаги.' : 'В этой категории нет шагов.'}</Empty>}
         {hiddenSteps.length > 0 && (
-          <details className="hidden-steps card" open={showHidden} onToggle={e => setShowHidden(e.currentTarget.open)}>
+          <details className="hidden-steps card" data-news="hidden" open={showHidden} onToggle={e => setShowHidden(e.currentTarget.open)}>
             <summary>Скрытые шаги ({hiddenSteps.length}){mode === 'local' ? ' · только в этом браузере' : ''}</summary>
             <ul>{hiddenSteps.map(s => (
               <li key={s.id} id={'step-' + s.id} className={flash === s.id ? 'flash' : ''}>

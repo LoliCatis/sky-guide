@@ -3,6 +3,21 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { NEWS, KIND_RU } from '../news/entries.js';
 import { newsView, mountNewsRoutes } from '../news/index.js';
+import { newsLinks, plainNews } from '../news/links.js';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const clientSrc = () => {
+  const out = [];
+  const walk = d => { for (const f of fs.readdirSync(d, { withFileTypes: true })) {
+    const p = path.join(d, f.name);
+    if (f.isDirectory()) walk(p); else if (/\.jsx?$/.test(f.name)) out.push(fs.readFileSync(p, 'utf8'));
+  } };
+  walk(path.join(ROOT, 'client', 'src'));
+  return out.join('\n');
+};
 
 test('записи: самая новая первой, id уникальны и начинаются с даты', () => {
   assert.ok(NEWS.length > 0);
@@ -52,4 +67,38 @@ test('/api/news/latest: id всех записей по порядку и све
   assert.equal(r.top.kindRu, KIND_RU[NEWS[0].kind]);
   assert.ok(r.top.items.length);
   assert.ok(r.refs);
+});
+
+test('новости короткие: заголовок до 6 слов, до 4 пунктов, пункт до 130 знаков, без «ты» и устройства сайта', () => {
+  const word = w => new RegExp(`(?<![\\p{L}])(${w})(?![\\p{L}])`, 'iu');
+  for (const e of NEWS) {
+    assert.ok(plainNews(e.title).split(/\s+/).length <= 6, `${e.id}: заголовок длиннее 6 слов`);
+    assert.ok(e.items.length <= 4, `${e.id}: больше 4 пунктов — разбей на темы или вычеркни лишнее`);
+    for (const t of [e.title, ...e.items]) {
+      const p = plainNews(t);
+      assert.ok(p.length <= 130, `${e.id}: пункт длиннее 130 знаков: ${p}`);
+      for (const bad of ['ты', 'тебе', 'тебя', 'твой', 'твоя', 'твои', 'твоё', 'мы', 'нам'])
+        assert.ok(!word(bad).test(p), `${e.id}: без обращения на «ты» и без «мы» (${bad}): ${p}`);
+      for (const bad of ['данные', 'данных', 'загрузк[а-я]*', 'сервер[а-я]*', 'браузер[а-я]*', 'кэш[а-я]*', 'больше не нужно'])
+        assert.ok(!word(bad).test(p), `${e.id}: устройство сайта или оправдание (${bad}): ${p}`);
+    }
+  }
+});
+
+test('ссылки в новостях ведут на существующий раздел и блок', () => {
+  const app = fs.readFileSync(path.join(ROOT, 'client', 'src', 'App.jsx'), 'utf8');
+  const pages = new Set([...app.slice(app.indexOf('const PAGES')).matchAll(/\{ id: '([a-z-]+)'/g)].map(m => m[1]));
+  const guides = new Set(fs.readdirSync(path.join(ROOT, 'server', 'guides')).filter(f => f.endsWith('.js'))
+    .flatMap(f => [...fs.readFileSync(path.join(ROOT, 'server', 'guides', f), 'utf8').matchAll(/export default \{ id: '([a-z-]+)'/g)].map(m => m[1])));
+  const src = clientSrc();
+  const links = newsLinks(NEWS);
+  assert.ok(links.length > 0);
+  for (const l of links) {
+    const [page, sub] = l.path.split('/');
+    assert.ok(pages.has(page), `${l.id}: нет раздела «${page}» (ссылка «${l.label}»)`);
+    if (page === 'guides' && sub) assert.ok(guides.has(sub), `${l.id}: нет гайда «${sub}»`);
+    if (l.anchor) assert.ok(new RegExp(`(data-news="${l.anchor}"|news="${l.anchor}"|news: '${l.anchor}')`).test(src),
+      `${l.id}: на сайте нет блока с data-news="${l.anchor}" (ссылка «${l.label}»)`);
+  }
+  assert.equal(plainNews('В [Запасах](stash/essence#essence) сверху'), 'В Запасах сверху');
 });

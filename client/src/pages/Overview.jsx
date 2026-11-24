@@ -63,7 +63,7 @@ export default function Overview({ state }) {
 
       {!me.guest && <LiveAdvisor className="span-12" />}
 
-      <Card title="Что делать прямо сейчас" className="span-8" right={<a href="#/roadmap" className="link">весь план →</a>}>
+      <Card title="Что делать прямо сейчас" className="span-8" news="now" right={<a href="#/roadmap" className="link">весь план →</a>}>
         <div className="next-steps">
           {undo && (
             <div className="step-undo small" role="status">

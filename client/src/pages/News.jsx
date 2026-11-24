@@ -3,8 +3,9 @@
 import { useEffect, useMemo } from 'react';
 import { Card, Empty } from '../components/ui.jsx';
 import { useApi } from '../api.js';
-import { RefsProvider, Rich } from '../guides/Rich.jsx';
+import { RefsProvider } from '../guides/Rich.jsx';
 import { markNewsSeen } from '../news.js';
+import { NewsText } from '../newsLinks.jsx';
 
 const dayRu = d => new Date(`${d}T12:00:00`).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -46,10 +47,10 @@ export default function News() {
               <article key={e.id} id={`news-${e.id}`} className={`card news-item news-${e.kind}`}>
                 <header className="news-item-head">
                   <span className={`news-kind k-${e.kind}`}>{e.kindRu}</span>
-                  <h4><Rich text={e.title} /></h4>
+                  <h4><NewsText text={e.title} /></h4>
                   {fresh.has(e.id) && <span className="news-fresh">новое</span>}
                 </header>
-                <ul>{e.items.map((t, i) => <li key={i}><Rich text={t} /></li>)}</ul>
+                <ul>{e.items.map((t, i) => <li key={i}><NewsText text={t} /></li>)}</ul>
               </article>
             ))}
           </section>

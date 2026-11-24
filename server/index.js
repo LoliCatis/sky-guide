@@ -450,6 +450,7 @@ const charts = createCharts({
 charts.mount(app);
 mountPriceRoutes(app, {
   getMember: async req => (await req.sbView().catch(() => null))?.member || null,
+  getView: req => req.sbView(), // «Заработок»: если профиля нет — настоящая причина (сервер запускается, Hypixel не ответил…)
   // богатство игрока: чтобы не советовать крафты дороже того, что он может себе позволить
   getNetworth: async req => (await req.sbView().catch(() => null))?.analysis?.gear?.networth?.total || 0,
   // «Подсказки по тексту» (как в гайдах): словарь NPC, мобов, мест, механик и предметов для разбора методов

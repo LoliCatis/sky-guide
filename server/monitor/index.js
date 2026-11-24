@@ -197,7 +197,8 @@ export function createMonitor({
   /** middleware: каждый ответ 5xx — в счётчик (и в группу, если обработчик не сообщил ошибку сам) */
   function track5xx(req, res, next) {
     res.on('finish', () => {
-      if (res.statusCode < 500) return;
+      // sbExpected: ожидаемая недоступность (сервер только что перезапустился, Hypixel не ответил) — не сбой сервера
+      if (res.statusCode < 500 || res.locals?.sbExpected) return;
       const now = clock();
       s5xx.push(now); while (s5xx.length && now - s5xx[0] > 10 * MIN) s5xx.shift();
       cur.s5xx++; dirty = true;
@@ -208,10 +209,12 @@ export function createMonitor({
 
   /** Обработчик ошибок Express (ставится последним) */
   function errorHandler(err, req, res, next) {
-    serverError(err, `${req.method} ${routeOf(req)}`);
-    res.locals.sbErrorRecorded = true;
-    if (res.headersSent) return next(err);
     const status = err.status || err.statusCode || 500;
+    // 4xx — плохой запрос, а не сбой сервера: обрыв связи браузером («request aborted»: закрыли вкладку, пропала сеть
+    // на телефоне, пока уходил запрос), кривой JSON, слишком большое тело. В журнал ошибок сервера не пишем
+    if (status >= 500) { serverError(err, `${req.method} ${routeOf(req)}`); res.locals.sbErrorRecorded = true; }
+    if (res.headersSent) return next(err);
+    if (err.type === 'request.aborted') return res.status(400).end(); // отвечать уже некому
     if (status < 500) return res.status(status).json({ error: err.expose ? err.message : 'Неверный запрос' });
     res.status(500).json({ error: 'Ошибка на сервере. Она уже записана — владелец сайта увидит её' });
   }

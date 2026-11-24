@@ -673,7 +673,7 @@ function MethodModal({ mt, refs, onClose, openItem }) {
 }
 
 function MoneyMethods({ openItem }) {
-  const { data } = useApi('/market/money', []);
+  const { data, error, errorText } = useApi('/market/money', []);
   const [cat, setCat] = useStored('methods-cat', '');
   const [avail, setAvail] = useStored('methods-avail', '');
   const [effort, setEffort] = useStored('methods-effort', '');
@@ -690,7 +690,9 @@ function MoneyMethods({ openItem }) {
     const fn = METHOD_SORTS[sort]?.[1];
     return fn ? [...list].sort(fn) : list;
   }, [methods, cat, avail, effort, risk, sort, q]);
-  if (!data) return <div className="loader"><div className="spinner" /></div>;
+  // Раньше ошибка тут терялась и загрузка крутилась бесконечно (например, сразу после обновления сайта)
+  if (!data && error) return <Empty>Способы заработка не загрузились: <Rich text={errorText || error} /></Empty>;
+  if (!data) return <div className="loader"><div className="spinner" />{errorText && <p className="small muted">{errorText}</p>}</div>;
   const plan = data.plan || {};
   const openMt = methods.find(mt => mt.id === open);
   return (

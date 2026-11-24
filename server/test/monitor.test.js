@@ -204,3 +204,28 @@ test('сбой сети в фоновой задаче — вид «внешни
   assert.equal(t.m.summary().today.errors.api, 8);
   assert.equal(t.mails.filter(x => !/Сводка/.test(x.subject)).length, 0);
 });
+
+test('обрыв связи браузером и 4xx — не ошибка сервера', () => {
+  const { m } = make();
+  let code, ended = false;
+  const res = { headersSent: false, locals: {}, status(c) { code = c; return this; }, json() {}, end() { ended = true; } };
+  const req = { method: 'POST', path: '/api/icons', route: { path: '/api/icons' }, baseUrl: '' };
+  m.errorHandler(Object.assign(new Error('request aborted'), { status: 400, type: 'request.aborted' }), req, res, () => {});
+  assert.equal(code, 400); assert.ok(ended);
+  m.errorHandler(Object.assign(new Error('Unexpected token'), { status: 400, type: 'entity.parse.failed' }), req, { ...res, locals: {} }, () => {});
+  assert.equal(m.summary().errors.length, 0);
+});
+
+test('ожидаемый 503 (сайт запускается) не попадает в журнал, обычный 503 — попадает', () => {
+  const { m } = make();
+  const fire = locals => {
+    let fin;
+    const res = { statusCode: 503, locals, on(ev, fn) { fin = fn; } };
+    m.track5xx({ method: 'GET', path: '/api/market/money', baseUrl: '' }, res, () => {});
+    fin();
+  };
+  fire({ sbExpected: true });
+  assert.equal(m.summary().errors.length, 0);
+  fire({});
+  assert.equal(m.summary().errors.length, 1);
+});

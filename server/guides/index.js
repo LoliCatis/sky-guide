@@ -4,6 +4,7 @@
 // и одна строка в массиве GUIDES ниже. Формат результата build() описан в README.md рядом.
 import { makeCtx } from '../advisor/lib/util.js';
 import { enrichGuide } from './refs.js';
+import { sendNoMember, loadMember } from '../lib/view-error.js';
 import { howtoSection } from './howto.js';
 import { finalizeGuide } from './after.js';
 import { wikiNoticeSection } from '../wiki/watch.js';
@@ -113,7 +114,7 @@ const brief = g => ({ id: g.id, title: g.title, icon: g.icon, group: g.group, su
  */
 export function mountGuideRoutes(app, { getView, getMember, getAnalysis, deps = {} }) {
   const view = async req => {
-    if (getView) { const v = await getView(req).catch(() => null); return { m: v?.member || null, a: v?.analysis || {} }; }
+    if (getView) { const out = {}; const m = await loadMember({ sbView: () => getView(req) }, out); return { m, a: out.view?.analysis || {}, out }; }
     return { m: getMember?.() || null, a: getAnalysis?.() || {} };
   };
   app.get('/api/guides', async (req, res) => {
@@ -122,8 +123,8 @@ export function mountGuideRoutes(app, { getView, getMember, getAnalysis, deps = 
     res.json({ groups: GROUPS, guest: !!m?.guest, guides: buildGuides(m, a, deps).map(brief).map(g => (m?.guest ? forGuest(g) : g)) });
   });
   app.get('/api/guides/:id', async (req, res) => {
-    const { m, a } = await view(req);
-    if (!m) return res.status(503).json({ error: 'Профиль ещё не загружен' });
+    const { m, a, out } = await view(req);
+    if (!m) return out ? sendNoMember(res, out) : res.status(503).json({ error: 'Профиль ещё не загружен' });
     const g = buildGuide(req.params.id, m, a, deps);
     if (!g) return res.status(404).json({ error: 'Гайд не найден' });
     // ссылки на предметы/NPC/мобов и подсказки к терминам (refs.js)

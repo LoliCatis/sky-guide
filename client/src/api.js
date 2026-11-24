@@ -115,9 +115,17 @@ export async function api(path, opts = {}) {
     if (j.mustChange) { location.href = '/account?must=1'; throw new Error('Сначала придумай свой пароль'); }
     throw new Error(j.error || 'Ошибка 403');
   }
-  if (!r.ok) throw new Error(`Ошибка ${r.status}`);
+  if (!r.ok) {
+    // Текст ошибки оставляем прежним («Ошибка 503» — по нему страницы узнают вид ошибки), а понятное объяснение сервера
+    // и его код (STARTING — сайт только что обновился, NETWORK — Hypixel не ответил) кладём рядом
+    const j = r.headers.get('content-type')?.includes('json') ? await r.json().catch(() => ({})) : {};
+    throw Object.assign(new Error(`Ошибка ${r.status}`), { status: r.status, code: j.errorCode || null, serverMessage: j.error || '' });
+  }
   return r.json();
 }
+
+// Сайт только что обновился и ещё загружает профиль — через сколько повторить запрос и сколько раз (≈2 минуты)
+const RETRY_STARTING_MS = 5000, RETRY_STARTING_TIMES = 24;
 
 // Кэш — только для своего профиля (чужие большие и меняются реже, хранить их в браузере незачем)
 const STATE_CACHE = 'sb-state-cache';
@@ -214,15 +222,23 @@ export function useApi(path, deps = [], { keep = false } = {}) {
   // Данные помечены путём: при переходе на другой предмет не показываем старый, пока грузится новый
   const [res, setRes] = useState({ path: null, data: null });
   const [error, setError] = useState(null);
+  const [errorText, setErrorText] = useState(null);
   const vk = viewKey(useView()); // другой игрок — те же пути, но другие данные (инвентарь, план заработка)
   useEffect(() => {
     if (!path) return;
-    let alive = true;
-    setError(null);
-    api(path).then(d => alive && setRes({ path, vk, data: d })).catch(e => alive && setError(e.message));
-    return () => { alive = false; };
+    let alive = true, timer = null, tries = 0;
+    setError(null); setErrorText(null);
+    const load = () => api(path).then(d => { if (alive) { setRes({ path, vk, data: d }); setError(null); setErrorText(null); } }).catch(e => {
+      if (!alive) return;
+      // Сразу после обновления сайта профиль ещё грузится: не показываем ошибку навсегда, а тихо пробуем снова
+      if (e.code === 'STARTING' && tries++ < RETRY_STARTING_TIMES) { setErrorText(e.serverMessage); timer = setTimeout(load, RETRY_STARTING_MS); return; }
+      setError(e.message); setErrorText(e.serverMessage || e.message);
+    });
+    load();
+    return () => { alive = false; clearTimeout(timer); };
   }, [path, vk, ...deps]);
-  return { data: (keep && res.vk === vk) || (res.path === path && res.vk === vk) ? res.data : null, error };
+  // error — как раньше («Ошибка 503»); errorText — понятный текст от сервера, если он есть (пока идут повторы — тоже он)
+  return { data: (keep && res.vk === vk) || (res.path === path && res.vk === vk) ? res.data : null, error, errorText };
 }
 
 export function coins(n) {

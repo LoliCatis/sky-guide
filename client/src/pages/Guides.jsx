@@ -5,14 +5,14 @@ import { Card, Empty } from '../components/ui.jsx';
 import { ItemIcon } from '../components/ItemIcon.jsx';
 import { GenericGuide, StatusBadge, GuideListCtx } from '../guides/parts.jsx';
 import { CUSTOM } from '../guides/index.js';
-import { RefsProvider } from '../guides/Rich.jsx';
+import { RefsProvider, Rich } from '../guides/Rich.jsx';
 
 export default function Guides({ state, sub }) {
   const upd = state?.updatedAt || 0;
   const { data: list, error } = useApi('/guides', [upd], { keep: true });
   const guides = list?.guides || [];
   const id = guides.some(g => g.id === sub) ? sub : guides[0]?.id;
-  const { data: guide, error: gErr } = useApi(id ? `/guides/${id}` : null, [upd], { keep: true });
+  const { data: guide, error: gErr, errorText: gErrText } = useApi(id ? `/guides/${id}` : null, [upd], { keep: true });
 
   // Выбранный гайд виден в списке: на телефоне список — горизонтальная лента, на компьютере — колонка с прокруткой
   const listRef = useRef(null);
@@ -71,8 +71,8 @@ export default function Guides({ state, sub }) {
       </aside>
       </div>
       <div className="guides-body">
-        {gErr && !shown ? <Card><Empty>Гайд не загрузился: {gErr}</Empty></Card>
-          : !shown ? <div className="muted small"><div className="spinner" />Собираю гайд…</div>
+        {gErr && !shown ? <Card><Empty>Гайд не загрузился: <Rich text={gErrText || gErr} /></Empty></Card>
+          : !shown ? <div className="muted small"><div className="spinner" />{gErrText ? <Rich text={gErrText} /> : 'Собираю гайд…'}</div>
           : <GuideListCtx.Provider value={guides}><RefsProvider refs={shown.refs}>{C ? <C guide={shown} state={state} /> : <GenericGuide guide={shown} />}</RefsProvider></GuideListCtx.Provider>}
       </div>
     </div>

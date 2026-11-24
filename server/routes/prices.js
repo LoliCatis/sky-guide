@@ -6,10 +6,12 @@ import { prices, priceInfo, priceTrend } from '../prices.js';
 import * as money from '../analysis/money.js';
 import { neu } from '../neu.js';
 import { checkCrafttext, collectionsFromNeu } from '../market/requirements.js';
+import { sendNoMember, loadMember } from '../lib/view-error.js';
 
 const num = (v, d) => (v === undefined || v === '' ? d : Number(v));
 
-export function mountPriceRoutes(app, { getMember = () => null, getNetworth = () => 0, textRefs = null } = {}) {
+// getView(req) — как req.sbView(): вид игрока или отказ. Нужен «Заработку», чтобы назвать настоящую причину, если профиля нет
+export function mountPriceRoutes(app, { getMember = () => null, getView = null, getNetworth = () => 0, textRefs = null } = {}) {
   // Подсказки по тексту для разбора методов: считаем по всему тексту методов, держим в памяти по самому тексту
   const refsCache = new Map();
   const methodRefs = methods => {
@@ -45,9 +47,10 @@ export function mountPriceRoutes(app, { getMember = () => null, getNetworth = ()
   r.get('/trend/:id', (req, res) => res.json(priceTrend(req.params.id)));
   r.get('/item/:id', (req, res) => res.json(priceInfo(req.params.id)));
   r.get('/money', async (req, res) => {
-    const m = await getMember(req);
-    if (!m) return res.status(503).json({ error: 'Профиль ещё не загружен' });
-    const extra = { networth: Number(await getNetworth(req)) || 0 };
+    const out = {};
+    const m = getView ? await loadMember({ sbView: () => getView(req) }, out) : await getMember(req);
+    if (!m) return sendNoMember(res, out);
+    const extra = { networth: Number(out.view ? out.view.analysis?.gear?.networth?.total : await getNetworth(req)) || 0 };
     const methods = money.moneyMethods(m, extra);
     res.json({ plan: money.moneyPlan(m, extra, methods), methods, refs: methodRefs(methods), settings: money.moneyState.settings });
   });

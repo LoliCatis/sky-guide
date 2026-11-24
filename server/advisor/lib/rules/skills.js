@@ -63,10 +63,12 @@ export function skillRules(ctx, add) {
     const gap = s.maxLevel - s.level;
     const w = SKILL_WEIGHT[key] ?? 0.8;
     const left = Math.max(0, (s.xpForNext || 0) - (s.xpCurrent || 0));
+    // Скилл, сильно отстающий от среднего, — самый дешёвый прогресс: первые уровни быстрые и стоят только времени
+    const lag = Math.max(0, (m.skillAverage || 0) - s.level);
     add({
-      id: `skill-${key}`, cat: 'Скиллы', priority: Math.round(Math.min(62, (18 + gap * 1.2) * w)), effort: gap > 10 ? 'долго' : 'часы',
+      id: `skill-${key}`, cat: 'Скиллы', priority: Math.round(Math.min(74, (24 + gap * 0.8) * w + lag * 1.4)), effort: gap > 10 ? 'долго' : 'часы',
       title: `${s.name} ${s.level} → ${s.maxLevel}`,
-      why: `Осталось ${gap} ${plural(gap, 'уровень', 'уровня', 'уровней')}, до ${s.level + 1} — ${fmtNum(left)} опыта. Каждый уровень даёт статы и SkyBlock XP; средний скилл сейчас ${(m.skillAverage || 0).toFixed(1)}.`,
+      why: `Осталось ${gap} ${plural(gap, 'уровень', 'уровня', 'уровней')}, до ${s.level + 1} — ${fmtNum(left)} опыта. Каждый уровень даёт статы и SkyBlock XP; средний скилл сейчас ${(m.skillAverage || 0).toFixed(1)}.${lag >= 10 ? ' Этот скилл сильно отстаёт от остальных: первые уровни идут быстро и стоят только времени, а не монет.' : ''}`,
       how: SKILL_HOWTO[key] || [],
       link: 'skills',
     });
@@ -101,7 +103,7 @@ export function foragingRules(ctx, add) {
   const max = ctx.data.hotf.length;
   if (lvl < max) {
     add({
-      id: 'hotf', cat: 'Лесорубство и Galatea', priority: lvl < 5 ? 54 : 40, effort: 'долго',
+      id: 'hotf', cat: 'Лесорубство и Galatea', priority: lvl < 5 ? 64 : 46, effort: 'долго',
       title: `Heart of the Forest ${lvl} → ${max}`,
       why: `HotF — дерево перков для Galatea: скорость и удача рубки, новые способности. Сейчас уровень ${lvl}${f ? `, Foraging ${f.level}` : ''}. Прокачка идёт параллельно со скиллом.`,
       how: ['Galatea → задания (commissions) и рубка новых пород', 'Вкладывай очки HotF в скорость и Foraging Fortune в первую очередь'],

@@ -3,6 +3,8 @@ import KEY_PETS from '../../data/key-pets.json' with { type: 'json' };
 import LADDERS from '../../data/ladders.json' with { type: 'json' };
 import { fmtCoins, fmtNum, plural, prettyId, bestPets, petLevel, petTierIndex, PET_TIER_RU } from '../util.js';
 
+// Граница «выгодного» аксессуара: сколько монет за 1 Magical Power ещё считаем дёшево
+export const CHEAP_MP_COINS = 15_000_000;
 export const MP_MILESTONES = [500, 750, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700];
 // Уникальные крафты миньонов → слотов миньонов (без слотов из Community Shop)
 export const MINION_SLOTS = [[0, 5], [5, 6], [15, 7], [30, 8], [50, 9], [75, 10], [100, 11], [125, 12], [150, 13], [175, 14], [200, 15], [225, 16], [250, 17], [275, 18], [300, 19], [350, 20], [400, 21], [450, 22], [500, 23], [550, 24], [600, 25], [650, 26]];
@@ -14,26 +16,50 @@ export function accessoryRules(ctx, add) {
   const nextMs = MP_MILESTONES.find(x => x > mp);
 
   if (acc?.cheapestNext?.length) {
-    // Набираем самые дешёвые за 1 MP, пока не дойдём до следующей вехи (но не больше 15 позиций)
+    // Две группы: выгодные (дёшево за 1 MP) — наверх плана, дорогие — отдельным шагом «на потом».
+    // Иначе в один шаг попадали аксессуары по 100+ млн за 1 MP, и «главным» становилась покупка на миллиарды.
     const need = nextMs ? nextMs - mp : 50;
-    const pick = [];
-    let gain = 0, cost = 0;
+    const cheapLimit = Math.max(CHEAP_MP_COINS, Math.min(CHEAP_MP_COINS * 2, (ctx.liquid || 0) * 0.005));
+    const cheap = [], dear = [];
+    let got = 0;
     for (const r of acc.cheapestNext) {
-      if (pick.length >= 15 || (gain >= need && pick.length >= 5)) break;
+      if (got >= need && cheap.length >= 5) break;
       // две версии одного аксессуара MP не складывают — берём только первую (самую выгодную)
-      if (r.family && pick.some(p => p.family?.includes(r.id) || r.family.includes(p.id))) continue;
-      pick.push(r); gain += r.gain; cost += r.price || 0;
+      if (r.family && [...cheap, ...dear].some(p => p.family?.includes(r.id) || r.family.includes(p.id))) continue;
+      const isCheap = !ctx.hasPrices || !r.perMp || r.perMp <= cheapLimit;
+      if (isCheap && cheap.length < 15) cheap.push(r);
+      else if (!isCheap && dear.length < 8 && got < need) dear.push(r);
+      else continue;
+      got += r.gain;
     }
-    add({
-      id: 'mp-cheap', cat: 'Аксессуары и Magical Power', priority: 88, effort: 'минуты, нужны монеты',
-      title: `Докупи ${pick.length} ${plural(pick.length, 'самый выгодный аксессуар', 'самых выгодных аксессуара', 'самых выгодных аксессуаров')}: +${gain} MP за ~${fmtCoins(cost)}`,
-      why: `Сейчас ${fmtNum(mp)} MP${nextMs ? `, до ${nextMs} не хватает ${nextMs - mp}` : ''}. Magical Power усиливает все статы через Power в сумке аксессуаров — это самый дешёвый рост урона на твоём этапе.`,
-      how: pick.map(r => `${r.name} — +${r.gain} MP, ~${fmtCoins(r.price)} (${fmtCoins(r.perMp)} за 1 MP)${r.upgradeFrom ? `, апгрейд из ${r.upgradeFrom} (доплата за вычетом старой версии)` : ''}`),
-      items: pick.map(r => r.id),
-      cost: cost || undefined,
-      payoff: `+${gain} MP`,
-      link: 'accessories',
-    });
+    const sum = list => ({ gain: list.reduce((g, r) => g + r.gain, 0), cost: list.reduce((c, r) => c + (r.price || 0), 0) });
+    const line = r => `${r.name} — +${r.gain} MP, ~${fmtCoins(r.price)} (${fmtCoins(r.perMp)} за 1 MP)${r.upgradeFrom ? `, апгрейд из ${r.upgradeFrom} (доплата за вычетом старой версии)` : ''}`;
+    if (cheap.length) {
+      const { gain, cost } = sum(cheap);
+      add({
+        id: 'mp-cheap', cat: 'Аксессуары и Magical Power', priority: 88, effort: 'минуты, нужны монеты',
+        title: `Докупи ${cheap.length} ${plural(cheap.length, 'самый выгодный аксессуар', 'самых выгодных аксессуара', 'самых выгодных аксессуаров')}: +${gain} MP за ~${fmtCoins(cost)}`,
+        why: `Сейчас ${fmtNum(mp)} MP${nextMs ? `, до ${nextMs} не хватает ${nextMs - mp}` : ''}. Magical Power усиливает все статы через Power в сумке аксессуаров — это самый дешёвый рост урона на твоём этапе.`,
+        how: cheap.map(line),
+        items: cheap.map(r => r.id),
+        cost: cost || undefined,
+        payoff: `+${gain} MP`,
+        link: 'accessories',
+      });
+    }
+    if (dear.length) {
+      const { gain, cost } = sum(dear);
+      add({
+        id: 'mp-expensive', cat: 'Аксессуары и Magical Power', priority: cheap.length ? 40 : 52, effort: 'дорого',
+        title: `Дорогие аксессуары на потом: ${dear.length} шт., +${gain} MP за ~${fmtCoins(cost)}`,
+        why: `Каждый из них стоит больше ${fmtCoins(cheapLimit)} за 1 MP. Это вложение на будущее: сначала прокачай отстающие скиллы и слееров и закрой дешёвые шаги выше, а сюда откладывай со своего заработка.`,
+        how: dear.map(line),
+        items: dear.map(r => r.id),
+        cost: cost || undefined,
+        payoff: `+${gain} MP`,
+        link: 'accessories',
+      });
+    }
   }
 
   if (acc?.notRecombCount > 0 && acc.recombPrice) {

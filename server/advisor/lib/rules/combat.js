@@ -111,7 +111,7 @@ export function slayerRules(ctx, add) {
     if (sl.level === 0) {
       const blaze = key === 'blaze';
       add({
-        id: `slayer-${key}`, cat: 'Слееры', priority: blaze ? 82 : 58, effort: 'часы',
+        id: `slayer-${key}`, cat: 'Слееры', priority: blaze ? 82 : 68, effort: 'часы',
         title: `Начни ${sl.name} (${sl.ru}): сейчас уровень 0`,
         why: blaze
           ? `Блейз-слеер открывает кинжалы для Crimson Isle, Kuudra-крафты и постоянные статы.${Object.values(ctx.m.dungeons?.masterFloors || {}).some(n => Number(n) > 0) ? ' Это главная дыра в твоём профиле после Master Mode.' : ''}`

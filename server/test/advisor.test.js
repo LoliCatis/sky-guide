@@ -161,3 +161,28 @@ test('план для игрока без F7 и Master Mode: не советуе
   assert.ok(blaze, 'шаг блейза есть');
   assert.ok(!/после Master Mode/.test(blaze.why), blaze.why);
 });
+
+test('«Главное сейчас» — не покупка, на которую нужно копить: сначала дешёвый прогресс', () => {
+  const m = ownercatMember();
+  const L = (level, maxLevel, name) => ({ ...m.skills.fishing, level, maxLevel, name, xpForNext: 1e6, xpCurrent: 3e5 });
+  Object.assign(m.skills, { fishing: L(20, 50, 'Fishing'), foraging: L(26, 54, 'Foraging'), farming: L(28, 60, 'Farming') });
+  m.skillAverage = 44.5; m.bank = 2.91e9;
+  m.museum = { status: 'ok', keys: ['FANCY_SWORD'], borrowing: [], special: [], value: 0, appraisal: false };
+  m.inv.inventory = [...(m.inv.inventory || []), { id: 'ROGUE_SWORD' }];
+  const acc = { highestMp: 1948, cheapestNext: [
+    ['BURSTSTOPPER_TALISMAN', 8, 46.3e6], ['COIN_ARTIFACT', 3, 84.9e6], ['BINGO_RING', 5, 410e6], ['ARTIFACT_OF_CONTROL', 16, 1.98e9], ['RIFT_PRISM', 8, 1.5e9],
+  ].map(([id, gain, p]) => ({ id, name: id, gain, price: p, perMp: p / gain })) };
+  const cheapPrice = id => ({ ROGUE_SWORD: 5000, ZOMBIE_PICKAXE: 3, SWORD_OF_BAD_HEALTH: 50_000, ICY_SINKER: 30_000 })[id] || 20_000;
+  const r = advise(m, acc, null, { price: cheapPrice });
+  const s = byId(r.roadmap);
+  // Дорогие аксессуары — отдельным шагом в конце плана, выгодные — наверху
+  assert.deepEqual(s.get('mp-cheap').items, ['BURSTSTOPPER_TALISMAN']);
+  assert.ok(s.get('mp-expensive').needsSaving && s.get('mp-expensive').items.includes('ARTIFACT_OF_CONTROL'));
+  assert.ok(!r.roadmap[0].needsSaving, `первым стоит шаг, на который надо копить: ${r.roadmap[0].title}`);
+  const p = id => s.get(id).priority;
+  for (const id of ['skill-fishing', 'skill-foraging', 'slayer-vampire', 'hotf', 'museum-cheap']) {
+    assert.ok(p(id) > p('mp-expensive'), `${id} ниже дорогих аксессуаров`);
+    assert.ok(p(id) > p('museum-donate-owned'), `${id} ниже «пожертвуй, что есть»`);
+  }
+  assert.match(s.get('skill-fishing').why, /отстаёт/);
+});

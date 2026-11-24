@@ -3,6 +3,8 @@
 import { analyzeMuseum } from '../../../museum/analyze.js';
 import { fmtCoins, fmtNum, plural } from '../util.js';
 
+const IN_USE = new Set(['Инвентарь', 'Надето', 'Экипировка', 'Гардероб']);
+
 const HOW_DONATE = [
   'Хаб → Museum (рядом с Bazaar и Community Center), Madame Eleanor Q. Goldsworth III открывает меню музея.',
   'Открой меню музея и кликни по предмету в своём инвентаре → Confirm Donation. Сет брони кладётся целиком: все части должны быть в инвентаре.',
@@ -25,12 +27,15 @@ export function museumRules(ctx, add) {
   if (mu.status !== 'ok') return;
 
   if (mu.canDonate.length) {
-    const top = mu.canDonate.slice(0, 8);
+    // То, что лежит в хранилищах, — первым; оружие и броня в ходу (инвентарь, надето, гардероб) — последними:
+    // в музее ими не попользуешься, пока не заберёшь обратно
+    const inUse = x => x.where?.length && x.where.every(w => IN_USE.has(w));
+    const top = [...mu.canDonate].sort((a, b) => inUse(a) - inUse(b)).slice(0, 8);
     add({
-      id: 'museum-donate-owned', cat: 'Музей', priority: mu.canDonateXp >= 20 ? 74 : 62, effort: 'минуты',
+      id: 'museum-donate-owned', cat: 'Музей', priority: mu.canDonateXp >= 20 ? 50 : 44, effort: 'минуты',
       title: `Пожертвуй в музей ${mu.canDonate.length} ${plural(mu.canDonate.length, 'предмет', 'предмета', 'предметов')}, что уже есть: +${fmtNum(mu.canDonateXp)} SkyBlock XP`,
       why: `Они лежат у тебя (${[...new Set(top.flatMap(x => x.where))].slice(0, 3).join(', ')}), но ещё не в музее. Это бесплатный SkyBlock XP${mu.milestonePlan?.free && mu.milestonePlan.reached ? ` и сразу веха музея ${mu.milestonePlan.target}` : ''}. Пожертвованное можно забрать обратно — XP останется.`,
-      how: [...HOW_DONATE, ...top.map(x => `${nm(x.id)} — +${x.gain} XP${x.where?.length ? ` (${x.where.join(', ')})` : ''}`)],
+      how: [...HOW_DONATE, ...top.map(x => `${nm(x.id)} — +${x.gain} XP${x.where?.length ? ` (${x.where.join(', ')}${inUse(x) ? ' — сейчас в ходу, жертвуй, только если не нужен' : ''})` : ''}`)],
       items: top.map(x => x.set ? x.items.find(i => /CHESTPLATE/.test(i)) || x.items[0] : x.id),
       link: 'museum',
     });
@@ -55,7 +60,8 @@ export function museumRules(ctx, add) {
     const sum = cheap.reduce((s, x) => s + x.cost, 0);
     const gain = cheap.reduce((s, x) => s + x.gain, 0);
     add({
-      id: 'museum-cheap', cat: 'Музей', priority: 34, effort: 'монеты',
+      // Дешёвый относительно денег игрока — почти бесплатный SkyBlock XP за минуты
+      id: 'museum-cheap', cat: 'Музей', priority: sum <= Math.max(1_000_000, (ctx.liquid || 0) * 0.01) ? 66 : 34, effort: 'минуты, нужны монеты',
       title: `Дешёвый SkyBlock XP: ${cheap.length} ${plural(cheap.length, 'предмет', 'предмета', 'предметов')} для музея за ${fmtCoins(sum)} (+${gain} XP)`,
       why: 'Самые выгодные по XP за монету предметы, которых нет в твоём музее. Каждый пожертвованный предмет навсегда добавляет SkyBlock XP.',
       how: cheap.map(x => `Купить: ${nm(x.id)} — ~${fmtCoins(x.cost)} (+${x.gain} XP)`),

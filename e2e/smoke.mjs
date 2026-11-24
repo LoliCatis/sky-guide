@@ -181,6 +181,8 @@ async function phoneChecks() {
   await page.goto(`${BASE}/#/market`); await page.waitForTimeout(2500);
   const order = await page.evaluate(() => { const m = document.querySelector('.mk-main'), l = document.querySelector('.mk-side'); return m && l ? m.getBoundingClientRect().top < l.getBoundingClientRect().top : false; });
   order && (await page.locator('.tc-canvas canvas').count()) ? ok('график открыт сразу и стоит над списком') : fail(`${where}/рынок`, 'на телефоне нет графика сверху');
+  // Окошко «Что нового» на узком экране может лечь поверх списка — закрываем, как сделал бы игрок
+  if (await page.locator('.news-pop').count()) { await page.click('.news-pop .news-pop-x'); await page.waitForTimeout(300); }
   const second = page.locator('.mk-row').nth(1);
   const secondName = (await second.locator('.mk-title').innerText()).trim();
   await second.tap(); await page.waitForTimeout(2500);

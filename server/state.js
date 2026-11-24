@@ -89,7 +89,7 @@ export function snapshot(m, gear) {
 }
 
 // Шаги, которые зависят от цен и меняются без действий игрока — их в ленту не пишем
-const PRICE_DRIVEN = /^(money-|mp-cheap|mp-recomb|gear-upgrades)/;
+const PRICE_DRIVEN = /^(money-|mp-cheap|mp-expensive|mp-recomb|museum-cheap|museum-milestone|gear-upgrades)/;
 
 /** Что изменилось в плане после обновления профиля: выполненные шаги и новые важные советы. */
 export function adviceFeed(prevRoadmap, roadmap, t = Date.now()) {

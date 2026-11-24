@@ -60,12 +60,14 @@ function run(ctx) {
       if (s.cost) { delete s.cost; s.why = s.why.replace(/ (Цена сейчас|Выйдет) ~[^.]*\./g, ''); }
     }
   }
-  // Поправка на доступность: дорогие шаги, на которые нет денег, опускаются ниже
+  // Поправка на доступность: шаг, на который надо копить, не может быть «главным сейчас» —
+  // сначала то, что делается уже сегодня (скиллы, слееры, дешёвые покупки). Половина всех денег — тоже заметно ниже.
   for (const s of steps) {
     if (s.cost > 0 && ctx.liquid >= 0) {
+      if (s.cost > ctx.liquid * 0.5 && s.cost <= ctx.liquid) s.priority -= 8;
       if (s.cost > ctx.liquid) {
         s.needsSaving = true;
-        s.priority -= s.cost > ctx.liquid * 3 ? 15 : 7;
+        s.priority -= s.cost > ctx.liquid * 3 ? 40 : 30;
         s.why += ` Сейчас на руках и в банке ${fmtCoins(ctx.liquid)}${(ctx.m?.coopMembers || 1) > 1 ? ' (банк общий на кооп-острове)' : ''} — нужно накопить.`;
       }
     }

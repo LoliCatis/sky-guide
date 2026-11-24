@@ -1,7 +1,8 @@
 // Страница «Запасы»: мешки (Sacks) с ценами и эссенции с перками Essence Shop.
 // Данные — /api/sacks и /api/essence (выбранный игрок). Гайд по эссенциям — #/guides/essence.
 import { useMemo, useState } from 'react';
-import { Card, Stat, Tabs, Empty, Progress } from '../components/ui.jsx';
+import { Card, Stat, Empty, Progress } from '../components/ui.jsx';
+import { RefsProvider, Rich } from '../guides/Rich.jsx';
 import { ItemIcon } from '../components/ItemIcon.jsx';
 import { useApi, coins, num, plural, useHashTab } from '../api.js';
 import { useApp } from '../App.jsx';
@@ -34,20 +35,38 @@ const GROUP_SORTS = [['value', 'по стоимости'], ['name', 'по наз
 
 export default function Stash({ state, sub }) {
   const [tab, setTab] = useHashTab('stash', sub, ['sacks', 'essence'], 'sacks');
+  // Обе части грузим сразу: крупные плитки сверху показывают итог каждой, и эссенции видно, даже пока открыты мешки
+  // (раньше была мелкая вкладка, и игроки её не замечали)
+  const upd = state?.updatedAt || 0, bz = state?.pricesAt?.bazaar;
+  const sacks = useApi('/sacks', [upd, bz], { keep: true });
+  const ess = useApi('/essence', [upd, bz], { keep: true });
+  const sd = sacks.data?.status === 'ok' ? sacks.data : null, ed = ess.data?.status === 'ok' ? ess.data : null;
+  const buyable = ed ? ed.types.reduce((s, t) => s + t.buyable, 0) : 0;
+  const essCount = ed ? ed.types.filter(t => t.amount > 0).length : 0;
+  const tiles = [
+    { id: 'sacks', icon: 'LARGE_ENCHANTED_MINING_SACK', title: 'Мешки', value: sd ? coins(sd.total) : '…',
+      sub: sd ? (sd.kinds ? `${num(sd.kinds)} ${plural(sd.kinds, 'позиция', 'позиции', 'позиций')} · что продать, каких мешков нет` : 'мешки пусты') : 'считаю…' },
+    { id: 'essence', icon: 'ESSENCE_WITHER', title: 'Эссенции и перки', value: ed ? coins(ed.total) : '…',
+      sub: ed ? `${essCount} ${plural(essCount, 'вид', 'вида', 'видов')} · ${buyable ? `можно купить ${num(buyable)} ${plural(buyable, 'уровень', 'уровня', 'уровней')} перков` : 'перки, звёзды, продажа'}` : 'считаю…' },
+  ];
   return (
     <div className="grid stash">
-      <div className="span-12 stash-tabs">
-        <Tabs tabs={[{ id: 'sacks', label: 'Мешки' }, { id: 'essence', label: 'Эссенции и перки' }]} value={tab} onChange={setTab} />
+      <div className="span-12 stash-switch" role="tablist">
+        {tiles.map(t => (
+          <button key={t.id} role="tab" aria-selected={tab === t.id} className={`stash-switch-btn ${tab === t.id ? 'active' : ''}`} onClick={() => setTab(t.id)}>
+            <ItemIcon id={t.icon} size={36} />
+            <span><b>{t.title}</b><span className="stash-switch-val">{t.value}</span><span className="tiny muted">{t.sub}</span></span>
+          </button>
+        ))}
       </div>
-      {tab === 'sacks' ? <Sacks state={state} /> : <Essence state={state} />}
+      {tab === 'sacks' ? <Sacks res={sacks} /> : <Essence res={ess} />}
     </div>
   );
 }
 
-function Sacks({ state }) {
+function Sacks({ res }) {
   const { openItem } = useApp();
-  const upd = state?.updatedAt || 0;
-  const { data: d, error } = useApi('/sacks', [upd, state?.pricesAt?.bazaar], { keep: true });
+  const { data: d, error } = res;
   const [group, setGroup] = useState('all');
   const [q, setQ] = useState('');
   const [all, setAll] = useState(false);
@@ -155,10 +174,9 @@ function Sacks({ state }) {
   );
 }
 
-function Essence({ state }) {
+function Essence({ res }) {
   const { openItem } = useApp();
-  const upd = state?.updatedAt || 0;
-  const { data: d, error } = useApi('/essence', [upd, state?.pricesAt?.bazaar], { keep: true });
+  const { data: d, error } = res;
   const [open, setOpen] = useState(null);
   if (error && !d) return <Empty>Эссенции не загрузились: {error}</Empty>;
   if (!d) return <div className="span-12 muted small"><div className="spinner" />Считаю эссенции…</div>;
@@ -166,7 +184,7 @@ function Essence({ state }) {
   const perksDone = d.types.reduce((s, t) => s + t.perkDone, 0), perksAll = d.types.reduce((s, t) => s + t.perks.length, 0);
   const buyable = d.types.reduce((s, t) => s + t.buyable, 0);
   return (
-    <>
+    <RefsProvider refs={d.refs}>
       <div className="span-12 stats-row">
         <Stat label="Эссенции стоят" value={coins(d.total)} sub="по мгновенной продаже на базаре" accent="#22d3ee" icon={<ItemIcon id="ESSENCE_WITHER" size={28} />} />
         <Stat label="Перки прокачаны" value={`${perksDone} / ${perksAll}`} sub="до максимального уровня" accent="#c084fc" icon={<ItemIcon id="ESSENCE_UNDEAD" size={28} />} />
@@ -182,8 +200,15 @@ function Essence({ state }) {
             title={<span className="essence-title"><ItemIcon id={t.id} size={28} onClick={() => openItem(t.id)} />{t.ru} Essence{t.area && <span className="tiny muted"> · {t.area}</span>}</span>}
             right={<span className="essence-amount"><b>{num(t.amount)}</b>{t.value > 0 && <span className="tiny muted">{coins(t.value)}</span>}</span>}>
             <div className="essence-info small">
-              <p>{t.info.what}</p>
-              <b>Где добыть</b><ul>{t.info.get.map(x => <li key={x}>{x}</li>)}</ul>
+              <p><Rich text={t.info.what} /></p>
+              <b>Где добыть</b><ul>{t.info.get.map(x => <li key={x}><Rich text={x} /></li>)}</ul>
+            </div>
+            <div className={`essence-sell small ${t.price > 0 ? '' : 'no'}`}>
+              <b>Продать:</b>{' '}
+              {t.price > 0
+                ? <>можно, на базаре ~{coins(t.price)} за штуку{t.amount > 0 && <> — весь запас <span className="gold">{coins(t.value)}</span></>}.</>
+                : <>на базаре сейчас нет цены — эту эссенцию только тратят.</>}
+              {t.sellNote && <div className="tiny muted"><Rich text={t.sellNote} /></div>}
             </div>
             {t.perks.length > 0 ? (
               <>
@@ -215,7 +240,7 @@ function Essence({ state }) {
             <button className="btn ghost small" onClick={() => setOpen(isOpen ? null : t.type)}>{isOpen ? 'Скрыть' : 'На что тратить'}</button>
             {isOpen && (
               <div className="essence-info small">
-                <ul>{t.info.use.map(x => <li key={x}>{x}</li>)}</ul>
+                <ul>{t.info.use.map(x => <li key={x}><Rich text={x} /></li>)}</ul>
                 {t.itemsUsing > 0 && <p className="muted">Звёзды за эту эссенцию есть у {t.itemsUsing} {plural(t.itemsUsing, 'предмета', 'предметов', 'предметов')}.</p>}
               </div>
             )}
@@ -223,7 +248,7 @@ function Essence({ state }) {
         );
       })}
       {!d.perksKnown && <p className="span-12 tiny muted">Hypixel не прислал купленные перки этого профиля: уровни показаны нулевыми.</p>}
-    </>
+    </RefsProvider>
   );
 }
 
@@ -291,7 +316,7 @@ function ShopBox({ t }) {
   const sp = t.info.shopPlace;
   return (
     <div className="essence-shop small">
-      <b>Где покупать перки:</b> {t.info.shop || 'место магазина сайт пока не сверил — посмотри в игре.'}
+      <b>Где покупать перки:</b> {t.info.shop ? <Rich text={t.info.shop} /> : 'место магазина сайт пока не сверил — посмотри в игре.'}
       {sp && (
         <div className="tiny essence-route">
           NPC <b>{sp.npc}</b> · {sp.island}{sp.coords && <> · координаты {sp.coords.join(' ')}</>}

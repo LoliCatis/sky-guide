@@ -196,13 +196,17 @@ function ProfileProblem({ state, view, reload }) {
 function Account() {
   if (me.name) return (
     <div className="acct">
-      <img src={`/api/head/${encodeURIComponent(me.name)}?size=48`} alt="" width={24} height={24} />
-      <span className="acct-name" title={me.admin ? 'Владелец сайта' : 'Вход под своим ником'}>{me.name}</span>
-      <a href="/account" className="link small" title={me.admin ? 'Пароль и аккаунты друзей' : 'Сменить пароль'}>{me.admin ? 'аккаунты' : 'пароль'}</a>
+      {/* Аватар, ник и «аккаунты» — одна большая ссылка; «выйти» — отдельно, чтобы не выйти случайно */}
+      <a href="/account" className="acct-main" title={me.admin ? 'Пароль и аккаунты друзей' : 'Сменить пароль'}>
+        <img src={`/api/head/${encodeURIComponent(me.name)}?size=48`} alt="" width={24} height={24} />
+        <span className="acct-name">{me.name}</span>
+        <span className="link small">{me.admin ? 'аккаунты' : 'пароль'}</span>
+      </a>
       {!me.local && <form method="post" action="/logout" className="inline-form"><button type="submit" className="link small linklike" title="Выйти с сайта">выйти</button></form>}
     </div>
   );
-  if (me.guest) return <div className="acct"><a href="/login" className="link small" title="Вход по нику и паролю сайта: советчик и личные настройки">Войти</a></div>;
+  // Вся плашка — ссылка: раньше нажимался только текст «Войти», а рамка вокруг выглядела как кнопка
+  if (me.guest) return <a href="/login" className="acct acct-login" title="Вход по нику и паролю сайта: советчик и личные настройки">Войти</a>;
   return null;
 }
 

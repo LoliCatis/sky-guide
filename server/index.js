@@ -470,7 +470,8 @@ mountCalendarRoutes(app, { // мэр, выборы и календарь соб�
 });
 mountMuseumRoutes(app, { getView: req => req.sbView(), deps: () => ({ constants: neu.constants, price: priceOf, name: id => itemName(id) }) });
 // Мешки и эссенции выбранного игрока: /api/sacks, /api/essence
-mountStashRoutes(app, { getView: req => req.sbView(), deps: () => ({ constants: neu.constants, price: priceOf, name: id => itemName(id), bazaar: id => prices.bazaar.get(id) || null, npc: id => npcPrices.get(id) || 0, owned: collectOwned, items: neu.items, whereToGet: id => getItemRu(id)?.whereToGet || [] }) });
+mountStashRoutes(app, { getView: req => req.sbView(), deps: () => ({ constants: neu.constants, price: priceOf, name: id => itemName(id), bazaar: id => prices.bazaar.get(id) || null, npc: id => npcPrices.get(id) || 0, owned: collectOwned, items: neu.items, whereToGet: id => getItemRu(id)?.whereToGet || [],
+  textRefs: text => enrichGuide({ status: 'ok', sections: [{ kind: 'text', text }] }, { items: neu.items, constants: neu.constants, price: priceOf }).refs }) });
 // Коллекции (тиры, что откроет следующий) и миньоны (слоты, что крафтить, доходность): /api/collections, /api/minions
 mountCollectionRoutes(app, { getView: req => req.sbView(), deps: () => ({ items: neu.items }) });
 mountMinionRoutes(app, {

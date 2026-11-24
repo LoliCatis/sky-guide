@@ -246,7 +246,14 @@ export function analyzeEssence(member, o = {}) {
     }
     stars.sort((a, b) => Number(b.affordable) - Number(a.affordable) || a.need - b.need);
     const perkLeft = perks.reduce((s, p) => s + p.left, 0);
+    // Продавать или тратить: короткий совет к строке «Продать» на карточке
+    const sellNote = !amount ? ''
+      : buyable ? 'Сначала потрать на перки: уровни можно купить уже сейчас, а перк действует навсегда.'
+        : stars.some(x => x.affordable) ? 'Хватает на следующую звезду на твоём предмете — выгоднее вложить туда.'
+          : price > 0 && !perkLeft && !stars.length ? 'Перки куплены, звёзды ставить не на что — запас можно продавать.'
+            : price > 0 ? 'Если копишь на перк или звезду — держи, лишнее можно продать.' : '';
     types.push({
+      sellNote,
       type, id: `ESSENCE_${type}`, ru: info.ru, color: info.color || null, area: info.area || null, amount, price, value: amount * price,
       perks, perkLeft, perkDone: perks.filter(p => p.level >= p.max).length, buyable,
       itemsUsing: Object.values(costs).filter(c => String(c.type).toUpperCase() === type).length,
@@ -273,7 +280,11 @@ export function mountStashRoutes(app, { getView, deps }) {
     const v = await view(req, res); if (!v) return;
     try {
       const d = deps();
-      res.json({ status: 'ok', ...analyzeEssence(v.member, { ...d, owned: d.owned?.(v.member) }), player: v.player?.name || null, self: !!v.self });
+      const out = analyzeEssence(v.member, { ...d, owned: d.owned?.(v.member) });
+      // «Подсказки по тексту»: словарь терминов для описаний эссенций и советов на карточках
+      let refs = null;
+      try { refs = d.textRefs?.(out.types.flatMap(t => [t.info.what, ...t.info.get, ...t.info.use, t.info.shop || '', t.sellNote]).join('\n')) || null; } catch { refs = null; }
+      res.json({ status: 'ok', ...out, refs, player: v.player?.name || null, self: !!v.self });
     } catch (e) { res.status(500).json({ status: 'error', error: e.message }); }
   });
 }

@@ -113,6 +113,9 @@ main { padding: 18px 26px 40px; min-width: 0; }
 /* Шаги */
 .next-steps { display: flex; flex-direction: column; gap: 8px; }
 .next-step { display: flex; gap: 14px; align-items: center; padding: 12px; border-radius: var(--r-lg); background: rgba(255,255,255,.03); border: 1px solid transparent; transition: all .2s; animation: fadeUp .4s ease both; }
+/* Текст забирает всю ширину: иконка и галочка у всех карточек стоят справа в одну линию, а не липнут к короткому тексту */
+.next-step .step-body { flex: 1 1 auto; min-width: 0; }
+.next-step > .item-icon, .next-step > img { flex: none; }
 .next-step:hover { border-color: rgba(124,92,255,.4); background: rgba(124,92,255,.08); transform: translateX(4px); }
 .step-num { width: 30px; height: 30px; border-radius: var(--r-sm); display: grid; place-items: center; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); flex-shrink: 0; }
 .step-cat { font-size: 11px; color: #a99bff; text-transform: uppercase; letter-spacing: .5px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
@@ -669,8 +672,14 @@ button.ps-row:hover, .ps-row-main:hover, .ps-row:has(.ps-row-main:hover) { backg
 
 /* ---------- Аккаунт (низ меню) и низ переключателя игрока ---------- */
 .acct { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; padding: 8px; margin-bottom: 8px; border-radius: var(--r-md); background: rgba(255,255,255,.04); border: 1px solid var(--card-b); }
+.acct-main { flex: 1 1 0; min-width: 0; display: flex; align-items: center; gap: 8px; margin: -4px; padding: 4px; border-radius: var(--r-sm); color: inherit; text-decoration: none; cursor: pointer; transition: background .15s; }
+.acct-main:hover { background: var(--surface-hover); }
+.acct-main:hover .link { text-decoration: underline; }
+.acct-login { color: #a99bff; font-size: 13px; font-weight: 600; text-decoration: none; cursor: pointer; transition: background .15s, border-color .15s; }
+.acct-login:hover { background: var(--surface-hover); border-color: rgba(124,92,255,.45); color: #c4b8ff; }
+.acct-login::after { content: '→'; margin-left: auto; opacity: .6; }
 .acct img { border-radius: var(--r-xs); image-rendering: pixelated; flex: none; }
-.acct-name { flex: 1 1 120px; min-width: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.acct-name { flex: 1 1 auto; min-width: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ps-foot { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--card-b); font-size: 12px; }
 .ps-foot a { color: #a99bff; } .ps-foot a:hover { text-decoration: underline; }
 
@@ -1109,7 +1118,16 @@ button.coll-unlock { cursor: pointer; } button.coll-unlock:hover { border-color:
 @container (max-width: 600px) { .tree-main { grid-template-columns: 1fr; } .tree-grid { margin: 0 auto; } }
 @media (max-width: 560px) { .tree-pc { grid-template-columns: 1fr; } }
 /* ---------- Запасы: мешки и эссенции ---------- */
-.stash-tabs { display: flex; }
+.stash-switch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-2); }
+.stash-switch-btn { display: flex; gap: var(--sp-3, 12px); align-items: center; padding: 10px 14px; border-radius: var(--r-lg); background: rgba(255,255,255,.035); border: 1px solid var(--card-b); color: inherit; font: inherit; text-align: left; cursor: pointer; transition: background .15s, border-color .15s; min-width: 0; }
+.stash-switch-btn:hover { background: var(--surface-hover); }
+.stash-switch-btn.active { background: rgba(124,92,255,.16); border-color: rgba(124,92,255,.55); }
+.stash-switch-btn > span { display: flex; flex-direction: column; min-width: 0; }
+.stash-switch-btn b { font-size: var(--fs-lg, 16px); font-weight: 700; }
+.stash-switch-val { color: var(--gold); font-weight: 600; font-variant-numeric: tabular-nums; }
+@media (max-width: 520px) { .stash-switch-btn { padding: 8px 10px; gap: 8px; } .stash-switch-btn img { width: 28px; height: 28px; } }
+.essence-sell { margin: var(--sp-2) 0; padding: 6px var(--sp-2); border-radius: var(--r-sm); background: rgba(74,222,128,.06); border-left: 2px solid var(--green); line-height: 1.45; }
+.essence-sell.no { background: rgba(255,255,255,.03); border-left-color: var(--muted); }
 .stash-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--sp-2); margin-top: var(--sp-2); }
 .stash-tile, .stash-group { display: flex; gap: var(--sp-2); align-items: center; padding: 6px var(--sp-2); border-radius: var(--r-md); background: rgba(255,255,255,.03); border: 1px solid var(--card-b); color: inherit; font: inherit; text-align: left; cursor: pointer; transition: background .15s, border-color .15s; }
 .stash-tile { border-color: rgba(245,197,66,.3); }

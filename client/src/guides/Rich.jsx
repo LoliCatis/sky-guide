@@ -1,13 +1,18 @@
 // Текст гайда со ссылками: предметы, сеты, питомцы, NPC, мобы, места и механики подчёркнуты пунктиром.
 // Наведение — короткая подсказка, клик по предмету — его карточка (как в вики), клик по остальному — закреплённая
 // подсказка с объяснением, «как это делать» и связанными предметами. Словарь приходит с сервера: guide.refs (server/guides/refs.js).
-import { createContext, useContext, useMemo, useState, useCallback, useEffect, useRef } from 'react';
+// Плюс общий словарь всего сайта (globalRefs.js): любой игровой термин в <Rich text=…/> получает подсказку сам,
+// даже если страница не прислала refs. Корневой <RefsProvider> стоит в App.jsx, так что Rich работает на любой странице.
+import { createContext, useContext, useMemo, useState, useCallback, useEffect, useRef, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { ItemIcon } from '../components/ItemIcon.jsx';
 import { RARITY_COLOR } from '../api.js';
 import { useApp } from '../App.jsx';
+import { ensureLexicon, globalData, splitGlobal, subscribe, getVersion } from './globalRefs.js';
 
-const KIND_RU = { mech: 'Механика', stat: 'Характеристика', place: 'Место', event: 'Событие', cur: 'Валюта', npc: 'NPC', mob: 'Существо', skill: 'Навык', item: 'Предмет' };
+const KIND_RU = { mech: 'Механика', stat: 'Характеристика', place: 'Место', event: 'Событие', cur: 'Валюта', npc: 'NPC', mob: 'Существо', skill: 'Навык', item: 'Предмет',
+  floor: 'Этаж данжа', rarity: 'Редкость', reforge: 'Reforge' };
+const useGlobalVersion = () => useSyncExternalStore(subscribe, getVersion, getVersion);
 const RefsCtx = createContext(null);
 
 const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/['’]/g, '[\'’]');
@@ -27,7 +32,15 @@ export function RefsProvider({ refs, children }) {
     return m;
   }, [refs]);
   const lookup = useCallback(p => norm.get(p.replace(/’/g, '\'')), [norm]);
-  const data = refs?.data || {};
+  const gv = useGlobalVersion();
+  useEffect(() => {
+    // словарь не нужен для первой отрисовки: грузим, когда браузер освободится
+    const ric = window.requestIdleCallback || (f => setTimeout(f, 300));
+    ric(() => ensureLexicon(), { timeout: 1500 });
+  }, []);
+  // Данные подсказок: сначала свои (refs страницы), потом общего словаря
+  const own = refs?.data;
+  const getData = useCallback(ref => own?.[ref] || globalData(ref), [own, gv]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const show = useCallback((ref, e, pinned = false) => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -37,10 +50,10 @@ export function RefsProvider({ refs, children }) {
   const close = useCallback(() => setTip(null), []);
   const activate = useCallback((ref, e) => {
     e.preventDefault(); e.stopPropagation();
-    const d = data[ref];
+    const d = getData(ref);
     if (d?.kind === 'item') { setTip(null); openItem(d.id); }
     else show(ref, e, true);
-  }, [data, openItem, show]);
+  }, [getData, openItem, show]);
 
   // Закреплённая подсказка закрывается по Esc, клику мимо и прокрутке
   useEffect(() => {
@@ -52,12 +65,13 @@ export function RefsProvider({ refs, children }) {
     return () => { removeEventListener('keydown', key); removeEventListener('pointerdown', down, true); };
   }, [tip?.pinned, close]);
 
-  const value = useMemo(() => ({ re, lookup, data, show, hide, activate }), [re, lookup, data, show, hide, activate]);
+  const value = useMemo(() => ({ re, lookup, getData, show, hide, activate }), [re, lookup, getData, show, hide, activate]);
+  const tipData = tip ? getData(tip.ref) : null;
   return (
     <RefsCtx.Provider value={value}>
       {children}
       {/* В body: у карточек гайда есть transform-анимации, внутри них position: fixed считается от карточки */}
-      {tip && data[tip.ref] && createPortal(<RefTip d={data[tip.ref]} tip={tip} onClose={close} openItem={id => { close(); openItem(id); }} />, document.body)}
+      {tip && tipData && createPortal(<RefTip d={tipData} tip={tip} onClose={close} openItem={id => { close(); openItem(id); }} />, document.body)}
     </RefsCtx.Provider>
   );
 }
@@ -120,7 +134,8 @@ function RefTip({ d, tip, onClose, openItem }) {
 /** Одна ссылка. refKey — 'i:ID' | 't:key' | 'n:ID' | 'm:ID' | 'c:Имя'. */
 export function RefLink({ refKey, children }) {
   const ctx = useContext(RefsCtx);
-  const d = ctx?.data?.[refKey];
+  useGlobalVersion();
+  const d = ctx?.getData(refKey);
   if (!d) return <>{children}</>;
   const kind = d.kind === 'item' ? 'item' : 'term';
   return (
@@ -153,11 +168,14 @@ export function splitRefs(text, ctx) {
   return out;
 }
 
-/** Текст со ссылками. item — ссылка по умолчанию: если в тексте нет других ссылок, весь текст ведёт на этот предмет. */
-export function Rich({ text, item }) {
+/** Текст со ссылками. item — ссылка по умолчанию: если в тексте нет других ссылок, весь текст ведёт на этот предмет.
+ *  auto={false} — только refs страницы, без общего словаря. */
+export function Rich({ text, item, auto = true }) {
   const ctx = useContext(RefsCtx);
+  useGlobalVersion();
   if (text == null || text === '') return null;
-  const parts = splitRefs(text, ctx);
+  let parts = splitRefs(text, ctx);
+  if (auto) parts = parts.flatMap(p => (typeof p === 'string' ? splitGlobal(p) : [p]));
   const linked = parts.some(p => typeof p === 'object');
   if (item && !linked) return <RefLink refKey={`i:${item}`}>{String(text)}</RefLink>;
   return <>{parts.map((p, i) => typeof p === 'string' ? <span key={i}>{p}</span> : <RefLink key={i} refKey={p.ref}>{p.text}</RefLink>)}</>;

@@ -76,3 +76,6 @@ export function enTerms(text) {
     return hit ? glyph + hit[1] : all;
   });
 }
+
+/** Все английские названия статов (для подсказок по тексту: server/guides/terms.js). */
+export const STAT_NAMES = [...new Set([...Object.values(STAT_LINE_RU), ...STAT_RU.map(([, en]) => en)])];

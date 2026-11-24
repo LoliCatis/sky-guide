@@ -39,7 +39,7 @@ import { itemValue } from './parse/gear.js';
 import { mountGuideRoutes, buildGuides, GROUPS as GUIDE_GROUPS } from './guides/index.js';
 import { createSeo, jsonldScript, originOf, pingIndexNow, INDEXNOW_KEY } from './seo/index.js';
 import { NEWS } from './news/entries.js';
-import { enrichGuide } from './guides/refs.js';
+import { enrichGuide, lexiconPhrases, refsData } from './guides/refs.js';
 import { GUI_ITEMS } from './lib/gui-items.js';
 import { mountRiftRoutes, setRiftOwner } from './rift/marks.js';
 import { mountCollectRoutes } from './collectibles/marks.js';
@@ -223,6 +223,17 @@ app.use('/api', (req, res, next) => {
     return { owner: false, self, want, ...v, ...(hideTracked ? { feed: [], history: [], historyKey: null } : {}) };
   };
   next();
+});
+
+// Подсказки по тексту для всего сайта: общий словарь терминов и данные подсказок (server/guides/refs.js)
+app.get('/api/refs/lexicon', (req, res) => {
+  res.set('Cache-Control', 'public, max-age=3600');
+  res.json({ v: neu.loadedAt || 0, phrases: lexiconPhrases(neu.items, neu.constants) });
+});
+app.get('/api/refs/data', (req, res) => {
+  const list = String(req.query.r || '').split('|').filter(Boolean).slice(0, 300);
+  res.set('Cache-Control', 'public, max-age=600');
+  res.json(refsData(list, { items: neu.items, constants: neu.constants, price: priceOf }));
 });
 
 // Живой советчик: сторож изменений + Claude (ключ ANTHROPIC_API_KEY в .env). Маршруты /api/live/* — за паролем сайта.

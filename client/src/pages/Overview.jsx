@@ -4,6 +4,7 @@ import { ItemIcon } from '../components/ItemIcon.jsx';
 import { coins, itemValue, num, ago, saveLocal, me, prettyId } from '../api.js';
 import { useHiddenSteps } from '../hiddenSteps.js';
 import { useApp } from '../App.jsx';
+import { Rich } from '../guides/Rich.jsx';
 import { pricesLoaded } from './Gear.jsx';
 import PlayerModel from '../components/PlayerModel.jsx';
 import LiveAdvisor from '../components/LiveAdvisor.jsx';
@@ -77,7 +78,7 @@ export default function Overview({ state }) {
               <div className="step-body">
                 <div className="step-cat">{s.cat} · {s.effort}</div>
                 <div className="step-title">{s.title}</div>
-                <div className="muted small">{s.why}</div>
+                <div className="muted small"><Rich text={s.why} /></div>
               </div>
               {s.items?.[0] && <ItemIcon id={s.items[0]} size={44} />}
               {hs.mode !== 'none' && <button className="step-done" title={hs.mode === 'local' ? 'Скрыть шаг (только в этом браузере)' : 'Скрыть шаг'} aria-label="Скрыть шаг" onClick={e => hideStep(e, s)}>✕</button>}

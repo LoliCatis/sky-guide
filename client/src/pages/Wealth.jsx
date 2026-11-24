@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Stat, Empty, Badge } from '../components/ui.jsx';
 import { ItemIcon } from '../components/ItemIcon.jsx';
 import { coins, num, useApi, ago, saveLocal, useProfileStore } from '../api.js';
+import { Rich } from '../guides/Rich.jsx';
 
 // Сколько осталось до момента: «12 ч 5 мин»
 function left(ts, now) {
@@ -101,7 +102,7 @@ export function BitsTab({ openItem }) {
           <h4 className="sub-h">Что взять себе</h4>
           <div className="bits-picks">{r.forYou.map(i => (
             <div key={i.id} className="item-line" onClick={() => openItem(i.id)}>
-              <ItemIcon id={i.id} size={30} /><div className="grow">{i.name} <span className="muted tiny">· {num(i.bits)} Bits</span><div className="muted tiny">{i.why}</div></div>
+              <ItemIcon id={i.id} size={30} /><div className="grow">{i.name} <span className="muted tiny">· {num(i.bits)} Bits</span><div className="muted tiny"><Rich text={i.why} /></div></div>
               {i.affordable != null && <Badge>{i.affordable > 0 ? 'хватает' : `не хватает ${num(i.bits - r.bits)}`}</Badge>}
             </div>
           ))}</div>
@@ -163,7 +164,7 @@ export function MaxwellCard() {
         {r.tuning.dist.length ? r.tuning.dist.map(d => <span key={d.key} className="chip">{d.name}: {d.points} очк.{d.gives != null ? ` → +${num(d.gives)}` : ''}</span>) : <span className="muted small">Очки не распределены.</span>}
         {r.tuning.free > 0 && <span className="chip warn">свободно: {r.tuning.free}</span>}
       </div>
-      <div className="muted small" style={{ marginTop: 6 }}>{r.tuning.advice} Одно очко даёт: {r.tuning.perPoint.map(p => `${p.v.toString().replace('.', ',')} ${p.name}`).join(', ')}. Очки появляются за каждые 10 Magical Power.</div>
+      <div className="muted small" style={{ marginTop: 6 }}><Rich text={r.tuning.advice} /> Одно очко даёт: {r.tuning.perPoint.map(p => `${p.v.toString().replace('.', ',')} ${p.name}`).join(', ')}. Очки появляются за каждые 10 Magical Power.</div>
     </div>
   );
 }

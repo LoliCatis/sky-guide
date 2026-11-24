@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ItemIcon } from './ItemIcon.jsx';
 import { Progress } from './ui.jsx';
 import { coins, RARITY_COLOR } from '../api.js';
+import { Rich } from '../guides/Rich.jsx';
 
 const KIND_RU = { weapon: 'оружие', armor: 'броня', equipment: 'экипировка', accessory: 'аксессуар', tool: 'инструмент', pet: 'питомец', other: 'предмет' };
 
@@ -10,13 +11,13 @@ function Step({ s, open }) {
     <li className={`upg-step${s.locked ? ' locked' : ''}`}>
       <span className="upg-num">{s.order}</span>
       <div className="grow">
-        <div className="upg-title">{s.title}</div>
+        <div className="upg-title"><Rich text={s.title} /></div>
         <div className="muted tiny">
           сейчас: {s.current}
           {s.locked ? ` · ${s.locked}` : ''}
-          {s.why ? ` · ${s.why}` : ''}
+          {s.why ? <> · <Rich text={s.why} /></> : ''}
         </div>
-        {s.note && <div className="muted tiny">{s.note}</div>}
+        {s.note && <div className="muted tiny"><Rich text={s.note} /></div>}
       </div>
       <div className="upg-parts">
         {(s.parts || []).filter(p => p.id).slice(0, 3).map(p => (

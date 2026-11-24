@@ -4,6 +4,7 @@ import { coins, useHashTab } from '../api.js';
 import { useHiddenSteps } from '../hiddenSteps.js';
 import { ItemIcon } from '../components/ItemIcon.jsx';
 import { useApp } from '../App.jsx';
+import { Rich } from '../guides/Rich.jsx';
 
 const STATUS = { done: 'пройдено', current: 'сейчас', available: 'доступно', locked: 'закрыто' };
 
@@ -15,7 +16,7 @@ function ProgressMap({ map, goStep }) {
       <div className="pmap-legend"><span className="lg done">пройдено</span><span className="lg current">сейчас</span><span className="lg available">можно взять</span><span className="lg locked">закрыто</span></div>
       {map.branches.map((b, bi) => (
         <div key={b.id} className="branch" style={{ animationDelay: `${bi * 50}ms` }}>
-          <div className="branch-head"><h4>{b.title}</h4><span className="muted small">{b.summary}</span><span className="branch-pct">{Math.round(b.progress * 100)}%</span></div>
+          <div className="branch-head"><h4>{b.title}</h4><span className="muted small"><Rich text={b.summary} /></span><span className="branch-pct">{Math.round(b.progress * 100)}%</span></div>
           <div className="nodes">
             {b.nodes.map((n, i) => (
               <div key={n.id} className={`node ${n.status}`} onClick={() => n.stepId && goStep(n.stepId)} title={n.detail || ''}>
@@ -83,7 +84,7 @@ export default function Roadmap({ state, sub }) {
   return (
     <div className="grid">
       <Card className="span-12" title="Персональный план прогрессии" right={<Tabs value={view} onChange={setView} tabs={[{ id: 'steps', label: 'Шаги' }, { id: 'map', label: 'Карта прогрессии' }, { id: 'plan', label: 'План покупок' }]} />}>
-        {a?.summary?.headline && <div className="plan-summary">🎯 {a.summary.headline}{a.summary.quickWins ? ` · быстрых побед: ${a.summary.quickWins}` : ''}</div>}
+        {a?.summary?.headline && <div className="plan-summary">🎯 <Rich text={a.summary.headline} />{a.summary.quickWins ? ` · быстрых побед: ${a.summary.quickWins}` : ''}</div>}
         {view === 'map' && <ProgressMap map={a?.map} goStep={goStep} />}
         {view === 'plan' && <PurchasePlan plan={a?.plan} onStep={goStep} />}
         {view === 'steps' && <div className="chips">
@@ -108,17 +109,17 @@ export default function Roadmap({ state, sub }) {
               <div className="road-head">
                 <div>
                   <div className="step-cat">{s.cat} <Badge>{s.effort}</Badge> <span className="prio" title="Приоритет">{'★'.repeat(Math.max(1, Math.round(s.priority / 20)))}</span></div>
-                  <h4>{s.title}</h4>
+                  <h4><Rich text={s.title} /></h4>
                 </div>
                 {mode !== 'none' && <button className="chip tiny" title={mode === 'local' ? 'Скрыть шаг (только в этом браузере)' : 'Скрыть шаг'} onClick={() => hide(s.id)}>скрыть</button>}
               </div>
-              <p className="why">{s.why}</p>
+              <p className="why"><Rich text={s.why} /></p>
               {(() => {
                 // «→ итог» не повторяем, если он слово в слово совпадает с началом объяснения
                 const payoff = s.payoff && !String(s.why || '').toLowerCase().startsWith(String(s.payoff).toLowerCase().replace(/\.$/, '')) ? s.payoff : null;
-                return (s.cost > 0 || payoff) && <div className="cost-line">{s.cost > 0 && <Badge color={s.needsSaving ? '#f87171' : '#f5c542'}>~{coins(s.cost)}{s.needsSaving ? ' · нужно накопить' : ''}</Badge>}{payoff && <span className="muted small">→ {payoff}</span>}</div>;
+                return (s.cost > 0 || payoff) && <div className="cost-line">{s.cost > 0 && <Badge color={s.needsSaving ? '#f87171' : '#f5c542'}>~{coins(s.cost)}{s.needsSaving ? ' · нужно накопить' : ''}</Badge>}{payoff && <span className="muted small">→ <Rich text={payoff} /></span>}</div>;
               })()}
-              {s.how?.length > 0 && <ul className="how">{s.how.map((h, j) => <li key={j}>{h}</li>)}</ul>}
+              {s.how?.length > 0 && <ul className="how">{s.how.map((h, j) => <li key={j}><Rich text={h} /></li>)}</ul>}
               {s.items?.length > 0 && (
                 <div className="item-row">{s.items.map(id => <ItemIcon key={id} id={id} size={40} slot onClick={() => openItem(id)} title={s.itemNames?.[id] || id} />)}</div>
               )}

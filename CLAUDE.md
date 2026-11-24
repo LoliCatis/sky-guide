@@ -21,6 +21,8 @@
   классы, Slayers, Mining/HOTM/Powder, острова (Hub, Garden, Crimson Isle), статы (Strength, Crit Damage, Magical Power),
   редкости (Epic, Legendary), названия предметов, игровые меню (Bazaar, Wardrobe, Ender Chest, Accessory Bag). По-русски —
   объясняющий текст: советы, пояснения, подсказки и меню самого сайта. Русские названия предметов остаются только для поиска.
-- Весь новый текст на сайте — через `RefsProvider` + `Rich` (`client/src/guides/Rich.jsx`), словарь — `textRefs` на сервере.
+- Весь новый текст на сайте — через `<Rich text=…/>` (`client/src/guides/Rich.jsx`). Корневой `RefsProvider` стоит в `App.jsx`, общий словарь
+  (`/api/refs/lexicon`) подсвечивает игровые термины сам: предметы и книги чар из NEU, статы, скиллы, мэры, острова, слееры, этажи, редкости,
+  reforges, меню. Свои объяснения: механики — `server/guides/glossary.js`, автотермины — `server/guides/terms.js`. `textRefs` страницы — по желанию.
 - Новая страница: `PAGES` и `LOAD` в `client/src/App.jsx` и её id в `GROUPS` в `client/src/components/BottomNav.jsx`.
 - Ветки: PR в `develop`, затем `develop` → `main` после `npm test` и `npm run e2e`. Сайт обновляется из `main` сам.

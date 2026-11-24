@@ -4,6 +4,7 @@ import { restorePlace } from './keepPlace.js';
 import { useLiveState, ago, api, setView, viewKey, me } from './api.js';
 import PlayerSwitcher, { FriendBanner, ApiOffNote } from './components/PlayerSwitcher.jsx';
 import { TooltipProvider } from './components/Tooltip.jsx';
+import { RefsProvider } from './guides/Rich.jsx';
 import { ItemIcon } from './components/ItemIcon.jsx';
 import GoalStrip from './components/GoalStrip.jsx';
 import LiveToasts from './components/LiveToasts.jsx';
@@ -312,6 +313,7 @@ export default function App() {
   return (
     <AppCtx.Provider value={{ state, openItem, sub, reload }}>
       <TooltipProvider>
+      <RefsProvider refs={null}>{/* подсказки по игровым терминам в любом <Rich> на любой странице (guides/globalRefs.js) */}
         <div className="bg-orbs"><span /><span /><span /><i /><i /><i /><i /><i /><i /><i /><i /></div>
         <div className="layout">
           <aside className="sidebar">
@@ -396,6 +398,7 @@ export default function App() {
         <CookieBanner />
         {!landing && <Suspense fallback={null}><ChatDock /></Suspense>}
         {item && <Suspense fallback={null}><ItemModal id={item} uuid={itemUuid} onClose={closeItem} /></Suspense>}
+      </RefsProvider>
       </TooltipProvider>
     </AppCtx.Provider>
   );

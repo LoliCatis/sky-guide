@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import { ItemIcon } from './ItemIcon.jsx';
 import { coins, useApi } from '../api.js';
+import { Rich } from '../guides/Rich.jsx';
 
 const KIND = {
   market: { ico: '🏦', cls: 'ob-market' }, npc: { ico: '🧑‍🌾', cls: 'ob-npc' }, craft: { ico: '🛠️', cls: 'ob-craft' },
@@ -18,7 +19,7 @@ function Req({ req }) {
   const mark = req.ok === true ? '✔ уже открыто' : req.ok === false ? `✖ пока не открыто${req.missing?.length ? `: не хватает ${req.missing.join(', ')}` : ''}` : '';
   return <>
     {(mark || req.have) && <div className={`ob-req ob-req-${cls}`}>{mark}{mark && req.have ? ' · ' : ''}{req.have}</div>}
-    {req.hint && req.ok !== true && <div className="ob-req-hint">💡 {req.hint}</div>}
+    {req.hint && req.ok !== true && <div className="ob-req-hint">💡 <Rich text={req.hint} /></div>}
   </>;
 }
 
@@ -78,8 +79,8 @@ function Method({ m, open, startOpen }) {
       <ol className="ob-steps">
         {m.steps.map((s, i) => (
           <li key={i} className={s.warn ? 'ob-warn' : ''}>
-            <div>{s.text}</div>
-            {s.note && <div className="muted tiny">{s.note}</div>}
+            <div><Rich text={s.text} /></div>
+            {s.note && <div className="muted tiny"><Rich text={s.note} /></div>}
             <Req req={s.req} />
             {s.items?.length > 0 && !(s.items.length === 1 && s.items[0].via === 'coins') && <ul className="ob-tree">{s.items.map((n, j) => <Node key={j} n={n} open={open} />)}</ul>}
             {s.tree && <ul className="ob-tree">{s.tree.map((n, j) => <Node key={j} n={n} open={open} />)}</ul>}

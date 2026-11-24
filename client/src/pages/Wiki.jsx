@@ -69,7 +69,7 @@ export function ItemView({ id, uuid, onOpen }) {
           {wiki.length > 0 && <div className="small">Вики: {wiki.map((u, i) => <a key={i} href={u} target="_blank" rel="noreferrer" className="link">{u.includes('fandom') ? 'Fandom' : 'hypixelskyblock.minecraft.wiki'}</a>).reduce((a, b) => [a, ' · ', b])}</div>}
         </div>
       </div>
-      {data.ru?.descriptionRu && <p className="desc-ru">{data.ru.descriptionRu}</p>}
+      {data.ru?.descriptionRu && <p className="desc-ru"><Rich text={data.ru.descriptionRu} /></p>}
       <div className="item-view-body">
         <div>
           <h4 className="sub-h">{copy?.loreRu?.length ? 'Твой предмет (как в игре)' : 'Описание (характеристики на русском)'}</h4>

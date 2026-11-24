@@ -4,6 +4,7 @@ import { useState, Fragment } from 'react';
 import { Card, Progress } from '../components/ui.jsx';
 import { ItemIcon } from '../components/ItemIcon.jsx';
 import { useApp } from '../App.jsx';
+import { Rich } from '../guides/Rich.jsx';
 import { num, coins, plural, RARITY_COLOR } from '../api.js';
 
 const SLAYER_RU = { zombie: 'Revenant Horror', spider: 'Tarantula Broodfather', wolf: 'Sven Packmaster', enderman: 'Voidgloom Seraph', blaze: 'Inferno Demonlord', vampire: 'Riftstalker Bloodfiend' };
@@ -76,8 +77,8 @@ function ChocoTips({ advice }) {
     <ol className="ex-tips">
       {tips.map(t => (
         <li key={t.id} className={t.prio >= 85 ? 'hot' : ''}>
-          <b>{t.title}</b>
-          <span>{t.text}</span>
+          <b><Rich text={t.title} /></b>
+          <span><Rich text={t.text} /></span>
         </li>
       ))}
     </ol>

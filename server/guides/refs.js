@@ -12,6 +12,7 @@
 import { indexNeu, islandRu, nearestWarp, costLine, reqRu } from '../analysis/obtain.js';
 import { GLOSSARY } from './glossary.js';
 import { CREATURES } from './fishing-data.js';
+import { buildTerms } from './terms.js';
 
 const strip = s => String(s || '').replace(/§./g, '').trim();
 const normQ = s => s.replace(/[’`]/g, '\'');
@@ -33,19 +34,45 @@ export const STOP = new Set(['Speed', 'Strength', 'Defense', 'Health', 'Intellig
 ]);
 // …но в ячейке, которая сама ссылается на предмет, это слово всё равно станет ссылкой на него (см. клиент).
 
-function entryOf(items) {
+// Чары одним словом, которые в тексте чаще значат другое (с уровнем — «Power V» — подсвечиваются)
+const ENCH_BARE_SKIP = new Set(['Power', 'Luck', 'Fortune', 'Experience', 'Chance', 'Rainbow', 'Execute', 'Harvesting', 'Snipe', 'Piercing', 'Cubism', 'Smelting', 'Touch', 'Strike', 'Combo', 'Chimera', 'Duplex', 'Bank', 'Flash', 'Fatal Tempo', 'Swarm', 'Reflection', 'Legion', 'Habanero Tactics', 'Wisdom', 'Inferno']);
+const ROMAN_RE = /^(.+?) ([IVX]+)$/;
+
+/** Название предмета для подсказки: у книг чар NEU пишет «Enchanted Book», настоящее имя — в строке лора. */
+export function displayOf(it) {
+  const name = strip(it?.name).replace(/^\[Lvl \{LVL\}\]\s*/, '');
+  if (name === 'Enchanted Book' && /;\d+$/.test(it.id)) {
+    const line = (it.lore || []).map(strip).find(l => ROMAN_RE.test(l) && !/^Combinable/.test(l));
+    if (line) return line;
+  }
+  return name;
+}
+
+function entryOf(items, constants) {
   // phrase → { ref, pri }; меньше pri — важнее
   const lex = new Map();
   const set = (phrase, ref, pri) => {
     const p = normQ(phrase.trim());
-    if (!p || p.length < 3) return;
+    if (!p || (p.length < 3 && !/^[FM][1-7]$/.test(p))) return;
     const cur = lex.get(p);
     if (!cur || pri < cur.pri) lex.set(p, { ref, pri });
   };
   const petBest = new Map();
+  const enchBest = new Map(); // «Sharpness» → самая высокая книга
   for (const it of items.values()) {
     const name = strip(it.name);
     if (!name) continue;
+    // Книги чар: «Sharpness V» → книга SHARPNESS;5, просто «Sharpness» → самая высокая книга
+    if (name === 'Enchanted Book' && /^[A-Z0-9_]+;\d+$/.test(it.id)) {
+      const full = displayOf(it);
+      const m = ROMAN_RE.exec(full);
+      if (!m) continue;
+      set(full, `i:${it.id}`, 1);
+      const lvl = Number(it.id.split(';')[1]);
+      const cur = enchBest.get(m[1]);
+      if (!cur || lvl > cur.lvl) enchBest.set(m[1], { id: it.id, lvl });
+      continue;
+    }
     const ent = /^(.*?)\s*\(([^)]+)\)$/.exec(name);
     if (ent && ENTITY[ent[2]]) {
       const kind = ENTITY[ent[2]];
@@ -80,7 +107,13 @@ function entryOf(items) {
     if (armor) set(`${armor[1]} Armor`, `i:${it.id}`, 1.2 + it.id.length / 1000);
   }
   // Питомцы из одного слова (Wolf, Tarantula, Enderman…) в тексте почти всегда значат моба или слеер — их ссылки дают только ячейки
-  for (const [name, p] of petBest) if (!STOP.has(name) && /\s/.test(name)) set(name, `i:${p.id}`, 1.3);
+  for (const [name, p] of petBest) {
+    if (!STOP.has(name) && /\s/.test(name)) set(name, `i:${p.id}`, 1.3);
+    set(`${name} Pet`, `i:${p.id}`, 1.3); // «Wolf Pet», «Ender Dragon Pet»
+  }
+  for (const [name, b] of enchBest) if (!STOP.has(name) && !ENCH_BARE_SKIP.has(name)) set(name, `i:${b.id}`, 1.1);
+  // Автоматические термины из баз игры (terms.js): статы, скиллы, мэры, острова, слееры, этажи, редкости, reforges, меню
+  for (const [key, g] of buildTerms(constants)) for (const n of g.names) set(n, `t:${key}`, 0.5);
   for (const [key, g] of Object.entries(GLOSSARY)) for (const n of g.names) set(n, `t:${key}`, 0);
   // Sea Creatures из гайда рыбалки: у них есть уровень и место, а в NEU — дроп
   for (const c of CREATURES) set(c.name, `c:${c.name}`, 0.9);
@@ -88,9 +121,9 @@ function entryOf(items) {
 }
 
 const lexCache = new WeakMap();
-export function lexicon(items) {
+export function lexicon(items, constants = {}) {
   if (!items) return new Map();
-  if (!lexCache.has(items)) lexCache.set(items, entryOf(items));
+  if (!lexCache.has(items)) lexCache.set(items, entryOf(items, constants || {}));
   return lexCache.get(items);
 }
 
@@ -155,7 +188,7 @@ function shortObtain(id, ctx) {
 
 function itemData(id, ctx) {
   const it = ctx.items.get(id);
-  return { kind: 'item', id, name: strip(it?.name).replace(/^\[Lvl \{LVL\}\]\s*/, '') || id, rarity: it?.rarity || null, hint: shortObtain(id, ctx) };
+  return { kind: 'item', id, name: (it && displayOf(it)) || id, rarity: it?.rarity || null, hint: shortObtain(id, ctx) };
 }
 
 function dropsOf(mob) {
@@ -200,7 +233,7 @@ function creatureData(name, ctx) {
 }
 
 function termData(key, ctx) {
-  const g = GLOSSARY[key];
+  const g = GLOSSARY[key] || buildTerms(ctx.constants || {}).get(key);
   const out = { kind: g.kind, title: g.title || g.names[0], text: g.text };
   if (g.how) out.how = g.how;
   if (g.warp) out.warp = g.warp;
@@ -247,7 +280,7 @@ export function enrichGuide(guide, deps = {}) {
   if (!guide || guide.status === 'error') return guide;
   const items = deps.items || new Map();
   const ctx = { items, constants: deps.constants, price: deps.price, idx: indexNeu(items), scByName: scIndex(items) };
-  const lex = lexicon(items.size ? items : EMPTY_ITEMS);
+  const lex = lexicon(items.size ? items : EMPTY_ITEMS, deps.constants);
 
   // 1) пустые «Откуда» в таблицах
   for (const s of guide.sections || []) {
@@ -313,4 +346,37 @@ function coinsRu(n) {
   if (n >= 1e6) return `${+(n / 1e6).toFixed(2)} млн`.replace('.', ',');
   if (n >= 1e3) return `${+(n / 1e3).toFixed(1)} тыс.`.replace('.', ',');
   return String(n);
+}
+
+// ---------- общий словарь для всего сайта ----------
+// Клиент грузит его один раз (GET /api/refs/lexicon) и сам подсвечивает термины в любом <Rich text=…/>,
+// даже если страница не прислала свои refs. Подсказку для найденного термина он берёт через GET /api/refs/data.
+const phrasesCache = new WeakMap();
+// Русские слова из словаря гайдов, которые вне своего гайда чаще значат обычное («гости» сайта, «существа» вообще)
+const GLOBAL_SKIP = new Set(['гости', 'Гости', 'гостей', 'одолжен', 'одолжено', 'Одолжено', 'особые предметы', 'Особые предметы', 'особых предметов',
+  'существ', 'существа', 'существо', 'Существа', 'секреты', 'секретов', 'Секретов', 'Секреты']);
+/** Все фразы словаря: { phrase: ref }. */
+export function lexiconPhrases(items, constants) {
+  if (!items?.size) items = EMPTY_ITEMS;
+  if (phrasesCache.has(items)) return phrasesCache.get(items);
+  const out = {};
+  for (const [p, e] of lexicon(items, constants)) if (!GLOBAL_SKIP.has(p)) out[p] = e.ref;
+  phrasesCache.set(items, out);
+  return out;
+}
+
+/** Данные подсказок для списка ref ('i:ID', 't:key', 'n:ID', 'm:ID', 'c:Имя'). Неизвестные пропускаются. */
+export function refsData(refs, deps = {}) {
+  const items = deps.items || EMPTY_ITEMS;
+  const ctx = { items, constants: deps.constants, price: deps.price, idx: indexNeu(items), scByName: scIndex(items) };
+  const out = {};
+  for (const ref of refs) {
+    if (typeof ref !== 'string' || !/^[itnmc]:./.test(ref)) continue;
+    if (ref[0] === 'i' && !items.has(ref.slice(2))) continue;
+    if (ref[0] === 't' && !GLOSSARY[ref.slice(2)] && !buildTerms(deps.constants || {}).has(ref.slice(2))) continue;
+    if (ref[0] === 'c' && !CREATURES.some(c => c.name === ref.slice(2))) continue;
+    if ((ref[0] === 'n' || ref[0] === 'm') && !items.has(ref.slice(2))) continue;
+    try { out[ref] = dataFor(ref, ctx); } catch { /* нет данных — термин останется текстом */ }
+  }
+  return out;
 }

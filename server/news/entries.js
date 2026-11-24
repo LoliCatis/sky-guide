@@ -15,6 +15,19 @@
 
 export const NEWS = [
   {
+    id: '2026-11-24-hints',
+    date: '2026-11-24',
+    kind: 'better',
+    title: 'Подсказки на всех игровых словах',
+    items: [
+      'Наведи на любое игровое слово — появится подсказка, нажми — закрепится. Предмет открывает свою карточку.',
+      'Теперь подсказки есть у статов (Strength, Crit Damage, Magical Power), скиллов (Taming, Enchanting), разделов игры (Dungeons, Slayers, Accessory Bag, Wardrobe) и у этажей F1–F7 и M1–M7.',
+      'Ещё у книг с уровнем (Sharpness V, Ultimate Wise V), мэров (Paul, Diana, Cole), боссов слееров (Revenant Horror, Voidgloom Seraph), Reforge (Fabled, Withered) и редкостей (Epic, Legendary).',
+      'Подсказки появились в «Что делать», на «Обзоре», в карточках предметов («Как получить — пошагово»), в Bits и Tuning.',
+      'Новые предметы и книги из обновлений игры получают подсказки сами.',
+    ],
+  },
+  {
     id: '2026-11-24-hide-steps',
     date: '2026-11-24',
     kind: 'better',

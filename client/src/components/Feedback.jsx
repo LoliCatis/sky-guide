@@ -1,3 +1,4 @@
+import { Ico } from './Icons.jsx';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { getView, me } from '../api.js';
@@ -133,7 +134,7 @@ export function FeedbackButton({ className = '' }) {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <button type="button" className={`btn ghost small fb-btn ${className}`} onClick={() => setOpen(true)} title="Нашёл ошибку, кривой перевод или есть идея — напиши">✉ Сообщить об ошибке</button>
+      <button type="button" className={`btn ghost small fb-btn ${className}`} onClick={() => setOpen(true)} title="Нашёл ошибку, кривой перевод или есть идея — напиши"><Ico name="mail" size={15} />Сообщить об ошибке</button>
       {/* Окно — прямо в body: кнопка живёт в сайдбаре, и его слой иначе прятал окно под страницей */}
       {open && createPortal(<FeedbackModal onClose={() => setOpen(false)} />, document.body)}
     </>

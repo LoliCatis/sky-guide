@@ -1,4 +1,5 @@
 import { createContext, lazy, Suspense, useCallback, useContext, useEffect, useState } from 'react';
+import { Ico } from './components/Icons.jsx';
 import { restorePlace } from './keepPlace.js';
 import { useLiveState, ago, api, setView, viewKey, me } from './api.js';
 import PlayerSwitcher, { FriendBanner, ApiOffNote } from './components/PlayerSwitcher.jsx';
@@ -192,21 +193,35 @@ function ProfileProblem({ state, view, reload }) {
   );
 }
 
-// Аккаунт: ник, пароль/аккаунты, выход (у гостя — «Войти»). На ПК — внизу бокового меню, на телефоне — в листе «Ещё»
+// Аккаунт внизу бокового меню (на телефоне — в листе «Ещё»).
+// Карточка: аватар + ник целиком (длинный — мельче шрифтом, а не «L…») + подпись, вся карточка — ссылка на /account.
+// «Выйти» — отдельная кнопка под чертой, чтобы не выйти случайно. Гостю — такая же карточка «Войти».
 function Account() {
-  if (me.name) return (
-    <div className="acct">
-      {/* Аватар, ник и «аккаунты» — одна большая ссылка; «выйти» — отдельно, чтобы не выйти случайно */}
-      <a href="/account" className="acct-main" title={me.admin ? 'Пароль и аккаунты друзей' : 'Сменить пароль'}>
-        <img src={`/api/head/${encodeURIComponent(me.name)}?size=48`} alt="" width={24} height={24} />
-        <span className="acct-name">{me.name}</span>
-        <span className="link small">{me.admin ? 'аккаунты' : 'пароль'}</span>
-      </a>
-      {!me.local && <form method="post" action="/logout" className="inline-form"><button type="submit" className="link small linklike" title="Выйти с сайта">выйти</button></form>}
-    </div>
+  if (me.name) {
+    const size = me.name.length > 14 ? 'xlong' : me.name.length > 11 ? 'long' : '';
+    return (
+      <div className="acct">
+        <a href="/account" className="acct-main" title={me.admin ? 'Пароль и аккаунты друзей' : 'Сменить пароль'}>
+          <span className="acct-ava"><Ico name="user" size={18} /><img src={`/api/head/${encodeURIComponent(me.name)}?size=64`} alt="" width={30} height={30} onError={e => { e.currentTarget.style.display = 'none'; }} /></span>
+          <span className="acct-text">
+            <b className={`acct-name ${size}`}>{me.name}</b>
+            <span className="acct-sub">{me.admin ? 'Аккаунты и пароль' : 'Сменить пароль'}</span>
+          </span>
+        </a>
+        {!me.local && (
+          <form method="post" action="/logout" className="acct-out">
+            <button type="submit" className="acct-out-btn" title="Выйти с сайта"><Ico name="logout" size={15} />Выйти</button>
+          </form>
+        )}
+      </div>
+    );
+  }
+  if (me.guest) return (
+    <a href="/login" className="acct acct-main acct-login" title="Вход по нику и паролю сайта">
+      <span className="acct-ava"><Ico name="login" size={18} /></span>
+      <span className="acct-text"><b className="acct-name">Войти</b><span className="acct-sub">ник и пароль сайта</span></span>
+    </a>
   );
-  // Вся плашка — ссылка: раньше нажимался только текст «Войти», а рамка вокруг выглядела как кнопка
-  if (me.guest) return <a href="/login" className="acct acct-login" title="Вход по нику и паролю сайта: советчик и личные настройки">Войти</a>;
   return null;
 }
 

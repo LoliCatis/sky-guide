@@ -662,7 +662,8 @@ img[src*="/api/texture/"], img[src*="mc-heads.net"], .avatar { image-rendering: 
   .sidebar { gap: 12px; padding-top: 14px; padding-bottom: 12px; }
   .sidebar nav { gap: 1px; }
   .sidebar nav a { padding: 7px 12px; }
-  .sidebar .acct { padding: 6px 8px; margin-bottom: 6px; }
+  .sidebar .acct-main { padding-top: 6px; padding-bottom: 6px; }
+  .sidebar .acct-out-btn { padding-top: 5px; padding-bottom: 5px; }
 }
 @media (min-width: 801px) and (max-height: 760px) {
   .sidebar { gap: 8px; padding-top: 10px; padding-bottom: 10px; }
@@ -787,8 +788,10 @@ img[src*="/api/texture/"], img[src*="mc-heads.net"], .avatar { image-rendering: 
   .more-grid a img { image-rendering: pixelated; }
   .more-grid a:active { background: rgba(124,92,255,.18); }
   .more-grid a.active { background: rgba(124,92,255,.24); border-color: rgba(124,92,255,.55); color: #fff; }
-  .more-extra .acct { margin-bottom: 6px; }
-  .more-actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .more-extra .acct { margin-bottom: 8px; }
+  .more-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .more-actions > :only-child { grid-column: 1 / -1; }
+  .more-actions .btn { width: 100%; padding: 8px 10px; font-size: 12.5px; }
   .more-actions .btn { margin: 0; }
   html.more-open, html.more-open body { overflow: hidden; }
   html.more-open .chat-fab, html.more-open .to-top { display: none; }
@@ -858,3 +861,32 @@ html.lite .more-sheet, html.lite .more-back { transition: none; }
 .news-item ul { margin: 8px 0 0; padding-left: 20px; line-height: 1.55; }
 .news-item li + li { margin-top: 4px; }
 @media (max-width: 560px) { .news-item { padding: 12px 12px; } .news-item ul { padding-left: 18px; } }
+
+/* ---------- Аккаунт внизу меню и кнопки подвала ----------
+   Карточка профиля: аватар, ник целиком (длинный — мельче и с переносом, без «L…»), подпись; вся карточка — ссылка.
+   «Выйти» — отдельная кнопка под чертой. Подвал — одна колонка кнопок одной высоты и ширины. */
+.ico { flex: none; display: block; }
+.acct { display: flex; flex-direction: column; margin: 0 0 8px; border-radius: var(--r-md); background: rgba(255,255,255,.04); border: 1px solid var(--card-b); overflow: hidden; }
+.acct-main { display: flex; align-items: center; gap: 9px; min-width: 0; padding: 8px 10px 8px 8px; color: var(--text); text-decoration: none; cursor: pointer; transition: background .15s; }
+.acct-main:hover { background: rgba(124,92,255,.10); }
+.acct-main:focus-visible, .acct-out-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.acct-ava { position: relative; flex: none; width: 30px; height: 30px; display: grid; place-items: center; border-radius: var(--r-sm); background: rgba(255,255,255,.06); overflow: hidden; color: #b9a8ff; }
+.acct-ava img { position: absolute; inset: 0; width: 30px; height: 30px; image-rendering: pixelated; display: block; }
+.acct-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.acct-name { font-size: 14px; font-weight: 700; line-height: 1.2; overflow-wrap: anywhere; }
+.acct-name.long { font-size: 12.5px; } .acct-name.xlong { font-size: 11.5px; letter-spacing: -.1px; }
+.acct-sub { font-size: 11px; line-height: 1.25; color: var(--muted); }
+.acct-main:hover .acct-sub { color: #b9a8ff; }
+.acct-go { display: none; }
+/* Гость: та же карточка, акцентная рамка — это действие */
+a.acct.acct-login { flex-direction: row; border-color: rgba(124,92,255,.38); background: rgba(124,92,255,.08); }
+a.acct.acct-login .acct-name { color: #c4b8ff; }
+a.acct.acct-login:hover { background: rgba(124,92,255,.16); border-color: rgba(124,92,255,.6); }
+.acct-out { margin: 0; border-top: 1px solid var(--card-b); }
+.acct-out-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 7px; padding: 7px 10px; background: none; border: 0; color: var(--muted); font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; transition: background .15s, color .15s; }
+.acct-out-btn:hover { background: rgba(248,113,113,.10); color: #fca5a5; }
+/* Подвал меню: кнопки одной колонкой, одинаковые по ширине и высоте */
+.sidebar-foot .btn.donate, .sidebar-foot .fb-btn { display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; margin: 0 0 6px; padding: 7px 10px; font-size: 12.5px; }
+.btn.donate, .fb-btn, .mobile-foot .fb-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.fb-btn .ico, .btn.donate .ico { opacity: .85; }
+.sidebar-foot .btn.donate, .sidebar-foot .fb-btn { display: flex; }

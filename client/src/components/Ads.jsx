@@ -1,3 +1,4 @@
+import { Ico } from './Icons.jsx';
 import { useEffect, useRef, useState } from 'react';
 import { pub, renderRtb, nextAdId, needsConsent, getConsent, setConsent, onConsent, reopenConsent, loadYandex } from '../ads.js';
 
@@ -32,7 +33,7 @@ export function AdSlot({ where = 'bottom', page = '' }) {
 /** Кнопка «Поддержать сайт» (ссылка из DONATE_URL) */
 export function DonateButton({ className = '' }) {
   if (!pub.donateUrl) return null;
-  return <a className={`btn donate ${className}`} href={pub.donateUrl} target="_blank" rel="noopener noreferrer">♥ Поддержать сайт</a>;
+  return <a className={`btn donate ${className}`} href={pub.donateUrl} target="_blank" rel="noopener noreferrer"><Ico name="heart" size={15} />Поддержать сайт</a>;
 }
 
 /**

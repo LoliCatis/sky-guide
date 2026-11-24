@@ -188,3 +188,20 @@ test('модели паков: слои с ванильной основой, 3D
   assert.equal(packTexture('EMPTY_THING'), null, 'полностью прозрачная картинка — не иконка');
   assert.equal(PNG.sync.read(packTexture('TRAILING').buf).data[0], 77, 'хвост после IEND не мешает');
 });
+
+test('наложение слоёв не темнит полупрозрачные пиксели', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'packs-alpha-'));
+  const z = new AdmZip();
+  z.addFile('pack.mcmeta', Buffer.from('{"pack":{"description":"H+"}}'));
+  const half = new PNG({ width: 16, height: 16 });
+  for (let i = 0; i < half.data.length; i += 4) half.data.set([255, 255, 255, 128], i);
+  z.addFile('assets/hplus/textures/a.png', PNG.sync.write(half));
+  z.addFile('assets/hplus/textures/b.png', PNG.sync.write(half));
+  z.addFile('assets/hplus/models/two.json', Buffer.from('{"textures":{"layer0":"hplus:a","layer1":"hplus:b"}}'));
+  z.addFile('assets/minecraft/items/paper.json', Buffer.from(JSON.stringify({ model: { type: 'minecraft:condition', property: 'minecraft:component', predicate: 'minecraft:custom_data', value: { id: 'TWO' }, on_true: { type: 'minecraft:model', model: 'hplus:two' }, on_false: { type: 'minecraft:model', model: 'minecraft:item/paper' } } })));
+  z.writeZip(path.join(dir, 'Hypixel Plus 0.23.4.zip'));
+  loadPacks(dir);
+  const px = PNG.sync.read(packTexture('TWO').buf).data;
+  assert.deepEqual([px[0], px[1], px[2]], [255, 255, 255], 'белый остаётся белым');
+  assert.ok(px[3] >= 190 && px[3] <= 193, `два слоя по 128 → ~192, а не ${px[3]}`);
+});

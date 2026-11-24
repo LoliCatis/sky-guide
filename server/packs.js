@@ -147,6 +147,16 @@ function readTex(pack, ref, opts) {
   opts?.needs?.add(name);
   return null;
 }
+// Пиксель поверх пикселя (source-over) в PNG без премультипликации: полупрозрачное не темнеет,
+// а два полупрозрачных слоя дают более плотный цвет (128 + 128 → ~192)
+function blend(dst, di, rgb, alpha) {
+  const a = alpha / 255;
+  if (!a) return;
+  const da = dst[di + 3] / 255;
+  const oa = a + da * (1 - a);
+  for (let c = 0; c < 3; c++) dst[di + c] = Math.round((rgb[c] * a + dst[di + c] * da * (1 - a)) / oa);
+  dst[di + 3] = Math.round(oa * 255);
+}
 // Наложить слои (уже первые кадры) один на другой; tint — цвет крашеной кожи для layer0
 function composeLayers(bufs, tint) {
   if (bufs.length === 1 && tint == null) return bufs[0];
@@ -158,13 +168,8 @@ function composeLayers(bufs, tint) {
     const k = size / src.width;
     for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
       const si = (Math.floor(y / k) * src.width + Math.floor(x / k)) * 4, di = (y * size + x) * 4;
-      const a = src.data[si + 3] / 255;
-      if (!a) continue;
-      for (let c = 0; c < 3; c++) {
-        const v = li === 0 && tint != null ? src.data[si + c] * ((tint >> (16 - 8 * c)) & 255) / 255 : src.data[si + c];
-        out.data[di + c] = Math.round(v * a + out.data[di + c] * (1 - a));
-      }
-      out.data[di + 3] = Math.max(out.data[di + 3], src.data[si + 3]);
+      const rgb = [0, 1, 2].map(c => (li === 0 && tint != null ? src.data[si + c] * ((tint >> (16 - 8 * c)) & 255) / 255 : src.data[si + c]));
+      blend(out.data, di, rgb, src.data[si + 3]);
     }
   });
   return PNG.sync.write(out, { deflateLevel: 9 });
@@ -204,10 +209,7 @@ function frontView(pack, m, opts, side) {
         const v = uv[1] + (uv[3] - uv[1]) * ((y - Y0 + 0.5) / Math.max(1, Y1 - Y0));
         const sx = Math.min(t.width - 1, Math.max(0, Math.floor(u * tk))), sy = Math.min(t.height - 1, Math.max(0, Math.floor(v * tk)));
         const si = (sy * t.width + sx) * 4, di = (y * size + x) * 4;
-        const al = t.data[si + 3] / 255;
-        if (!al) continue;
-        for (let c = 0; c < 3; c++) out.data[di + c] = Math.round(t.data[si + c] * al + out.data[di + c] * (1 - al));
-        out.data[di + 3] = Math.max(out.data[di + 3], t.data[si + 3]);
+        blend(out.data, di, [t.data[si], t.data[si + 1], t.data[si + 2]], t.data[si + 3]);
       }
     }
   }

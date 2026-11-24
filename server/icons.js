@@ -143,6 +143,10 @@ async function findTexture(name, { scope = 'all' } = {}) {
     const buf = readPng(path.join(config.iconsDir, name.toUpperCase() + '.png'));
     if (buf) return buf;
   }
+  // Блоки без своей картинки предмета (ступени, заборы, стёкла-панели, ковры…) — сразу текстура материала,
+  // до запросов в интернет: своей картинки у них нет нигде, а недоступный хост стоил бы секунды на каждую иконку
+  const alt = blockAlt(name);
+  if (alt && alt !== name) { const buf = await findTexture(alt, { scope }); if (buf) return buf; }
   if (Date.now() - (texMiss.get(name) || 0) < 10 * 60e3) return null;
   const rel = [`items/${name}.png`, `blocks/${name}.png`, `blocks/${name}_side.png`];
   if (TEX_FILE[name]) { rel.unshift(TEX_FILE[name] + '.png'); files.unshift(`item_${name}.png`); }
@@ -154,9 +158,6 @@ async function findTexture(name, { scope = 'all' } = {}) {
   }
   const drawn = await drawTexture(name);
   if (drawn) return drawn;
-  // Блоки без своей картинки предмета (ступени, заборы, стёкла-панели, ковры…) — берём текстуру блока, из которого они сделаны
-  const alt = blockAlt(name);
-  if (alt && alt !== name) { const buf = await findTexture(alt, { scope }); if (buf) return buf; }
   texMiss.set(name, Date.now());
   return null;
 }

@@ -37,7 +37,7 @@ code { background: rgba(255,255,255,.07); padding: 1px 6px; border-radius: var(-
 body::before { content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .04;
   background-image: linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px); background-size: 32px 32px; }
 
-.layout { position: relative; z-index: 1; display: grid; grid-template-columns: 230px 1fr; min-height: 100vh; }
+.layout { position: relative; z-index: 1; display: grid; grid-template-columns: 230px minmax(0, 1fr); min-height: 100vh; }
 .sidebar { position: sticky; top: 0; height: 100vh; padding: 18px 14px; display: flex; flex-direction: column; gap: 18px; background: rgba(10,11,20,.6); border-right: 1px solid var(--card-b); }
 .brand { display: flex; gap: 10px; align-items: center; padding: 4px 8px; }
 .brand b { display: block; font-size: 17px; background: linear-gradient(90deg, #fff, #b9a8ff); -webkit-background-clip: text; color: transparent; }
@@ -69,7 +69,9 @@ main { padding: 18px 26px 40px; min-width: 0; }
 
 .page { animation: fadeUp .35s ease both; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-.grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+/* minmax(0, 1fr): длинная строка внутри карточки не раздвигает сетку шире окна */
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
+.grid > * { min-width: 0; }
 .span-12 { grid-column: span 12; } .span-8 { grid-column: span 8; } .span-7 { grid-column: span 7; } .span-6 { grid-column: span 6; } .span-5 { grid-column: span 5; } .span-4 { grid-column: span 4; }
 @media (max-width: 1150px) { .span-8, .span-7, .span-6, .span-5, .span-4 { grid-column: span 12; } }
 @media (max-width: 800px) { .layout { grid-template-columns: 1fr; } .sidebar { position: static; height: auto; } .sidebar nav { flex-direction: row; flex-wrap: wrap; } main { padding: 14px; } }
@@ -431,7 +433,7 @@ a.stat-link:hover { transform: translateY(-2px); border-color: var(--stat-accent
 .to-top:hover, .to-top:focus-visible { border-color: var(--accent); background: rgba(124,92,255,.25); }
 @media (min-width: 801px) { .to-top { left: calc(230px + 18px); } }
 /* Гайды: список слева, гайд справа */
-.guides { display: grid; grid-template-columns: 280px 1fr; gap: 16px; align-items: start; }
+.guides { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 16px; align-items: start; }
 .guides-side { position: sticky; top: 14px; display: flex; flex-direction: column; gap: 10px; max-height: calc(100vh - 28px); min-width: 0; }
 .guides-list { display: flex; flex-direction: column; gap: 12px; overflow: auto; min-height: 0; }
 /* Быстрый переход к группе гайдов (Foraging и др. терялись внизу длинного списка) */

@@ -283,6 +283,40 @@ async function phoneChecks() {
   await lc.close();
 }
 
+// Окно браузера средней ширины (между телефоном и большим монитором): ничего не уезжает за правый край.
+// Ловит и скрытое обрезание, когда горизонтального скролла нет, а карточки срезаны краем окна.
+async function widthChecks() {
+  const WIDTHS = [1024, 1280, 1366, 1440, 1600, 950];
+  const IDS = ['overview', 'roadmap', 'skills', 'gear', 'accessories', 'museum', 'stash', 'collections', 'events', 'money', 'market', 'top'];
+  for (const width of WIDTHS) {
+    console.log(`\n== окно ${width}px`);
+    const page = await browser.newPage({ viewport: { width, height: 900 } });
+    const errs = watch(page);
+    let bad = 0;
+    for (const id of IDS) {
+      await page.goto(`${BASE}/#/${id}`);
+      await page.waitForSelector('.page', { timeout: 15_000 });
+      await page.waitForTimeout(900);
+      const r = await page.evaluate(() => {
+        const vw = document.documentElement.clientWidth, out = [];
+        for (const el of document.querySelectorAll('main *')) {
+          const rc = el.getBoundingClientRect();
+          if (!rc.width || rc.right <= vw + 1) continue;
+          let a = el.parentElement, inScroll = false;
+          while (a && a.tagName !== 'MAIN') { if (getComputedStyle(a).overflowX !== 'visible') { inScroll = true; break; } a = a.parentElement; }
+          if (!inScroll) out.push(`${String(el.className || el.tagName).slice(0, 30)} (+${Math.round(rc.right - vw)}px)`);
+        }
+        return { sw: document.documentElement.scrollWidth - vw, out };
+      });
+      if (r.sw > 2) { bad++; fail(`${width}px/${id}`, `горизонтальный скролл на ${r.sw}px`); }
+      if (r.out.length) { bad++; fail(`${width}px/${id}`, `за правым краем: ${r.out.slice(0, 4).join(', ')}`); }
+    }
+    if (!bad) ok(`${IDS.length} разделов помещаются в окно`);
+    if (errs.length) fail(`${width}px`, `ошибки: ${errs.join(' | ').slice(0, 300)}`);
+    await page.close();
+  }
+}
+
 let code = 0;
 const browser = await chromium.launch();
 try {
@@ -446,6 +480,7 @@ try {
     if (errs.length) fail(label, `ошибки: ${errs.join(' | ').slice(0, 300)}`);
     await page.close();
   }
+  await widthChecks();
   await phoneChecks();
   await guestChecks();
 } catch (e) {

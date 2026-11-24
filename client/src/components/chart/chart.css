@@ -1,7 +1,8 @@
 /* Биржевой график «Рынка» (TradingChart) и мини-график карточки предмета (MiniChart) */
 .tc { position: relative; display: flex; flex-direction: column; gap: var(--sp-2); min-width: 0; }
 .tc-bar { display: flex; align-items: center; gap: var(--sp-1); flex-wrap: wrap; row-gap: 6px; }
-.tc-tfs { display: flex; gap: 2px; flex: none; }
+/* В узкой колонке периоды переносятся на следующую строку, а не уезжают за край карточки */
+.tc-tfs { display: flex; flex-wrap: wrap; gap: 2px; flex: 0 1 auto; min-width: 0; }
 .tc-tf, .tc-btn, .tc-seg button { flex: none; min-height: 32px; min-width: 32px; padding: 4px 9px; border: 1px solid transparent; border-radius: var(--r-sm); background: transparent; color: var(--muted); font: inherit; font-size: var(--fs-sm); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; transition: background-color .15s, color .15s, border-color .15s; }
 .tc-tf:hover, .tc-btn:hover, .tc-seg button:hover { background: var(--surface-hover); color: var(--text); }
 .tc-tf.on { color: #fff; background: rgba(124,92,255,.22); border-color: rgba(124,92,255,.45); }

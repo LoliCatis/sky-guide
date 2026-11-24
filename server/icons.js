@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { neu } from './neu.js';
-import { packTexture, packVanillaTexture, clientJarTexture } from './packs.js';
+import { packTexture, forgetPackTexture, packVanillaTexture, clientJarTexture, firstFrame } from './packs.js';
 import { config } from './config.js';
 import { normalizeId } from './items-ru/index.js';
 import { PNG } from 'pngjs';
@@ -34,6 +34,7 @@ const LEGACY = {
   wood: 'oak_planks', fence: 'oak_fence', huge_mushroom_1: 'brown_mushroom_block', huge_mushroom_2: 'red_mushroom_block',
   cocoa: 'cocoa_beans', cactus: 'cactus', pumpkin: 'carved_pumpkin', deadbush: 'dead_bush', red_flower: 'poppy',
 };
+const BANNER_COLORS = ['black', 'red', 'green', 'brown', 'blue', 'purple', 'cyan', 'light_gray', 'gray', 'pink', 'lime', 'yellow', 'light_blue', 'magenta', 'orange', 'white'];
 const DYE_BY_DAMAGE = { 3: 'cocoa_beans', 4: 'lapis_lazuli', 15: 'bone_meal', 1: 'red_dye', 2: 'green_dye', 10: 'lime_dye', 11: 'yellow_dye', 0: 'ink_sac' };
 
 export function skinHashFromNbt(str) {
@@ -51,7 +52,7 @@ export function skinHashFromNbt(str) {
 // Без этого иконка не находилась и вместо текстуры показывался барьер (красный знак «запрещено»).
 const BOOK_RE = /^ENCHANTMENT_(.+)_(\d+)$/;
 // Ванильные/старые названия, которыми предмет зовут подсказки и гайды, → ID в NEU
-const NEU_ALIAS = { JUNGLE_SAPLING: 'SAPLING-3', SPRUCE_SAPLING: 'SAPLING-1', BIRCH_SAPLING: 'SAPLING-2', ACACIA_SAPLING: 'SAPLING-4', DARK_OAK_SAPLING: 'SAPLING-5', OAK_SAPLING: 'SAPLING', WISP_POTION: 'POTION_WISP_ICE;1' };
+const NEU_ALIAS = { ENCHANTED_GOLDEN_APPLE: 'GOLDEN_APPLE-1', NECRON_CHESTPLATE: 'POWER_WITHER_CHESTPLATE', TWILIGHT_DAGGER: 'MAWDUST_DAGGER', SPACE_HELMET: 'DCTR_SPACE_HELM', ROD_OF_CHAMPIONS: 'CHAMP_ROD', COCOA_BEANS: 'INK_SACK-3', NETHER_WART: 'NETHER_STALK', JUNGLE_SAPLING: 'SAPLING-3', SPRUCE_SAPLING: 'SAPLING-1', BIRCH_SAPLING: 'SAPLING-2', ACACIA_SAPLING: 'SAPLING-4', DARK_OAK_SAPLING: 'SAPLING-5', OAK_SAPLING: 'SAPLING', WISP_POTION: 'POTION_WISP_ICE;1' };
 export function neuIconId(id) {
   if (!id || neu.items.has(id)) return id;
   if (NEU_ALIAS[id] && neu.items.has(NEU_ALIAS[id])) return NEU_ALIAS[id];
@@ -86,6 +87,7 @@ export function iconMeta(id) {
     else {
       let name = model || LEGACY[legacy] || legacy;
       if (legacy === 'dye' && !model) name = DYE_BY_DAMAGE[it.damage] || 'ink_sac';
+      if (legacy === 'banner' && !model) name = `${BANNER_COLORS[it.damage] || 'white'}_banner`; // в 1.8 цвет флага — damage
       meta = { kind: 'item', name };
     }
     meta.glint = glint;
@@ -117,8 +119,17 @@ export async function getSkin(hash) {
 // Неудачу помним 10 минут, чтобы не долбить недоступный хост на каждую картинку.
 const texMiss = new Map();
 // scope 'public' (Visitors и друзья): без текстур паков, не разрешённых для всех, и без db/icons (рендеры Coflnet)
-export async function getTexture(name, { scope = 'all' } = {}) {
+// Анимированные текстуры (command_block, magma, prismarine…) лежат полосой кадров 16×64 — отдаём только первый кадр,
+// иначе в квадратной иконке видна сплющенная «развёртка».
+export async function getTexture(name, opts = {}) {
+  const buf = await findTexture(name, opts);
+  return buf ? firstFrame(buf) : null;
+}
+// Модели, у которых картинка предмета — не та, что находится по имени первой (у big_dripleaf под именем — почти пустой бок)
+const TEX_RENAME = { big_dripleaf: 'big_dripleaf_top' };
+async function findTexture(name, { scope = 'all' } = {}) {
   if (!/^[a-z0-9_]+$/.test(name)) return null;
+  if (TEX_RENAME[name]) return findTexture(TEX_RENAME[name], { scope });
   const fromPack = packVanillaTexture(name, scope);
   if (fromPack) return fromPack;
   const files = [`item_${name}.png`, `block_${name}.png`, `block_${name}_side.png`];
@@ -143,7 +154,34 @@ export async function getTexture(name, { scope = 'all' } = {}) {
   }
   const drawn = await drawTexture(name);
   if (drawn) return drawn;
+  // Блоки без своей картинки предмета (ступени, заборы, стёкла-панели, ковры…) — берём текстуру блока, из которого они сделаны
+  const alt = blockAlt(name);
+  if (alt && alt !== name) { const buf = await findTexture(alt, { scope }); if (buf) return buf; }
   texMiss.set(name, Date.now());
+  return null;
+}
+
+// У ступеней, плит, заборов, калиток, стен, панелей, ковров, флагов, кнопок и плит давления в игре объёмная модель,
+// а отдельной плоской картинки нет: показываем текстуру материала (ступени из дуба → доски дуба).
+const WOODS = /^(oak|spruce|birch|jungle|acacia|dark_oak|mangrove|cherry|pale_oak|bamboo|crimson|warped)$/;
+const BASE_BLOCK = { brick: 'bricks', nether_brick: 'nether_bricks', stone_brick: 'stone_bricks', mossy_stone_brick: 'mossy_stone_bricks', quartz: 'quartz_block_side', smooth_stone: 'smooth_stone', purpur: 'purpur_block', prismarine_brick: 'prismarine_bricks', end_stone_brick: 'end_stone_bricks', smooth_quartz: 'quartz_block_bottom', smooth_sandstone: 'sandstone_top', smooth_red_sandstone: 'red_sandstone_top', sandstone: 'sandstone', red_sandstone: 'red_sandstone' };
+const ALT = {
+  glass_pane: 'glass', sticky_piston: 'piston_top_sticky', piston: 'piston_top', crafter: 'crafter_north', firework_charge: 'firework_star',
+  noteblock: 'note_block', stained_hardened_clay: 'white_terracotta', infested_stone: 'stone', big_dripleaf: 'big_dripleaf_top',
+  red_bed: 'red_wool', small_dripleaf: 'small_dripleaf_top',
+};
+export function blockAlt(name) {
+  if (ALT[name]) return ALT[name];
+  let m;
+  if ((m = /^(.+)_stained_glass_pane$/.exec(name))) return `${m[1]}_stained_glass`;
+  if ((m = /^(.+)_(carpet|banner|bed)$/.exec(name))) return `${m[1]}_wool`;
+  if ((m = /^stripped_(.+)_wood$/.exec(name))) return `stripped_${m[1]}_log`;
+  if ((m = /^(.+)_(stairs|slab|fence_gate|fence|wall|pressure_plate|button)$/.exec(name))) {
+    const base = m[1];
+    if (WOODS.test(base)) return `${base}_planks`;
+    if (base === 'wood' || base === 'wooden') return 'oak_planks';
+    return BASE_BLOCK[base] || base;
+  }
   return null;
 }
 
@@ -163,7 +201,7 @@ const SKULL_SKIN = {
   zombie_head: 'entity/zombie/zombie', creeper_head: 'entity/creeper/creeper', piglin_head: 'entity/piglin/piglin',
 };
 // Цвета яйца призыва: основа и пятна (как в игре)
-const EGG_COLORS = { mooshroom_spawn_egg: [0xa00f10, 0xb7b7b7], cow_spawn_egg: [0x443626, 0xa1a1a1], zombie_spawn_egg: [0x00afaf, 0x799c65], skeleton_spawn_egg: [0xc1c1c1, 0x494949], spider_spawn_egg: [0x342d27, 0xa80e0e], wolf_spawn_egg: [0xd7d3d3, 0xceaf96], enderman_spawn_egg: [0x161616, 0x000000], blaze_spawn_egg: [0xf6b201, 0xfff87e], polar_bear_spawn_egg: [0xeeeeeb, 0xd5d6cd], ghast_spawn_egg: [0xf9f9f9, 0xbcbcbc] };
+const EGG_COLORS = { villager_spawn_egg: [0x563c33, 0xbd8b72], rabbit_spawn_egg: [0x995f40, 0x734831], frog_spawn_egg: [0xd07444, 0xffc77c], witch_spawn_egg: [0x340000, 0x51a03e], iron_golem_spawn_egg: [0xdbcdc2, 0x74a332], mooshroom_spawn_egg: [0xa00f10, 0xb7b7b7], cow_spawn_egg: [0x443626, 0xa1a1a1], zombie_spawn_egg: [0x00afaf, 0x799c65], skeleton_spawn_egg: [0xc1c1c1, 0x494949], spider_spawn_egg: [0x342d27, 0xa80e0e], wolf_spawn_egg: [0xd7d3d3, 0xceaf96], enderman_spawn_egg: [0x161616, 0x000000], blaze_spawn_egg: [0xf6b201, 0xfff87e], polar_bear_spawn_egg: [0xeeeeeb, 0xd5d6cd], ghast_spawn_egg: [0xf9f9f9, 0xbcbcbc] };
 
 async function assetPng(rel) {
   const file = 'asset_' + rel.replace(/\//g, '_') + '.png';
@@ -197,8 +235,8 @@ async function drawTexture(name) {
       out = new PNG({ width: 8, height: 8 });
       blit(skin, out, 8, 8, 8, 8, 0, 0);
       if (skin.height >= 64 || name === 'player_head') blit(skin, out, 40, 8, 8, 8, 0, 0); // слой шляпы
-    } else if (name === 'chest' || name === 'trapped_chest') {
-      const t = await assetPng(`entity/chest/${name === 'chest' ? 'normal' : 'trapped'}`);
+    } else if (name === 'chest' || name === 'trapped_chest' || name === 'ender_chest') {
+      const t = await assetPng(`entity/chest/${{ chest: 'normal', trapped_chest: 'trapped', ender_chest: 'ender' }[name]}`);
       if (!t) return null;
       // Вид спереди: крышка (14×5) над корпусом (14×10) и замок (2×4).
       const tmp = new PNG({ width: 14, height: 15 });
@@ -285,12 +323,39 @@ export async function getRender(id, { scope = 'all' } = {}) {
   return null;
 }
 
+// Ванильный слой для модели пака («item/diamond» под блёстками Diamond Spreading): из паков, с диска или из Minecraft
+const vanillaLayer = scope => name => {
+  const fromPack = packVanillaTexture(name, scope);
+  if (fromPack) return fromPack;
+  for (const f of [`item_${name}.png`, `block_${name}.png`]) { const b = readPng(path.join(cacheDir(), f)); if (b) return b; }
+  return clientJarTexture(name);
+};
+const layerMiss = new Map(); // id → когда не удалось скачать слой: не пробуем снова 10 минут
+async function packIcon(id, model, scope, color) {
+  const opts = { vanilla: vanillaLayer(scope), color };
+  let r = packTexture(id, model, scope, opts);
+  const needs = r ? r.needs : packTexture.lastNeeds;
+  if (needs?.length && Date.now() - (layerMiss.get(id) || 0) > 10 * 60e3) {
+    // Слоя ещё нет на диске: скачиваем (GitHub/jsDelivr) и собираем иконку заново
+    await Promise.all(needs.map(n => getTexture(n, { scope: 'public' }).catch(() => null)));
+    forgetPackTexture(id, scope);
+    r = packTexture(id, model, scope, opts);
+    if (r ? r.needs : packTexture.lastNeeds.length) layerMiss.set(id, Date.now());
+  }
+  return r;
+}
+
 async function renderOne(id, scope = 'all') {
   const file = id.replace(/[;:]/g, '_') + '.png';
   // 1) ресурс-паки по приоритету (Hypixel Plus → FurfSky → Hypixel SkyBlock)
-  const model = (/ItemModel:"([^"]+)"/.exec(neu.items.get(id)?.rawNbt || '') || [])[1];
-  const fromPack = packTexture(id, model, scope);
+  const raw = neu.items.get(id)?.rawNbt || '';
+  const model = (/ItemModel:"([^"]+)"/.exec(raw) || [])[1];
+  const color = (/color:(\d+)/.exec(raw) || [])[1];
+  const fromPack = await packIcon(id, model, scope, color != null ? Number(color) : undefined);
   if (fromPack) return fromPack.buf;
+  // Голова со скином: готовые рендеры Coflnet для многих голов — голова Стива (Krampus Helmet и др.),
+  // а сайт и так рисует голову из настоящего скина предмета. Рендеры берём только для не-голов.
+  if (neu.items.has(id) && iconMeta(id).kind === 'head') return null;
   if (scope !== 'all' && !rendersPublic()) return null;
   // 2) готовые рендеры в db/icons, 3) Coflnet
   for (const p of [path.join(config.iconsDir, id + '.png'), path.join(config.iconsDir, file)]) {

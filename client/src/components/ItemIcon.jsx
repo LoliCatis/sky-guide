@@ -2,6 +2,10 @@ import { useEffect, useState, memo } from 'react';
 import { useTooltip } from './Tooltip.jsx';
 import { RARITY_COLOR } from '../api.js';
 
+// Версия картинок иконок: браузер хранит их сутки и дольше. Меняется, когда сервер начинает рисовать иконки иначе
+// (24.11.2026: 3D-модели паков спереди, а не развёрткой; головы из скина вместо Стива) — тогда старые картинки не держатся
+const REV = 'r=2';
+
 // Пакетная загрузка метаданных иконок
 const metaCache = new Map();
 const renderStatus = new Map(); // id -> true/false (есть ли готовый рендер)
@@ -73,7 +77,7 @@ function Head({ hash, size }) {
 }
 
 function Flat({ name, size, color, glint }) {
-  const url = `/api/texture/${name}`;
+  const url = `/api/texture/${name}?${REV}`;
   const [broken, setBroken] = useState(0); // 0 — своя текстура, 1 — barrier, 2 — ничего не загрузилось
   const src = broken ? '/api/texture/barrier' : url;
   if (broken > 1) return <div className="flat-icon icon-missing" style={{ width: size, height: size, fontSize: size * 0.5 }} aria-hidden="true">?</div>;
@@ -103,9 +107,9 @@ function ItemIconInner({ id, item, size = 40, onClick, slot = false, title }) {
   const content = !realId && !item ? null
     : useRender ? (
       <div className="flat-icon render" style={{ width: size * 0.86, height: size * 0.86 }}>
-        <img src={`/api/img/${encodeURIComponent(realId)}`} alt="" draggable={false} width={size * 0.86} height={size * 0.86}
+        <img src={`/api/img/${encodeURIComponent(realId)}?${REV}`} alt="" draggable={false} width={size * 0.86} height={size * 0.86}
           onLoad={e => { renderStatus.set(realId, true); if (e.currentTarget.naturalWidth <= 64) e.currentTarget.classList.add('pixel'); }} onError={() => { renderStatus.set(realId, false); setRenderOk(false); }} />
-        {glint && <div className="glint" style={{ WebkitMaskImage: `url(/api/img/${encodeURIComponent(realId)})`, maskImage: `url(/api/img/${encodeURIComponent(realId)})` }} />}
+        {glint && <div className="glint" style={{ WebkitMaskImage: `url(/api/img/${encodeURIComponent(realId)}?${REV})`, maskImage: `url(/api/img/${encodeURIComponent(realId)}?${REV})` }} />}
       </div>
     )
     : hash ? <Head hash={hash} size={size} />

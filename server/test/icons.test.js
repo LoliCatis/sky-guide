@@ -37,3 +37,16 @@ test('старые имена текстур 1.8 → современные (и�
   assert.equal(iconMeta('TEST_DEADBUSH').name, 'dead_bush');
   assert.equal(iconMeta('TEST_RED_FLOWER').name, 'poppy');
 });
+
+test('блоки без своей картинки предмета берут текстуру материала', async () => {
+  const { blockAlt } = await import('../icons.js');
+  assert.equal(blockAlt('oak_stairs'), 'oak_planks');
+  assert.equal(blockAlt('brick_stairs'), 'bricks');
+  assert.equal(blockAlt('cobblestone_wall'), 'cobblestone');
+  assert.equal(blockAlt('lime_stained_glass_pane'), 'lime_stained_glass');
+  assert.equal(blockAlt('glass_pane'), 'glass');
+  assert.equal(blockAlt('red_carpet'), 'red_wool');
+  assert.equal(blockAlt('black_banner'), 'black_wool');
+  assert.equal(blockAlt('crafter'), 'crafter_north');
+  assert.equal(blockAlt('diamond'), null);
+});

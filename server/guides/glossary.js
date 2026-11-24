@@ -120,7 +120,7 @@ export const GLOSSARY = {
     names: ['Witherborn'], kind: 'mech', title: 'Witherborn',
     text: 'Бонус полного сета брони Wither (Necron\'s, Storm\'s, Goldor\'s, Maxor\'s, Wither). Каждые несколько секунд выпускает черепа-скелеты, которые бьют мобов, и даёт Wither-статы. Семейства Wither можно смешивать: бонус общий.',
     how: ['Части падают из сундуков F7/M7, улучшаются звёздами за эссенцию Wither.'],
-    items: ['NECRON_CHESTPLATE', 'ESSENCE_WITHER'],
+    items: ['POWER_WITHER_CHESTPLATE', 'ESSENCE_WITHER'],
   },
   s_plus: {
     names: ['S+'], kind: 'mech', title: 'Оценка S+',
@@ -175,7 +175,7 @@ export const GLOSSARY = {
     names: ['аттюнмент', 'аттюнмента', 'аттюнментом', 'Attunement', 'Hellion Shield'], kind: 'mech', title: 'Hellion Shield и аттюнмент',
     text: 'С T2 у Inferno Demonlord щит одного из четырёх цветов (Ashen, Spirit, Crystal, Auric). Урон режется на 99%, если аттюнмент кинжала не совпадает. Щит меняется каждые 8 ударов.',
     how: ['Держи в руке кинжал блейз-слеера (Firedust/Twilight и выше).', 'Смотри на цвет щита и ПКМ кинжалом, пока цвет аттюнмента не совпадёт.'],
-    items: ['FIREDUST_DAGGER', 'TWILIGHT_DAGGER'],
+    items: ['FIREDUST_DAGGER', 'MAWDUST_DAGGER'],
   },
   slayer: {
     names: ['Zombie Slayer', 'Spider Slayer', 'Wolf Slayer', 'Enderman Slayer', 'Blaze Slayer', 'Vampire Slayer', 'Revenant Slayer', 'Tarantula Slayer', 'Sven Slayer', 'Voidgloom Slayer'], kind: 'mech', title: 'Slayer Level',

@@ -71,6 +71,7 @@ export const ICON_MAX = 128;
 // Первый кадр анимированной текстуры (высокая полоса кадров) → квадрат, большие — уменьшить до ICON_MAX
 export function firstFrame(buf) {
   try {
+    buf = trimPng(buf);
     const png = PNG.sync.read(buf);
     const w = png.width;
     if (png.height <= w && w <= ICON_MAX) return buf;
@@ -106,20 +107,137 @@ export const adsEnabled = (env = process.env) => /^R-A-\d{4,12}-\d{1,6}$/.test(S
 export const isPublicPack = (p, env = process.env) => { const l = p.name.toLowerCase(); return publicPackNames(env).some(n => n === '*' || l.includes(n)); };
 const packsFor = scope => (scope === 'public' ? packs.list.filter(p => isPublicPack(p)) : packs.list);
 
-function textureFromModel(pack, modelRef, depth = 0) {
-  if (depth > 6 || !modelRef) return null;
-  const model = pack.readJson(resPath(modelRef, 'models', '.json'));
-  if (!model) return null;
-  const t = model.textures || {};
-  const pick = t.layer0 || t.all || t.texture || t.front || Object.values(t).find(v => typeof v === 'string' && !v.startsWith('#'));
-  if (pick && !pick.startsWith('#')) {
-    const buf = pack.read(resPath(pick, 'textures', '.png'));
-    if (buf) return buf;
+// Модель предмета → картинка иконки. Модель собираем по цепочке parent (текстуры ребёнка важнее родителя).
+//  - плоская модель (layer0, layer1…): слои накладываются друг на друга. Слой из ванильного Minecraft
+//    («item/diamond»), которого нет в паке, берём через opts.vanilla; нет и там — запоминаем в opts.needs;
+//  - объёмная модель (elements: блок, голова, 3D-предмет): её текстура — развёртка граней, целиком её показывать нельзя.
+//    Берём лицевую грань (north, иначе south…) самого крупного элемента — как предмет видно в инвентаре спереди.
+// particle — только частицы при разрушении, для иконки не годится (у Hypixel Plus это пустая item/achoo).
+const BASIC_PARENT = /^(minecraft:)?(item|block)\/(generated|handheld|handheld_rod)$|^builtin\//;
+function resolveModel(pack, modelRef) {
+  const textures = {};
+  let elements = null;
+  let ref = modelRef;
+  for (let depth = 0; ref && depth <= 6; depth++) {
+    if (BASIC_PARENT.test(ref)) break;
+    const model = pack.readJson(resPath(ref, 'models', '.json'));
+    if (!model) { if (depth === 0) return null; break; }
+    for (const [k, v] of Object.entries(model.textures || {})) if (!(k in textures)) textures[k] = v;
+    if (!elements && Array.isArray(model.elements) && model.elements.length) elements = model.elements;
+    ref = model.parent;
   }
-  if (model.parent && !/^(minecraft:)?(item|block)\/(generated|handheld|handheld_rod)$/.test(model.parent) && !model.parent.startsWith('builtin/')) {
-    return textureFromModel(pack, model.parent, depth + 1);
-  }
+  const deref = v => { for (let i = 0; i < 8 && typeof v === 'string' && v.startsWith('#'); i++) v = textures[v.slice(1)]; return typeof v === 'string' && !v.startsWith('#') ? v : null; };
+  return { textures, elements, deref };
+}
+// Часть PNG в паках с мусором после конца файла (IEND): браузеру всё равно, а pngjs такие не читает — обрезаем хвост
+export function trimPng(buf) {
+  const i = buf?.lastIndexOf?.('IEND');
+  return i > 0 && buf.length > i + 8 ? buf.subarray(0, i + 8) : buf;
+}
+const pngOf = buf => { try { return PNG.sync.read(trimPng(buf)); } catch { return null; } };
+const isEmptyPng = png => { for (let i = 3; i < png.data.length; i += 4) if (png.data[i]) return false; return true; };
+function readTex(pack, ref, opts) {
+  const buf = pack.read(resPath(ref, 'textures', '.png'));
+  if (buf) return buf;
+  const [ns, p] = ref.includes(':') ? ref.split(':') : ['minecraft', ref];
+  if (ns !== 'minecraft') return null;
+  const name = p.replace(/^(item|block)\//, '');
+  const v = opts?.vanilla?.(name);
+  if (v) return v;
+  opts?.needs?.add(name);
   return null;
+}
+// Наложить слои (уже первые кадры) один на другой; tint — цвет крашеной кожи для layer0
+function composeLayers(bufs, tint) {
+  if (bufs.length === 1 && tint == null) return bufs[0];
+  const pngs = bufs.map(pngOf).filter(Boolean);
+  if (!pngs.length) return null;
+  const size = Math.max(...pngs.map(p => p.width));
+  const out = new PNG({ width: size, height: size });
+  pngs.forEach((src, li) => {
+    const k = size / src.width;
+    for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+      const si = (Math.floor(y / k) * src.width + Math.floor(x / k)) * 4, di = (y * size + x) * 4;
+      const a = src.data[si + 3] / 255;
+      if (!a) continue;
+      for (let c = 0; c < 3; c++) {
+        const v = li === 0 && tint != null ? src.data[si + c] * ((tint >> (16 - 8 * c)) & 255) / 255 : src.data[si + c];
+        out.data[di + c] = Math.round(v * a + out.data[di + c] * (1 - a));
+      }
+      out.data[di + 3] = Math.max(out.data[di + 3], src.data[si + 3]);
+    }
+  });
+  return PNG.sync.write(out, { deflateLevel: 9 });
+}
+// Объёмная модель «спереди»: каждый элемент рисуем его гранью north (или south) в свою область по from/to,
+// ближние элементы поверх дальних. Так 3D-меч из многих кубиков, голова или блок видны целиком, а не развёрткой.
+// Поворот элементов и граней не учитываем — для иконки 16×16 этого хватает.
+function frontView(pack, m, opts, side) {
+  const els = m.elements.filter(e => Array.isArray(e.from) && Array.isArray(e.to) && e.faces?.[side]);
+  if (!els.length) return null;
+  const texs = new Map();
+  const tex = ref => {
+    if (!texs.has(ref)) { const raw = readTex(pack, ref, opts); texs.set(ref, raw ? pngOf(firstFrame(raw)) : null); }
+    return texs.get(ref);
+  };
+  // Масштаб: сколько точек текстуры на единицу модели (16 единиц uv = ширина текстуры), не больше ICON_MAX на всю иконку
+  let k = 1;
+  for (const e of els) { const t = tex(m.deref(e.faces[side].texture) || ''); if (t) k = Math.max(k, t.width / 16); }
+  k = Math.min(k, ICON_MAX / 16);
+  const size = Math.round(16 * k);
+  const out = new PNG({ width: size, height: size });
+  // north смотрит в сторону −z: ближе к зрителю меньший z, и ось x видна зеркально
+  const depth = e => side === 'north' ? -Math.min(e.from[2], e.to[2]) : Math.max(e.from[2], e.to[2]);
+  for (const e of els.slice().sort((a, b) => depth(a) - depth(b))) {
+    const f = e.faces[side];
+    const t = tex(m.deref(f.texture) || '');
+    if (!t) continue;
+    const [fx1, fx2] = [Math.min(e.from[0], e.to[0]), Math.max(e.from[0], e.to[0])];
+    const [fy1, fy2] = [Math.min(e.from[1], e.to[1]), Math.max(e.from[1], e.to[1])];
+    const dx1 = side === 'north' ? 16 - fx2 : fx1, dx2 = side === 'north' ? 16 - fx1 : fx2;
+    const uv = f.uv || [dx1, 16 - fy2, dx2, 16 - fy1];
+    const tk = t.width / 16;
+    const X0 = Math.round(dx1 * k), X1 = Math.round(dx2 * k), Y0 = Math.round((16 - fy2) * k), Y1 = Math.round((16 - fy1) * k);
+    for (let y = Math.max(0, Y0); y < Math.min(size, Y1); y++) {
+      for (let x = Math.max(0, X0); x < Math.min(size, X1); x++) {
+        const u = uv[0] + (uv[2] - uv[0]) * ((x - X0 + 0.5) / Math.max(1, X1 - X0));
+        const v = uv[1] + (uv[3] - uv[1]) * ((y - Y0 + 0.5) / Math.max(1, Y1 - Y0));
+        const sx = Math.min(t.width - 1, Math.max(0, Math.floor(u * tk))), sy = Math.min(t.height - 1, Math.max(0, Math.floor(v * tk)));
+        const si = (sy * t.width + sx) * 4, di = (y * size + x) * 4;
+        const al = t.data[si + 3] / 255;
+        if (!al) continue;
+        for (let c = 0; c < 3; c++) out.data[di + c] = Math.round(t.data[si + c] * al + out.data[di + c] * (1 - al));
+        out.data[di + 3] = Math.max(out.data[di + 3], t.data[si + 3]);
+      }
+    }
+  }
+  return isEmptyPng(out) ? null : out;
+}
+const opaqueCount = png => { let n = 0; for (let i = 3; i < png.data.length; i += 4) if (png.data[i]) n++; return n; };
+function frontFace(pack, m, opts) {
+  // Обычно лицо у north; если спереди почти пусто (лицевая грань у модели на south) — берём south
+  const views = ['north', 'south'].map(side => frontView(pack, m, opts, side)).filter(Boolean);
+  if (!views.length) return null;
+  const best = views.reduce((a, b) => (opaqueCount(b) > opaqueCount(a) * 1.5 ? b : a));
+  return PNG.sync.write(best, { deflateLevel: 9 });
+}
+function textureFromModel(pack, modelRef, opts) {
+  if (!modelRef) return null;
+  const m = resolveModel(pack, modelRef);
+  if (!m) return null;
+  // Есть elements — модель объёмная, даже если текстура названа layer0 (шлемы FurfSky: развёртка головы в layer0)
+  if (m.elements) return frontFace(pack, m, opts);
+  const layers = [];
+  for (let i = 0; i < 8; i++) { const r = m.deref(m.textures[`layer${i}`]); if (r) layers.push(r); else if (i > 0) break; }
+  if (layers.length) {
+    const bufs = layers.map(r => readTex(pack, r, opts));
+    if (!bufs[0]) return null; // без основы один верхний слой (блёстки, ободок) выглядит пустым или чужим
+    const tint = /leather_/.test(layers[0]) ? (opts?.color ?? 0xa06540) : null;
+    return composeLayers(bufs.filter(Boolean).map(firstFrame), tint);
+  }
+  const one = ['all', 'texture', 'front', 'side'].map(k => m.deref(m.textures[k])).find(Boolean)
+    || Object.entries(m.textures).filter(([k]) => k !== 'particle').map(([, v]) => m.deref(v)).find(Boolean);
+  return one ? readTex(pack, one, opts) : null;
 }
 
 // Новый формат 1.21.4+: items/<x>.json → { model: { type, model } } (с условиями/диспетчерами — берём первую модель)
@@ -139,10 +257,10 @@ function firstModelRef(node, depth = 0) {
   return null;
 }
 
-function itemDefTexture(pack, ns, name) {
+function itemDefTexture(pack, ns, name, opts) {
   const def = pack.readJson(`assets/${ns}/items/${name}.json`);
   const ref = def ? firstModelRef(def.model) : null;
-  return ref ? textureFromModel(pack, ref) : null;
+  return ref ? textureFromModel(pack, ref, opts) : null;
 }
 
 function parseProps(text) {
@@ -269,29 +387,39 @@ export function loadPacks(dir = path.join(config.root, 'packs')) {
 
 // itemModel — значение ItemModel из базы NEU, напр. "hypixel_skyblock:item/uncategorized/hyperion"
 // scope: 'all' — все паки (владелец), 'public' — только разрешённые для всех (PACKS_PUBLIC)
-export function packTexture(id, itemModel, scope = 'all') {
+// opts.vanilla(name) — ванильная текстура для слоя модели, которого нет в паке («item/diamond» под блёстками);
+// opts.color — цвет крашеной кожи. Если ванильного слоя не нашлось, его имя попадает в result.needs (или
+// в packTexture.lastNeeds при null): icons.js скачает текстуру и спросит ещё раз (forgetPackTexture).
+export function packTexture(id, itemModel, scope = 'all', opts = {}) {
   const key = `${scope}|${id}`;
   if (packs.byId.has(key)) return packs.byId.get(key);
   let found = null;
+  const needs = new Set();
+  const o = { ...opts, needs };
   const low = id.toLowerCase().replace(/[;:]/g, '_');
+  // Пустая картинка (все пиксели прозрачные) — не текстура: ищем дальше, в следующем паке
+  const usable = b => { const f = b && firstFrame(b); const png = f && pngOf(f); return png && !isEmptyPng(png) ? f : null; };
   for (const p of packsFor(scope)) {
     let buf = null;
     const compRef = p.components?.get(id);
-    if (compRef) buf = textureFromModel(p, compRef);
-    if (!buf && p.hasFirm) buf = textureFromModel(p, `firmskyblock:item/${low}`) || itemDefTexture(p, 'firmskyblock', low);
+    if (compRef) buf = usable(textureFromModel(p, compRef, o));
+    if (!buf && p.hasFirm) buf = usable(textureFromModel(p, `firmskyblock:item/${low}`, o)) || usable(itemDefTexture(p, 'firmskyblock', low, o));
     if (!buf && p.cit.length) {
       const rule = p.cit.find(r => r.match(id));
-      if (rule) buf = citTexture(p, rule);
+      if (rule) buf = usable(citTexture(p, rule));
     }
     if (!buf && p.hasHypixel && itemModel?.startsWith('hypixel_skyblock:')) {
       const name = itemModel.split(':')[1];
-      buf = itemDefTexture(p, 'hypixel_skyblock', name) || textureFromModel(p, itemModel);
+      buf = usable(itemDefTexture(p, 'hypixel_skyblock', name, o)) || usable(textureFromModel(p, itemModel, o));
     }
-    if (buf) { found = { pack: p.name, buf: firstFrame(buf) }; break; }
+    if (buf) { found = { pack: p.name, buf }; break; }
   }
+  packTexture.lastNeeds = [...needs];
+  if (needs.size) { if (found) found.needs = [...needs]; else return null; } // не кэшируем: после скачивания слоя спросим снова
   packs.byId.set(key, found);
   return found;
 }
+export const forgetPackTexture = (id, scope = 'all') => packs.byId.delete(`${scope}|${id}`);
 
 // ---------- Ванильные текстуры (иконки меню, статов) без интернета ----------
 // Сначала из ресурс-паков (тогда иконки в стиле пака), потом из установленного у пользователя Minecraft (client.jar).

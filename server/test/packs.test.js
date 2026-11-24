@@ -136,3 +136,55 @@ test('большие текстуры паков ужимаются до ICON_MA
   const small = png(16, 16, 3);
   assert.equal(firstFrame(small), small); // маленькую не трогаем вовсе
 });
+
+// 24.11.2026: развёртки вместо предметов, пустые иконки (Diamond Spreading, Magma Bucket), анимированные блоки
+test('модели паков: слои с ванильной основой, 3D-модель спереди, пустые и битые картинки', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'packs-models-'));
+  const z = new AdmZip();
+  z.addFile('pack.mcmeta', Buffer.from('{"pack":{"description":"H+"}}'));
+  const cd = { property: 'minecraft:component', predicate: 'minecraft:custom_data' };
+  const cases = ['DIAMOND_SPREADING', 'SUPER_COMPACTOR_3000', 'EMPTY_THING', 'NUTCRACKER_HELMET', 'TRAILING'].map(id => ({ when: `{id:"${id}"}`, model: { type: 'minecraft:model', model: `hplus:m/${id.toLowerCase()}` } }));
+  z.addFile('assets/minecraft/items/paper.json', Buffer.from(JSON.stringify({ model: { type: 'minecraft:select', ...cd, component: 'minecraft:custom_data', cases, fallback: { type: 'minecraft:model', model: 'minecraft:item/paper' } } })));
+  // У «generated» Hypixel Plus только particle — пустая картинка: её брать нельзя
+  z.addFile('assets/hplus/models/item/generated.json', Buffer.from('{"parent":"builtin/generated","textures":{"particle":"item/achoo"}}'));
+  z.addFile('assets/minecraft/textures/item/achoo.png', png(16, 16, 0));
+  // Блёстки поверх ванильного алмаза (его в паке нет)
+  z.addFile('assets/hplus/models/m/diamond_spreading.json', Buffer.from('{"parent":"hplus:item/generated","textures":{"layer0":"item/diamond","layer1":"hplus:m/sparkle"}}'));
+  const sparkle = new PNG({ width: 16, height: 16 }); sparkle.data[3] = 255; sparkle.data[0] = 200; // одна точка в углу
+  z.addFile('assets/hplus/textures/m/sparkle.png', PNG.sync.write(sparkle));
+  // Блок: текстура 64×64 — развёртка граней, лицо (north) в uv [0,0,4,4]
+  const atlas = new PNG({ width: 64, height: 64 });
+  for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) { const i = (y * 64 + x) * 4; atlas.data[i + 3] = 255; atlas.data[i] = x < 16 && y < 16 ? 50 : 150; }
+  z.addFile('assets/hplus/textures/m/compactor.png', PNG.sync.write(atlas));
+  const faces = Object.fromEntries(['north', 'south', 'east', 'west', 'up', 'down'].map((f, i) => [f, { texture: '#0', uv: f === 'north' ? [0, 0, 4, 4] : [4, 4, 8, 8] }]));
+  z.addFile('assets/hplus/models/item/block.json', Buffer.from(JSON.stringify({ elements: [{ from: [0, 0, 0], to: [16, 16, 16], faces }], textures: { particle: 'item/achoo' } })));
+  z.addFile('assets/hplus/models/m/super_compactor_3000.json', Buffer.from('{"parent":"hplus:item/block","textures":{"0":"hplus:m/compactor"}}'));
+  // Шлем FurfSky: развёртка названа layer0, но у родителя elements — значит, модель объёмная
+  z.addFile('assets/hplus/models/m/head.json', Buffer.from(JSON.stringify({ elements: [{ from: [4, 0, 4], to: [12, 8, 12], faces: { north: { texture: '#layer0', uv: [2, 2, 4, 4] } } }] })));
+  z.addFile('assets/hplus/models/m/nutcracker_helmet.json', Buffer.from('{"parent":"hplus:m/head","textures":{"layer0":"hplus:m/compactor"}}'));
+  z.addFile('assets/hplus/models/m/empty_thing.json', Buffer.from('{"textures":{"layer0":"hplus:m/empty"}}'));
+  z.addFile('assets/hplus/textures/m/empty.png', png(16, 16, 0));
+  z.addFile('assets/hplus/models/m/trailing.json', Buffer.from('{"textures":{"layer0":"hplus:m/trailing"}}'));
+  z.addFile('assets/hplus/textures/m/trailing.png', Buffer.concat([png(16, 16, 77), Buffer.from('garbage')]));
+  z.writeZip(path.join(dir, 'Hypixel Plus 0.23.4.zip'));
+  loadPacks(dir);
+
+  // Без ванильного алмаза одни блёстки не показываем — сервер должен докачать слой (needs)
+  assert.equal(packTexture('DIAMOND_SPREADING', undefined, 'all', { vanilla: () => null }), null);
+  assert.deepEqual(packTexture.lastNeeds, ['diamond']);
+  const diamond = new PNG({ width: 16, height: 16 }); for (let i = 0; i < diamond.data.length; i += 4) { diamond.data[i + 2] = 255; diamond.data[i + 3] = 255; }
+  const ds = PNG.sync.read(packTexture('DIAMOND_SPREADING', undefined, 'all', { vanilla: n => (n === 'diamond' ? PNG.sync.write(diamond) : null) }).buf);
+  assert.deepEqual([...ds.data.subarray(0, 4)], [200, 0, 0, 255], 'блёстки поверх');
+  assert.deepEqual([...ds.data.subarray(4, 8)], [0, 0, 255, 255], 'под ними алмаз');
+
+  const sc = PNG.sync.read(packTexture('SUPER_COMPACTOR_3000').buf);
+  assert.equal(sc.width, sc.height);
+  assert.ok([...Array(sc.width * sc.height).keys()].every(i => sc.data[i * 4] === 50), 'только лицевая грань, без развёртки');
+
+  const nc = PNG.sync.read(packTexture('NUTCRACKER_HELMET').buf);
+  assert.equal(nc.width, nc.height);
+  assert.ok(nc.data.some((v, i) => i % 4 === 3 && v === 0), 'голова 8×8 в квадрате 16×16 с прозрачными краями');
+
+  assert.equal(packTexture('EMPTY_THING'), null, 'полностью прозрачная картинка — не иконка');
+  assert.equal(PNG.sync.read(packTexture('TRAILING').buf).data[0], 77, 'хвост после IEND не мешает');
+});

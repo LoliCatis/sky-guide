@@ -92,7 +92,7 @@ export default function ShareCard({ name, member, analysis, onClose }) {
   const copy = async () => {
     try {
       await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob() })]);
-      setMsg('Скопировано: вставь в Discord через Ctrl+V');
+      setMsg(matchMedia('(pointer: coarse)').matches ? 'Скопировано: вставь картинку в Discord' : 'Скопировано: вставь в Discord через Ctrl+V');
     } catch { setMsg('Браузер не дал скопировать картинку — нажми «Скачать PNG»'); }
   };
   return (

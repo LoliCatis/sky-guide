@@ -29,6 +29,7 @@ export function GuideHero({ guide, children }) {
         <div className="guide-hero-text">
           <h2>{guide.title} <StatusBadge status={guide.status} almost={guide.almost} /></h2>
           {guide.summary && <p className="muted"><Rich text={guide.summary} /></p>}
+          {guide.guest && <p className="muted"><Rich text="Это общий гайд. Введи свой ник на «Обзоре» — и здесь появятся твой прогресс и шаги под твой профиль." /></p>}
         </div>
       </div>
       {lv && lv.max > 0 && (

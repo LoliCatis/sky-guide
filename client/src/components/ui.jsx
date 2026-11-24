@@ -113,7 +113,7 @@ export function Sparkline({ points, width = 240, height = 56, color = 'var(--acc
       </div>
       <div className="spark-meta small">
         <span className="muted">{trend === 'flat' ? 'Без изменений' : 'Изменение'}</span>
-        {trend !== 'flat' && <b className="spark-delta">{diff > 0 ? '▲ +' : '▼ −'}{fmt(Math.abs(diff))}{pct !== null && Math.abs(pct) >= 0.1 ? ` (${Math.abs(pct).toFixed(1)}%)` : ''}</b>}
+        {trend !== 'flat' && <b className="spark-delta">{diff > 0 ? '▲ +' : '▼ −'}{fmt(Math.abs(diff))}{pct !== null && Math.abs(pct) >= 0.1 ? ` (${Math.abs(pct).toFixed(1).replace('.', ',')}%)` : ''}</b>}
         <span className="muted spark-range">{fmt(minY)}{flat ? '' : ` — ${fmt(maxY)}`}</span>
       </div>
     </div>

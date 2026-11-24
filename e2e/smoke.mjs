@@ -423,8 +423,8 @@ try {
     Array.isArray(api1.candles) && api1.candles.every(c => c.length === 11) ? ok(`свечи отдаются (${api1.candles.length} шт.)`) : fail(`${label}/рынок`, 'API свечей ответило не тем');
     (await page.locator('.tc-canvas canvas').count()) ? ok('график нарисован') : fail(`${label}/рынок`, 'нет холста графика');
     const tfReq = page.waitForResponse(r => r.url().includes('/api/market/candles/BOOSTER_COOKIE?tf=1d'), { timeout: 8000 }).catch(() => null);
-    await page.locator('.tc-tf', { hasText: '1Д' }).click();
-    (await tfReq) ? ok('смена периода грузит дневные свечи') : fail(`${label}/рынок`, 'период 1Д не запросил свечи');
+    await page.locator('.tc-tf', { hasText: '1д' }).click();
+    (await tfReq) ? ok('смена периода грузит дневные свечи') : fail(`${label}/рынок`, 'период 1д не запросил свечи');
     await page.locator('button[title="Индикаторы"]').click();
     await page.locator('.tc-pop .tc-check', { hasText: 'Индекс силы' }).click();
     await page.keyboard.press('Escape'); await page.waitForTimeout(500);

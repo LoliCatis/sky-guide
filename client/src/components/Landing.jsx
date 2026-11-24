@@ -1,7 +1,6 @@
 // Стартовая страница для гостя: ввёл ник — открылся весь сайт по этому игроку, как на SkyCrypt. Без регистрации.
 import { useState } from 'react';
 import { setView } from '../api.js';
-import { ItemIcon } from './ItemIcon.jsx';
 import { AdSlot, DonateButton } from './Ads.jsx';
 
 const NICK = /^[A-Za-z0-9_]{1,16}$/;
@@ -29,7 +28,8 @@ export default function Landing() {
   return (
     <div className="landing">
       <section className="card landing-hero">
-        <ItemIcon id="SKYBLOCK_MENU" size={56} />
+        {/* значок SkyBlock Menu в паке текстур — три точки, похожие на «загрузку»: ставим знак сайта */}
+        <img src="/favicon.svg" width={56} height={56} alt="" className="landing-mark" />
         <h1>SkyBlock трекер на русском</h1>
         <p className="muted">Введи ник в Minecraft, и сайт покажет твой профиль Hypixel SkyBlock, план прогрессии, снаряжение и способы заработка. Без регистрации и паролей.</p>
         <form className="landing-form" onSubmit={open}>

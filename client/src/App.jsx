@@ -323,8 +323,11 @@ export default function App() {
               <div className="topbar-right">
                 {state?.demo && <span className="badge warn demo-badge" title="Демо-данные: добавь API-ключ в .env"><span className="demo-long">Демо-данные: добавь API-ключ в .env</span><span className="demo-short">Демо</span></span>}
                 <LoadDot />
-                <LiveDot state={state} offline={offline} />
-                <button className="btn" onClick={refresh} disabled={refreshing}>{refreshing ? 'Обновляю…' : refreshMsg || 'Обновить'}</button>
+                {/* Гость ещё не ввёл ник: обновлять нечего — без вечной «Загрузки…» и лишней кнопки */}
+                {state?.status !== 'empty' && <>
+                  <LiveDot state={state} offline={offline} />
+                  <button className="btn" onClick={refresh} disabled={refreshing}>{refreshing ? 'Обновляю…' : refreshMsg || 'Обновить'}</button>
+                </>}
               </div>
             </header>
             <FriendBanner state={state} view={view} />

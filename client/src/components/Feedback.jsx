@@ -6,6 +6,9 @@ import { getView, me } from '../api.js';
 // К отзыву само прикрепляется: страница, ник из поля (если введён), версия сборки, размер экрана, браузер.
 // Скриншот — по желанию: выбрать файл или вставить из буфера (Ctrl+V). Перед отправкой сжимаем до ~1600 px в JPEG.
 
+// На телефоне клавиатуры с Ctrl нет — подсказку про вставку не показываем
+const TOUCH = typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;
+
 const TYPES = [
   ['bug', 'Ошибка', 'Что-то сломалось или работает не так'],
   ['translate', 'Перевод', 'Неправильный или непонятный русский текст'],
@@ -111,7 +114,7 @@ function FeedbackModal({ onClose }) {
               ) : (
                 <label className="link small fb-shot-pick">📎 Прикрепить скриншот<input type="file" accept="image/*" onChange={e => takeFile(e.target.files?.[0])} hidden /></label>
               )}
-              {!shot && <span className="muted tiny"> или вставь его сюда (Ctrl+V)</span>}
+              {!shot && !TOUCH && <span className="muted tiny"> или вставь его сюда (Ctrl+V)</span>}
             </div>
             <p className="muted tiny fb-auto">Вместе с текстом уйдут: эта страница, {view?.player ? <>ник <b>{view.player}</b>, </> : null}версия сайта и размер экрана. {me.guest ? '' : 'И ник, под которым ты вошёл. '}Подробнее — в <a href="/privacy" target="_blank" rel="noopener">политике конфиденциальности</a>.</p>
             {state.error && <p className="fb-err" role="alert">{state.error}</p>}

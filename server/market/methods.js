@@ -65,7 +65,8 @@ export function hasAny(m, patterns) {
 const fmtN = n => Number(n || 0).toLocaleString('ru-RU');
 /** Требование «уровень X+» с тем, что есть у игрока сейчас: «Farming 40+», have «у тебя 60». */
 const need = (label, cur, min, extra = {}) => ({ text: `${label} ${min}+`, ok: cur >= min, have: `у тебя ${fmtN(cur)}`, ...extra });
-const runs = n => (n > 0 ? `пройден ${fmtN(n)} раз` : 'ещё не пройден');
+const raz = n => (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 'раза' : 'раз');
+const runs = n => (n > 0 ? `пройден ${fmtN(n)} ${raz(n)}` : 'ещё не пройден');
 
 const fmtM = n => `${(n / M).toLocaleString('ru-RU', { maximumFractionDigits: 1 })} млн`;
 
@@ -306,12 +307,13 @@ export function moneyMethods(member, ctx, opts = {}) {
  * @returns {{ now: object[], passive: object[], daily: object[], next: object[], summary: string }}
  */
 export function moneyPlan(member, ctx, opts = {}) {
-  const list = moneyMethods(member, ctx, opts);
+  // список уже посчитан (маршрут «Заработка» отдаёт его рядом с планом) — второй раз не считаем
+  const list = opts.list || moneyMethods(member, ctx, opts);
   const active = list.filter(x => x.mode === 'active' && x.available && x.coinsPerHour).sort((a, b) => b.coinsPerHour - a.coinsPerHour);
   const bestNow = active[0]?.coinsPerHour || 0;
   const next = list
     // событийный контент с неизвестным мэром (Diana) — не цель, а «когда будет ивент»
-    .filter(x => x.mode === 'active' && (!x.ready) && !x.unknownReq && (x.coinsPerHour || 0) > bestNow * 0.8)
+    .filter(x => x.mode === 'active' && (!x.ready) && !x.unknownReq && x.id !== active[0]?.id && (x.coinsPerHour || 0) > bestNow * 0.8)
     .map(x => {
       const gain = (x.coinsPerHour || 0) - bestNow;
       const paybackHours = x.upgradeCost && gain > 0 ? Math.round(x.upgradeCost / gain * 10) / 10 : null;

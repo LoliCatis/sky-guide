@@ -244,7 +244,7 @@ function CompareTable({ players, openItem, colorOf }) {
               <Row label="Состояние" icon="gold_ingot" players={players} get={nw} fmt={coins}
                 sub={p => (p.networth ? `предметы ${coins(p.networth.items)} · питомцы ${coins(p.networth.pets)}${mateOf.has(p) && p.bank ? ` · банк ÷${p.coop}` : ''}` : '')} />
               <Row label="Банк" icon="gold_block" players={players} get={p => p.bank} fmt={coins} sub={p => `кошелёк ${coins(p.purse)}`} shared={shared} />
-              <Row label="Средний скилл" icon="experience_bottle" players={players} get={p => +p.skillAverage.toFixed(2)} fmt={v => v.toFixed(1)} />
+              <Row label="Средний скилл" icon="experience_bottle" players={players} get={p => +p.skillAverage.toFixed(2)} fmt={v => v.toFixed(1).replace('.', ',')} />
               <Row label="Magical Power" icon="ender_eye" players={players} get={p => p.accessories.mp} sub={p => `${p.accessories.count ?? '—'} аксессуаров${p.accessories.power ? ` · ${prettyId(p.accessories.power)}` : ''}`} />
               <Row label="Catacombs" icon="bone" players={players} get={p => p.dungeons.level} bar={p => p.dungeons.progress} />
               <Row label="Heart of the Mountain" icon="diamond_pickaxe" players={players} get={p => p.mining.hotm} />
@@ -286,7 +286,7 @@ function CompareTable({ players, openItem, colorOf }) {
               ))}
             </Section>
             <Section title="Данжи и Kuudra" players={players}>
-              <Row label="Средний класс" icon="iron_sword" players={players} get={p => +p.dungeons.classAverage.toFixed(2)} fmt={v => v.toFixed(1)}
+              <Row label="Средний класс" icon="iron_sword" players={players} get={p => +p.dungeons.classAverage.toFixed(2)} fmt={v => v.toFixed(1).replace('.', ',')}
                 sub={p => (p.dungeons.selectedClass ? `играет: ${p.dungeons.classes[p.dungeons.selectedClass]?.name || p.dungeons.selectedClass}` : '')} />
               {Object.keys(players[0].dungeons.classes || {}).map(k => (
                 <Row key={k} label={players[0].dungeons.classes[k].name} icon={CLASS_ICON[k]} players={players} get={p => p.dungeons.classes[k]?.level} />

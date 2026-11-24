@@ -104,6 +104,7 @@ export function buildGuide(id, member, analysis, deps, list = GUIDES) {
   return safeBuild(g, member, guideCtx(member, analysis, deps));
 }
 
+const forGuest = g => ({ ...g, guest: true, status: null, almost: false, level: null, summary: null });
 const brief = g => ({ id: g.id, title: g.title, icon: g.icon, group: g.group, summary: g.summary, status: g.status, almost: !!g.almost, level: g.level, nextCount: g.next?.length || 0, next: (g.next || []).slice(0, 1) });
 
 /**
@@ -117,7 +118,8 @@ export function mountGuideRoutes(app, { getView, getMember, getAnalysis, deps = 
   };
   app.get('/api/guides', async (req, res) => {
     const { m, a } = await view(req);
-    res.json({ groups: GROUPS, guides: buildGuides(m, a, deps).map(brief) });
+    // Гость без ника: гайды общие — без «не начато», уровней и итогов пустого профиля
+    res.json({ groups: GROUPS, guest: !!m?.guest, guides: buildGuides(m, a, deps).map(brief).map(g => (m?.guest ? forGuest(g) : g)) });
   });
   app.get('/api/guides/:id', async (req, res) => {
     const { m, a } = await view(req);
@@ -126,6 +128,6 @@ export function mountGuideRoutes(app, { getView, getMember, getAnalysis, deps = 
     if (!g) return res.status(404).json({ error: 'Гайд не найден' });
     // ссылки на предметы/NPC/мобов и подсказки к терминам (refs.js)
     try { enrichGuide(g, { items: deps.items, constants: deps.constants, price: deps.priceOf }); } catch (e) { console.warn('[guides] refs:', e.message); }
-    res.json(g);
+    res.json(m.guest ? forGuest(g) : g);
   });
 }

@@ -114,11 +114,21 @@ export function cropProfits(fortune, bps) {
   const ff = fortune ?? moneyState.settings.farmingFortune ?? 1500;
   return mk.cropProfits(marketCtx(), ff, { bps: bps ?? moneyState.settings.bps ?? 19.5 });
 }
+// Расчёт всех способов заработка — самое долгое на странице «Заработок» (~1–2 с на профиль).
+// Держим последний результат на профиль, пока не обновились профиль (новый объект member), цены и настройки.
+const methodsMemo = new WeakMap();
 export function moneyMethods(member, extra) {
-  return mk.moneyMethods(member, marketCtx(), methodOpts(extra, member));
+  const opts = methodOpts(extra, member);
+  if (!member || typeof member !== 'object') return mk.moneyMethods(member, marketCtx(), opts);
+  const key = JSON.stringify([prices.bazaarAt, prices.binAt, moneyState.settings, extra || null, opts.perks]);
+  const hit = methodsMemo.get(member);
+  if (hit && hit.key === key) return hit.value;
+  const value = mk.moneyMethods(member, marketCtx(), opts);
+  methodsMemo.set(member, { key, value });
+  return value;
 }
-export function moneyPlan(member, extra) {
-  return mk.moneyPlan(member, marketCtx(), methodOpts(extra, member));
+export function moneyPlan(member, extra, list) {
+  return mk.moneyPlan(member, marketCtx(), { ...methodOpts(extra, member), list: list || moneyMethods(member, extra) });
 }
 
 export { fmtCoins };

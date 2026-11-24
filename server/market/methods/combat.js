@@ -22,6 +22,7 @@ const slayerLvl = (m, k) => lvl(m?.slayers?.[k]);
 const cata = m => lvl(m?.dungeons?.catacombs);
 const hotm = m => lvl(m?.mining?.hotm);
 const fmtN = n => Number(n || 0).toLocaleString('ru-RU');
+const raz = n => (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 'раза' : 'раз');
 const fmtC = n => {
   const a = Math.abs(n);
   if (a >= M) return `${(n / M).toLocaleString('ru-RU', { maximumFractionDigits: 1 })} млн`;
@@ -118,7 +119,7 @@ function slayerCompute(key) {
     const others = tiers.filter(t => t !== best).map(t => `T${t.tier} ≈ ${fmtC(mid(t))}/ч${t.open ? '' : ' (закрыт)'}`).join(', ');
     return {
       coinsPerHour: Math.round(mid(best)), range: [Math.round(best.low), Math.round(best.high)],
-      detail: `${open.includes(best) ? 'Выгоднее всего для тебя' : 'Цель'}: ${def.boss} T${best.tier}. С одного босса стабильно ${fmtC(best.steady)} (частые дропы) и ещё ${fmtC(best.rare[0])}–${fmtC(best.rare[1])} в среднем с редких дропов, то есть удача. Квест у Maddox стоит ${fmtC(best.cost)}, он уже вычтен. Темп ${fmtN(best.rate[0])}–${fmtN(best.rate[1])} боссов в час — оценка для хорошей экипировки. Шансы редких дропов с вики умножены на Magic Find ${best.mf[0] === best.mf[1] ? best.mf[0] : `${best.mf[0]}–${best.mf[1]}`} (в профиле его не видно).${best.meter ? ` RNG-метр (${fmtN(SLAYER_XP[best.tier])} Slayer XP за босса T${best.tier}) выгоднее всего ставить на ${nameOf(ctx, best.meter.id) || best.meter.name}: шкала ${fmtN(best.meter.xp)} очков — это ${fmtN(best.meter.runs)} боссов; с ним предмет выходит в среднем раз в ${fmtN(best.meter.avgRuns)} боссов вместо ${fmtN(Math.round(1 / best.meter.natural))} и добавляет ≈${fmtC(best.meter.lift[0])}–${fmtC(best.meter.lift[1])} за босса (уже в доходе).` : best.tier < 3 ? ' RNG-метр заполняют только боссы T3 и выше.' : ''}${lockedRich}${others ? ` Другие тиры: ${others}.` : ''}`,
+      detail: `${open.includes(best) ? 'Выгоднее всего для тебя' : 'Цель'}: ${def.boss} T${best.tier}. С одного босса стабильно ${fmtC(best.steady)} (частые дропы) и ещё ${fmtC(best.rare[0])}–${fmtC(best.rare[1])} в среднем с редких дропов, то есть удача. Квест у Maddox стоит ${fmtC(best.cost)}, он уже вычтен. Темп ${fmtN(best.rate[0])}–${fmtN(best.rate[1])} боссов в час — оценка для хорошей экипировки. Шансы редких дропов с вики умножены на Magic Find ${best.mf[0] === best.mf[1] ? best.mf[0] : `${best.mf[0]}–${best.mf[1]}`} (в профиле его не видно).${best.meter ? ` RNG-метр (${fmtN(SLAYER_XP[best.tier])} Slayer XP за босса T${best.tier}) выгоднее всего ставить на ${nameOf(ctx, best.meter.id) || best.meter.name}: шкала ${fmtN(best.meter.xp)} очков — это ${fmtN(best.meter.runs)} боссов; с ним предмет выходит в среднем за ${fmtN(best.meter.avgRuns)} вместо ${fmtN(Math.round(1 / best.meter.natural))} боссов и добавляет ≈${fmtC(best.meter.lift[0])}–${fmtC(best.meter.lift[1])} за босса (уже в доходе).` : best.tier < 3 ? ' RNG-метр заполняют только боссы T3 и выше.' : ''}${lockedRich}${others ? ` Другие тиры: ${others}.` : ''}`,
       top: top.map(r => ({ id: r.id, name: r.name, perHour: Math.round(r.perHour) })),
       breakdown: best.rows.slice(0, 12).map(r => ({ id: r.id, name: r.name, chance: r.chance, qty: r.qty, unit: r.unit, perKill: Math.round(r.perKill), perHour: Math.round(r.perHour), everyHours: r.everyHours, rare: r.rare })),
     };
@@ -183,7 +184,7 @@ function dungeonCompute(floors) {
     const others = vals.filter(v => v !== best).map(v => `${v.floor} ≈ ${fmtC(mid(v))}/ч${v.open ? '' : ' (закрыт)'}`).join(', ');
     return {
       coinsPerHour: Math.round((lo + hi) / 2), range: [Math.round(lo), Math.round(hi)],
-      detail: `${open.includes(best) ? 'Выгоднее всего для тебя' : 'Цель'}: ${best.floor}. Сундук ${best.main} на S+ в среднем приносит ${fmtC(best.low)} за заход: считаем, что ты открываешь его, только если предмет дороже цены открытия.${best.high > best.low ? ` Второй сундук (Obsidian) за Dungeon Chest Key (${fmtC(best.key)}) добавляет ещё до ${fmtC(best.high - best.low)}.` : ''} Самое ценное: ${top.map(r => `${r.name} (${pct(r.chance)}, ${fmtC(r.unit)})`).join(', ') || 'нет выгодных предметов'}. Темп ${fmtN(best.rate[0])}–${fmtN(best.rate[1])} заходов в час с быстрой группой. ${best.meter ? `RNG-метр (≈${fmtN(DUNGEON_SCORE)} очков Dungeon Score за S+) выгоднее всего ставить на ${best.meter.name}: шкала ${fmtN(best.meter.xp)} очков — это ${fmtN(best.meter.runs)} заходов; с ним предмет выходит в среднем раз в ${fmtN(best.meter.avgRuns)} заходов вместо ${fmtN(Math.round(1 / best.meter.natural))} и добавляет ≈${fmtC(best.meter.lift)} за заход (уже в доходе). ` : ''}Эссенция и бесплатный сундук не учтены, Kismet Feather и Boss Luck повышают доход.${others ? ` Другие этажи: ${others}.` : ''}`,
+      detail: `${open.includes(best) ? 'Выгоднее всего для тебя' : 'Цель'}: ${best.floor}. Сундук ${best.main} на S+ в среднем приносит ${fmtC(best.low)} за заход: считаем, что ты открываешь его, только если предмет дороже цены открытия.${best.high > best.low ? ` Второй сундук (Obsidian) за Dungeon Chest Key (${fmtC(best.key)}) добавляет ещё до ${fmtC(best.high - best.low).replace(/\.$/, '')}.` : ''} Самое ценное: ${top.map(r => `${r.name} (${pct(r.chance)}, ${fmtC(r.unit)})`).join(', ') || 'нет выгодных предметов'}. Темп ${fmtN(best.rate[0])}–${fmtN(best.rate[1])} заходов в час с быстрой группой. ${best.meter ? `RNG-метр (≈${fmtN(DUNGEON_SCORE)} очков Dungeon Score за S+) выгоднее всего ставить на ${best.meter.name}: шкала ${fmtN(best.meter.xp)} очков — это ${fmtN(best.meter.runs)} заходов; с ним предмет выходит в среднем за ${fmtN(best.meter.avgRuns)} вместо ${fmtN(Math.round(1 / best.meter.natural))} заходов и добавляет ≈${fmtC(best.meter.lift)} за заход (уже в доходе). ` : ''}Эссенция и бесплатный сундук не учтены, Kismet Feather и Boss Luck повышают доход.${others ? ` Другие этажи: ${others}.` : ''}`,
       top: top.map(r => ({ id: r.id, name: r.name, perHour: Math.round(r.perRun * best.rate[0]) })),
       breakdown: best.rows.slice(0, 12).map(r => ({ id: r.id, name: r.name, chance: r.chance, unit: r.unit, cost: r.cost, perKill: Math.round(r.perRun),
         perHour: Math.round(r.perRun * best.rate[0]), everyHours: r.chance > 0 ? 1 / (r.chance * best.rate[0]) : null, rare: r.chance < RARE_CHANCE })),
@@ -253,7 +254,7 @@ function kuudraReq(tier) {
     else {
       reqs.push({ text: `Репутация фракции ${fmtN(KUUDRA_REP[tier])}+`, ok: crimsonRep(m) >= KUUDRA_REP[tier] || kuudraRuns(m, tier) > 0, have: `у тебя ${fmtN(crimsonRep(m))}` });
       const prev = KUUDRA_PREV[tier];
-      reqs.push({ text: `Пройден Kuudra ${KUUDRA_NAME[prev]}`, ok: kuudraRuns(m, prev) > 0 || kuudraRuns(m, tier) > 0, have: kuudraRuns(m, prev) > 0 ? `пройден ${fmtN(kuudraRuns(m, prev))} раз` : 'ещё не пройден' });
+      reqs.push({ text: `Пройден Kuudra ${KUUDRA_NAME[prev]}`, ok: kuudraRuns(m, prev) > 0 || kuudraRuns(m, tier) > 0, have: kuudraRuns(m, prev) > 0 ? `пройден ${fmtN(kuudraRuns(m, prev))} ${raz(kuudraRuns(m, prev))}` : 'ещё не пройден' });
     }
     if (tier !== 'basic' && tier !== 'hot') {
       const want = tier === 'burning' ? ['*AURORA_CHESTPLATE', '*TERROR_CHESTPLATE', '*CRIMSON_CHESTPLATE', '*FERVOR_CHESTPLATE', '*HOLLOW_CHESTPLATE']
@@ -345,7 +346,7 @@ export const COMBAT_METHODS = [
   {
     id: 'dungeon-m1-m3', title: 'Master Mode M1–M3', tag: 'Данжи', mode: 'active',
     desc: 'Recombobulator, First Master Star и много опыта Catacombs. Быстрые заходы.',
-    req: m => [{ text: 'F7 пройден', ok: floorRuns(m, 'F7') > 0, have: floorRuns(m, 'F7') > 0 ? `пройден ${fmtN(floorRuns(m, 'F7'))} раз` : 'ещё не пройден' }, { text: 'Catacombs 24+ (M1), 28+ (M3)', ok: cata(m) >= 24, have: `у тебя ${cata(m)}` }],
+    req: m => [{ text: 'F7 пройден', ok: floorRuns(m, 'F7') > 0, have: floorRuns(m, 'F7') > 0 ? `пройден ${fmtN(floorRuns(m, 'F7'))} ${raz(floorRuns(m, 'F7'))}` : 'ещё не пройден' }, { text: 'Catacombs 24+ (M1), 28+ (M3)', ok: cata(m) >= 24, have: `у тебя ${cata(m)}` }],
     compute: dungeonCompute(['M1', 'M2', 'M3']), drops: ['FIRST_MASTER_STAR', 'RECOMBOBULATOR_3000', 'FUMING_POTATO_BOOK'],
   },
   {

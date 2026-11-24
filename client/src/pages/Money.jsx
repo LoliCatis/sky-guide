@@ -370,7 +370,7 @@ function Movers({ openItem }) {
       {rows?.length ? rows.map(r => (
         <div key={r.id} className="item-line" onClick={() => openItem(r.id)}>
           <ItemIcon id={r.id} size={30} /><div className="grow">{r.name}<div className="muted tiny">{r.category ? `${r.category} · ` : ''}{r.market}{r.weekly ? ` · оборот ${coins(r.weekly)}/нед` : r.lots ? ` · лотов: ${r.lots}` : ''}</div></div>
-          <div className="tiny muted">{coins(r.from)} → {coins(r.now)}</div><b className={up ? 'green' : 'red'}>{r.pct > 0 ? '+' : ''}{r.pct.toFixed(1)}%</b>
+          <div className="tiny muted">{coins(r.from)} → {coins(r.now)}</div><b className={up ? 'green' : 'red'}>{r.pct > 0 ? '+' : ''}{r.pct.toFixed(1).replace('.', ',')}%</b>
           {r.market === 'Bazaar' && <a className="mv-chart" href={`#/market/${encodeURIComponent(r.id)}`} onClick={e => e.stopPropagation()} title="Открыть график на «Рынке»" aria-label="График на «Рынке»">📈</a>}
         </div>
       )) : <Empty>{data && all.length ? 'Ничего не подходит под фильтры.' : 'История цен ещё копится.'}</Empty>}

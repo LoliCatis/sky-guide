@@ -96,7 +96,7 @@ main { padding: 18px 26px 40px; min-width: 0; }
 .hero-body { height: 210px; filter: drop-shadow(0 18px 24px rgba(0,0,0,.5)); animation: float 5s ease-in-out infinite; }
 @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 .hero-main { flex: 1; display: flex; flex-direction: column; gap: 18px; min-width: 0; }
-.hero-level { display: flex; gap: 16px; align-items: center; }
+.hero-level { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
 .hero-title { font-size: 26px; font-weight: 800; }
 .lvl-ring { --p: 30; width: 74px; height: 74px; border-radius: 50%; display: grid; place-items: center; background: conic-gradient(var(--gold) calc(var(--p) * 1%), rgba(255,255,255,.08) 0); position: relative; }
 .lvl-ring::before { content: ''; position: absolute; inset: 6px; border-radius: 50%; background: var(--bg2); }
@@ -1338,6 +1338,7 @@ button.coll-unlock { cursor: pointer; } button.coll-unlock:hover { border-color:
 .wealth .budget select option { background: #1a1630; }
 .tuning-row .chip { cursor: default; color: var(--text); }
 .share-btn { margin-left: auto; align-self: flex-start; }
+@media (max-width: 520px) { .share-btn { margin-left: 0; align-self: auto; } }
 .share-canvas { width: 100%; height: auto; border-radius: var(--r-lg); display: block; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
 .share-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 12px; }
 .btn.small { padding: 6px 12px; font-size: 13px; }

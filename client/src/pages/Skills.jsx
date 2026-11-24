@@ -64,7 +64,7 @@ export default function Skills({ state, sub }) {
       <Card title="Данжи — Catacombs" className="span-7" right={<PlanLink steps={steps} cat="Данжи" />}>
         <div className="stats-row">
           <Stat label="Catacombs" value={d.catacombs.level} sub={`${Math.round(d.catacombs.progress * 100)}% до следующего`} accent="#ff5e5e" icon={<img src="/api/texture/bone" alt="" />} />
-          <Stat label="Средний класс" value={d.classAverage.toFixed(1)} sub={`выбран: ${d.classes[d.selectedClass]?.name || '—'}`} accent="#f59e0b" icon={<img src="/api/texture/bow" alt="" />} />
+          <Stat label="Средний класс" value={d.classAverage.toFixed(1).replace('.', ',')} sub={`выбран: ${d.classes[d.selectedClass]?.name || '—'}`} accent="#f59e0b" icon={<img src="/api/texture/bow" alt="" />} />
           <Stat label="Секреты" value={num(d.secrets)} accent="#a78bfa" icon={<img src="/api/texture/map" alt="" />} />
         </div>
         <div className="classes">

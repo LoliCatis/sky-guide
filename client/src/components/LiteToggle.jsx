@@ -11,7 +11,7 @@ export default function LiteToggle() {
       <span className="lite-dot" aria-hidden="true" />
       <span>Облегчённый режим</span>
       <select value={pref} onChange={e => set(e.target.value)} aria-label="Облегчённый режим">
-        <option value="auto">сам ({auto ? 'вкл' : 'выкл'})</option>
+        <option value="auto">{auto ? 'авто: включён' : 'авто: выключен'}</option>
         <option value="on">включён</option>
         <option value="off">выключен</option>
       </select>

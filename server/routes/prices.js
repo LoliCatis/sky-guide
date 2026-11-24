@@ -49,7 +49,7 @@ export function mountPriceRoutes(app, { getMember = () => null, getNetworth = ()
     if (!m) return res.status(503).json({ error: 'Профиль ещё не загружен' });
     const extra = { networth: Number(await getNetworth(req)) || 0 };
     const methods = money.moneyMethods(m, extra);
-    res.json({ plan: money.moneyPlan(m, extra), methods, refs: methodRefs(methods), settings: money.moneyState.settings });
+    res.json({ plan: money.moneyPlan(m, extra, methods), methods, refs: methodRefs(methods), settings: money.moneyState.settings });
   });
   r.get('/settings', (req, res) => res.json(money.moneyState.settings));
   // Общие настройки расчёта (налог, мэр, слоты кузницы) меняет только владелец; друзьям Farming Fortune хранит их браузер

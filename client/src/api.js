@@ -151,6 +151,7 @@ export function useLiveState() {
   const [pulse, setPulse] = useState(0);
   // offline: сервер трекера не отвечает (выключен ПК, упал процесс, пропала сеть)
   const [offline, setOffline] = useState(false);
+  const quick = useRef({});
   const load = useCallback(() => {
     const asked = viewKey(getView());
     return api('/state')
@@ -159,7 +160,13 @@ export function useLiveState() {
         // Сервер только запускается (или первый запрос к Hypixel упал) и профиля ещё нет —
         // держим профиль из кэша, но показываем настоящий статус сервера
         setState(prev => (!s.member && prev?.fromCache && prev._vk === asked ? { ...prev, status: s.status, error: s.error } : { ...s, _vk: asked }));
-        setPulse(p => p + 1); setOffline(false); writeStateCache(s); })
+        setPulse(p => p + 1); setOffline(false); writeStateCache(s);
+        // Чужой профиль из старого кэша сервера: сервер уже обновляет его в фоне — спросим ещё раз через пару секунд,
+        // а не через минуту (иначе новичок первую минуту видит «Давно не обновлялось»). Не больше двух раз подряд
+        if (s.status === 'ok' && getView() && Date.now() - (s.updatedAt || 0) > 3 * 60_000) {
+          if ((quick.current[asked] || 0) < 2) { quick.current[asked] = (quick.current[asked] || 0) + 1; setTimeout(() => { if (viewKey(getView()) === asked) load(); }, 5000); }
+        } else quick.current[asked] = 0;
+      })
       .catch(() => setOffline(true));
   }, []);
   // Переключили игрока: сразу убираем старый профиль, чтобы не показать чужие данные под новым ником

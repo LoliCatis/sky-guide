@@ -13,14 +13,14 @@ export function useNow(step = 1000) {
   return now;
 }
 
-/** «через 12 мин», «2 ч 5 мин», «1 д 4 ч»; секунды — только в последние 10 минут. */
+/** «через 12 мин», «2 ч 5 мин», «1 д 4 ч»; секунды — только в последнюю минуту («7:35» читалось как время на часах). */
 export function left(ms) {
   if (ms <= 0) return 'сейчас';
   const s = Math.floor(ms / 1000), m = Math.floor(s / 60), h = Math.floor(m / 60), d = Math.floor(h / 24);
   if (d) return `${d} д ${h % 24} ч`;
   if (h) return `${h} ч ${m % 60} мин`;
-  if (m >= 10) return `${m} мин`;
-  return `${m}:${String(s % 60).padStart(2, '0')}`;
+  if (m) return `${m} мин`;
+  return `${s} с`;
 }
 
 const when = t => new Date(t).toLocaleString('ru-RU', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });

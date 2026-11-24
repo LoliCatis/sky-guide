@@ -205,7 +205,7 @@ function Account() {
           <span className="acct-ava"><Ico name="user" size={18} /><img src={`/api/head/${encodeURIComponent(me.name)}?size=64`} alt="" width={30} height={30} onError={e => { e.currentTarget.style.display = 'none'; }} /></span>
           <span className="acct-text">
             <b className={`acct-name ${size}`}>{me.name}</b>
-            <span className="acct-sub">{me.admin ? 'Аккаунты и пароль' : 'Сменить пароль'}</span>
+            <span className="acct-sub">Аккаунт</span>
           </span>
         </a>
         {!me.local && (

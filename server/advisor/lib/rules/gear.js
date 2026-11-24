@@ -135,7 +135,7 @@ export function ladderRules(ctx, add) {
     const cost = tierPrice(next);
     const have = best >= 0 ? tierLabel(l, best).name : null;
     // Самые важные ветки для текущего этапа OwnerCat-подобного профиля — данжи и Kuudra
-    const base = ({ 'Данжи': 70, 'Crimson Isle и Kuudra': 62, 'Слееры': 46, 'Добыча': 36, 'Сад (Garden)': 34, 'Рыбалка': 30 }[l.cat] ?? 40) - (best < 0 && l.kind !== 'kuudra-armor' && l.cat !== 'Данжи' ? 6 : 0);
+    const base = ({ 'Dungeons': 70, 'Crimson Isle и Kuudra': 62, 'Slayers': 46, 'Mining': 36, 'Garden': 34, 'Fishing': 30 }[l.cat] ?? 40) - (best < 0 && l.kind !== 'kuudra-armor' && l.cat !== 'Dungeons' ? 6 : 0);
     const items = next.ids || (next.set ? SLOTS.map(s => `${next.set}_${s}`) : l.families ? SLOTS.map(s => `${next.prefix}${l.families[0]}_${s}`) : []);
     add({
       id: `gear-${l.id}`, cat: l.cat, priority: base + (req.ok ? 8 : -12), effort: cost ? 'монеты' : 'часы',
@@ -171,7 +171,7 @@ export function upgradeRules(ctx, add) {
     for (const p of dlo.pieces) if (!GATHERING_ARMOR.test(p.item.id)) main.push(p.item);
   }
   if (!main.length) {
-    const dl = LADDERS.ladders.find(x => x.kind === 'armor' && x.cat === 'Данжи');
+    const dl = LADDERS.ladders.find(x => x.kind === 'armor' && x.cat === 'Dungeons');
     const st = dl ? ladderState(ctx, dl) : { best: -1 };
     if (st.best >= 0) {
       const t = dl.tiers[st.best];
@@ -180,7 +180,7 @@ export function upgradeRules(ctx, add) {
     }
   }
   // лучшее оружие: верхний полученный тир лестниц оружия, актуальных для профиля
-  for (const l of LADDERS.ladders.filter(x => x.kind === 'weapon' && relevant(ctx, x) && x.cat === 'Данжи')) {
+  for (const l of LADDERS.ladders.filter(x => x.kind === 'weapon' && relevant(ctx, x) && x.cat === 'Dungeons')) {
     const { best } = ladderState(ctx, l);
     if (best < 0) continue;
     const id = l.tiers[best].ids.find(i => ctx.owned.has(i));

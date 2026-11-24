@@ -99,7 +99,7 @@ export default function Museum({ state, sub }) {
       <Card className="span-12" title={mu.canDonate.length ? `Можно пожертвовать прямо сейчас: ${mu.canDonate.length} (+${mu.canDonateXp} XP)` : 'Можно пожертвовать прямо сейчас'}>
         {mu.canDonate.length ? (
           <>
-            <p className="small muted">Эти предметы {who} уже есть, но в музее их нет. Хаб → Museum → клик по предмету в инвентаре → Confirm Donation. Пожертвованное можно забрать обратно, XP останется; продать его после этого уже нельзя (Co-op Soulbound).</p>
+            <p className="small muted">Эти предметы {who} уже есть, но в музее их нет. Hub → Museum → клик по предмету в инвентаре → Confirm Donation. Пожертвованное можно забрать обратно, XP останется; продать его после этого уже нельзя (Co-op Soulbound).</p>
             <div className="museum-tiles">
               {mu.canDonate.map(x => <Tile key={x.id} id={ic(x.id)} name={nm(x.id)} sub={`+${x.gain} XP · ${x.where.join(', ')}`} tone="warn" title={x.value ? `Сейчас стоит ~${coins(x.value)}: после пожертвования не продать` : ''} onClick={() => openItem(ic(x.id))} />)}
             </div>

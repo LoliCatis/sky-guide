@@ -28,7 +28,7 @@ export function summarizeForCompare(v) {
   return {
     player: { name: v.player?.name, uuid: v.player?.uuid || m.uuid },
     profile: m.profileName, profileId: m.profileId, gameMode: m.gameMode, coop: m.coopMembers || 1,
-    // Кооп: остров, банк, сад, миньоны и тиры коллекций общие. По profileId страница находит соседей среди сравниваемых
+    // Кооп: остров, Bank, Garden, миньоны и тиры коллекций общие. По profileId страница находит соседей среди сравниваемых
     // (uuid остальных соседей не отдаём: друзья анонимны),
     // share — доля игрока в общем сборе коллекций (сколько он сам насобирал)
     coopShare: (m.coopRoster || []).find(c => c.uuid === m.uuid)?.share ?? null,
@@ -37,7 +37,7 @@ export function summarizeForCompare(v) {
     updatedAt: v.updatedAt || 0,
     sbLevel: m.sbLevel || 0,
     networth: g.networth ? Object.fromEntries(Object.entries(g.networth).map(([k, x]) => [k, Math.round(x || 0)])) : null,
-    purse: m.purse || 0, bank: m.bank, // банк кооп-острова общий
+    purse: m.purse || 0, bank: m.bank, // Bank кооп-острова общий
     skillAverage: m.skillAverage || 0,
     skills: Object.fromEntries(MAIN_SKILLS.filter(k => m.skills?.[k]).map(k => {
       const s = m.skills[k];

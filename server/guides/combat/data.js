@@ -3,7 +3,7 @@
 // constants/leveling.json и misc.json: опыт и стоимость квестов) и вики hypixel-skyblock.fandom.com (тиры, HP, механики).
 // Сверено 2026-11-23. Если в игре что-то поменяется — правится здесь, логика гайдов не трогается.
 
-// ---------- Слееры ----------
+// ---------- Slayers ----------
 // Стоимость квеста по тирам. Блейз дороже остальных, вампир платится Motes.
 export const SLAYER_COST = {
   default: [2000, 7500, 20000, 50000, 100000],
@@ -16,7 +16,7 @@ export const SLAYER_MAX_TIER = { zombie: 5, spider: 5, wolf: 4, enderman: 4, bla
 
 export const SLAYER_INFO = {
   zombie: {
-    title: 'Revenant Horror', ru: 'Зомби', icon: 'BEHEADED_HORROR', where: 'Хаб → Graveyard (кладбище и склепы)',
+    title: 'Revenant Horror', ru: 'Зомби', icon: 'BEHEADED_HORROR', where: 'Hub → Graveyard (кладбище и склепы)',
     unlock: 'Открыт сразу',
     tiers: [
       { hp: '500', mech: 'Life Drain: высасывает здоровье' },
@@ -51,7 +51,7 @@ export const SLAYER_INFO = {
     money: 'Tarantula Silk и Tarantula Web идут на крафты (Terminator требует 128 Silk). Дорогие редкие дропы — Shriveled Wasp, Ensnared Snail, Digested Mosquito и Primordial Eye.',
   },
   wolf: {
-    title: 'Sven Packmaster', ru: 'Волк', icon: 'MASTIFF_HELMET', where: 'Хаб → Ruins или Howling Cave в Парке',
+    title: 'Sven Packmaster', ru: 'Волк', icon: 'MASTIFF_HELMET', where: 'Hub → Ruins или Howling Cave в Парке',
     unlock: 'Нужен Tarantula Broodfather T2',
     tiers: [
       { hp: '—', mech: 'Быстрые удары с истинным уроном (True Damage)' },
@@ -154,7 +154,7 @@ export const RECIPES = {
   POOCH_SWORD: { SHAMAN_SWORD: 1, GOLDEN_TOOTH: 48 },
 };
 
-// ---------- Данжи ----------
+// ---------- Dungeons ----------
 export const MASTER_REQ = { 1: 24, 2: 26, 3: 28, 4: 30, 5: 32, 6: 34, 7: 36 };
 export const FLOORS = [
   { f: 0, boss: 'The Watcher' },
@@ -174,11 +174,11 @@ export const WITHER_SETS = [
   { base: 'SPEED_WITHER', name: "Maxor's Armor", for: [] },
 ];
 export const CLASS_GEAR = {
-  archer: { weapons: ['TERMINATOR', 'JUJU_SHORTBOW', 'LAST_BREATH', 'ITEM_SPIRIT_BOW'], note: 'Лучник живёт на Terminator: он стреляет тремя стрелами, ломает щиты и чистит комнаты. До него — Juju Shortbow.' },
-  mage: { weapons: ['HYPERION', 'NECRON_BLADE', 'MIDAS_STAFF', 'BAT_WAND'], note: 'Маг чистит комнаты Hyperion (Implosion, Shadow Warp, Wither Shield) и бьёт боссов способностями.' },
-  berserk: { weapons: ['DARK_CLAYMORE', 'GIANTS_SWORD', 'SHADOW_FURY', 'LIVID_DAGGER'], note: 'Берсерк — ближний урон: Livid Dagger, Shadow Fury, Giant\'s Sword, на M7 Dark Claymore.' },
-  healer: { weapons: ['HYPERION', 'SOUL_WHIP', 'BAT_WAND'], note: 'Хилер держит группу живой (Wand of Atonement и т. п.) и часто стоит в Storm\'s Armor.' },
-  tank: { weapons: ['AXE_OF_THE_SHREDDED', 'GIANTS_SWORD'], note: 'Танк держит урон и стоит в Goldor\'s Armor.' },
+  archer: { weapons: ['TERMINATOR', 'JUJU_SHORTBOW', 'LAST_BREATH', 'ITEM_SPIRIT_BOW'], note: 'Archer живёт на Terminator: он стреляет тремя стрелами, ломает щиты и чистит комнаты. До него — Juju Shortbow.' },
+  mage: { weapons: ['HYPERION', 'NECRON_BLADE', 'MIDAS_STAFF', 'BAT_WAND'], note: 'Mage чистит комнаты Hyperion (Implosion, Shadow Warp, Wither Shield) и бьёт боссов способностями.' },
+  berserk: { weapons: ['DARK_CLAYMORE', 'GIANTS_SWORD', 'SHADOW_FURY', 'LIVID_DAGGER'], note: 'Berserk — ближний урон: Livid Dagger, Shadow Fury, Giant\'s Sword, на M7 Dark Claymore.' },
+  healer: { weapons: ['HYPERION', 'SOUL_WHIP', 'BAT_WAND'], note: 'Healer держит группу живой (Wand of Atonement и т. п.) и часто стоит в Storm\'s Armor.' },
+  tank: { weapons: ['AXE_OF_THE_SHREDDED', 'GIANTS_SWORD'], note: 'Tank держит урон и стоит в Goldor\'s Armor.' },
 };
 export const DUNGEON_ESSENTIALS = [
   { id: 'SPIRIT_MASK', hint: 'спасает от смерти раз в 30 с (M4 / покупка)' },

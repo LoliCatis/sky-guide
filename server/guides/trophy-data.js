@@ -29,7 +29,7 @@ export const TROPHY_INFO = {
   sulphur_skitter: { base: 0.30, spot: 'лава рядом с блоком Sulphur Ore', cond: 'Ты сам должен стоять не дальше 4 блоков от блока Sulphur Ore (с 0.20.6; раньше было 8).', group: 'sulphur' },
   gusher: { base: 0.20, spot: 'любая лава после извержения Blazing Volcano', cond: 'Ловится с 7-й по 16-ю минуту после извержения вулкана. В остальное время не клюёт.', group: 'any' },
   steaming_hot_flounder: { base: 0.20, spot: 'гейзеры Blazing Volcano', cond: 'Поплавок не дальше 2 блоков от гейзера (белые частицы над лавой) в зоне Blazing Volcano.', group: 'volcano' },
-  obfuscated_fish_1: { base: 0.25, spot: 'любая лава, наживка Corrupted Bait', cond: 'Только с Corrupted Bait в Fishing Bag. Ещё падает с «испорченных» (corrupted) морских существ.', group: 'obf', bait: 'CORRUPTED_BAIT' },
+  obfuscated_fish_1: { base: 0.25, spot: 'любая лава, наживка Corrupted Bait', cond: 'Только с Corrupted Bait в Fishing Bag. Ещё падает с «испорченных» (corrupted) Sea Creatures.', group: 'obf', bait: 'CORRUPTED_BAIT' },
   slugfish: { base: 0.15, spot: 'любая лава, не подсекай 20 секунд', cond: 'От заброса до подсечки должно пройти не меньше 20 секунд (10 секунд с питомцем Slug).', group: 'any', slow: true },
   flyfish: { base: 0.08, spot: 'Blazing Volcano, с высоты 8+ блоков', cond: 'Поплавок в зоне Blazing Volcano и минимум на 8 блоков ниже тебя: забрасывай с уступа над лавой.', group: 'volcano' },
   obfuscated_fish_2: { base: 0.20, spot: 'любая лава, наживка Obfuscated 1', cond: 'Наживка — пойманная Obfuscated 1 (лежит в Fishing Bag, тратится по одной за улов).', group: 'obf', bait: 'OBFUSCATED_FISH_1_BRONZE' },

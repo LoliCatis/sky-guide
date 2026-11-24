@@ -49,7 +49,7 @@ export const GUIDES = [
 ];
 
 export const GROUPS = {
-  combat: 'Бой', rift: 'Рифт', fishing: 'Рыбалка', mining: 'Добыча', farming: 'Фермерство', foraging: 'Foraging', hunting: 'Hunting', skills: 'Навыки', other: 'Разное',
+  combat: 'Combat', rift: 'Rift', fishing: 'Fishing', mining: 'Mining', farming: 'Farming', foraging: 'Foraging', hunting: 'Hunting', skills: 'Навыки', other: 'Разное',
   events: 'События',
 };
 

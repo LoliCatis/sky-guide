@@ -12,7 +12,7 @@ export const TREES = {
    "stats": {
     "stat": "(* level 20)"
    },
-   "short": "Скорость добычи",
+   "short": "Mining Speed",
    "ru": "+{stat} Mining Speed.",
    "ability": false
   },
@@ -53,7 +53,7 @@ export const TREES = {
    "stats": {
     "stat": "(* level 2)"
    },
-   "short": "Удача добычи",
+   "short": "Mining Fortune",
    "ru": "+{stat} Mining Fortune.",
    "ability": false
   },
@@ -123,7 +123,7 @@ export const TREES = {
    "stats": {
     "stat": "(if (lt level 20) (+ 10 (* level 0.5)) 30)"
    },
-   "short": "Быстрая кузница",
+   "short": "Быстрая Forge",
    "ru": "Forge работает на {stat}% быстрее.",
    "ability": false
   },
@@ -1067,7 +1067,7 @@ export const TREES = {
    "stats": {
     "stat": "(round-decimals (* level 0.5) 1)"
    },
-   "short": "Эссенция",
+   "short": "Essence",
    "ru": "Шанс {stat}% удвоить Forest Essence.",
    "ability": false
   },

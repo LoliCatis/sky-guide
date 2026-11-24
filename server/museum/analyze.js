@@ -1,10 +1,10 @@
 // Анализ музея игрока: что засчитано, сколько SkyBlock XP, какая веха, что можно пожертвовать прямо сейчас
 // (предметы уже лежат в инвентаре, хранилищах, гардеробе), что дешевле всего докупить и что выгоднее по XP за монету.
-// Чистая функция: годится и для своего профиля, и для друзей/гостей по нику.
+// Чистая функция: годится и для своего профиля, и для друзей/Visitors по нику.
 import { museumCatalog, CATEGORIES, CATEGORY_BY_ID, MILESTONE_XP, MILESTONES, MILESTONE_REWARDS } from './catalog.js';
 import { collectOwned } from '../advisor/lib/util.js';
 
-const EXTRA_PLACES = [['wardrobeEquipment', 'Гардероб (экипировка)'], ['potions', 'Сумка зелий'], ['fishingBag', 'Сумка рыбака']];
+const EXTRA_PLACES = [['wardrobeEquipment', 'Wardrobe (экипировка)'], ['potions', 'Potion Bag'], ['fishingBag', 'Fishing Bag']];
 
 /** Все предметы игрока: то же, что видит advisor, плюс экипировка из гардероба. */
 export function ownedForMuseum(m) {

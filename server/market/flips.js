@@ -126,7 +126,7 @@ export function npcFlips(ctx, { limit = 30, mode = 'order', share = 0.05, minPro
 /**
  * Цена покупки одной штуки на рынке.
  * @param {MarketCtx} ctx @param {string} id id рынка @param {'instant'|'order'} mode
- * @returns {{ price: number, market: 'Bazaar'|'Аукцион'|'монеты' } | null}
+ * @returns {{ price: number, market: 'Bazaar'|'Auction House'|'монеты' } | null}
  */
 export function buyPrice(ctx, id, mode = 'instant') {
   if (id === 'SKYBLOCK_COIN') return { price: 1, market: 'монеты' };
@@ -136,7 +136,7 @@ export function buyPrice(ctx, id, mode = 'instant') {
     return { price, market: 'Bazaar' };
   }
   const b = ctx.bin.get(id);
-  if (b?.price) return { price: b.price, market: 'Аукцион' };
+  if (b?.price) return { price: b.price, market: 'Auction House' };
   return null;
 }
 
@@ -166,7 +166,7 @@ export function sellValue(ctx, id, mode = 'offer') {
   // продают обычно чуть дешевле самого дешёвого лота и не дороже, чем реально покупали за сутки
   if (st?.median && st.count24h >= 2) gross = Math.min(gross, st.median);
   if (mode === 'instant') gross *= 0.9; // продать быстро — выставить заметно дешевле рынка
-  return { net: ahNet(gross), gross, market: 'Аукцион', volumeDay: st ? st.count24h : 0, sold: st, sold24h: st?.count24h ?? null, binCount: b.count };
+  return { net: ahNet(gross), gross, market: 'Auction House', volumeDay: st ? st.count24h : 0, sold: st, sold24h: st?.count24h ?? null, binCount: b.count };
 }
 
 /**

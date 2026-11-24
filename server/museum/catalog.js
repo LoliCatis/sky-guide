@@ -13,12 +13,12 @@
 import FALLBACK from './data/museum-neu.json' with { type: 'json' };
 
 export const CATEGORIES = [
-  { id: 'combat', name: 'Combat', ru: 'Бой', icon: 'ASPECT_OF_THE_END' },
-  { id: 'farming', name: 'Farming', ru: 'Фермерство', icon: 'THEORETICAL_HOE_WHEAT_1' },
-  { id: 'mining', name: 'Mining', ru: 'Добыча', icon: 'MITHRIL_PICKAXE' },
-  { id: 'fishing', name: 'Fishing', ru: 'Рыбалка', icon: 'CHALLENGE_ROD' },
-  { id: 'foraging', name: 'Foraging', ru: 'Лесорубство', icon: 'TREECAPITATOR_AXE' },
-  { id: 'dungeoneering', name: 'Dungeoneering', ru: 'Данжи', icon: 'BONZO_STAFF' },
+  { id: 'combat', name: 'Combat', ru: 'Combat', icon: 'ASPECT_OF_THE_END' },
+  { id: 'farming', name: 'Farming', ru: 'Farming', icon: 'THEORETICAL_HOE_WHEAT_1' },
+  { id: 'mining', name: 'Mining', ru: 'Mining', icon: 'MITHRIL_PICKAXE' },
+  { id: 'fishing', name: 'Fishing', ru: 'Fishing', icon: 'CHALLENGE_ROD' },
+  { id: 'foraging', name: 'Foraging', ru: 'Foraging', icon: 'TREECAPITATOR_AXE' },
+  { id: 'dungeoneering', name: 'Dungeoneering', ru: 'Dungeons', icon: 'BONZO_STAFF' },
   { id: 'hunting', name: 'Hunting', ru: 'Охота', icon: 'ABYSMAL_LASSO' },
 ];
 export const CATEGORY_BY_ID = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));

@@ -21,7 +21,7 @@ export function unitValue(ctx, id) {
   if (sv?.net > 0) {
     if (npc > sv.net) return { unit: npc, market: 'NPC', volumeDay: Infinity, sold24h: null, thin: false };
     // на аукционе без единой продажи за сутки цене лота не доверяем полностью
-    const thin = sv.market === 'Аукцион' && !(sv.sold24h > 0);
+    const thin = sv.market === 'Auction House' && !(sv.sold24h > 0);
     return { unit: thin ? sv.net * 0.7 : sv.net, market: sv.market, volumeDay: sv.volumeDay || 0, sold24h: sv.sold24h ?? null, thin };
   }
   if (npc > 0) return { unit: npc, market: 'NPC', volumeDay: Infinity, sold24h: null, thin: false };

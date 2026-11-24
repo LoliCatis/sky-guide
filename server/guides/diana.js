@@ -6,7 +6,7 @@ import { calendarView, activePerks } from '../calendar/index.js';
 import { fmtCoins, plural, num, sortNext, priceOfDrop, nice } from './combat/util.js';
 
 const RARITIES = ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY', 'MYTHIC'];
-const RARITY_RU = ['Обычный', 'Необычный', 'Редкий', 'Эпический', 'Легендарный', 'Мифический'];
+const RARITY_RU = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Mythic'];
 // Приставка мобов: у каждой редкости Griffin своя ступень (уровни мобов в NEU идут ровно по 6 ступеням)
 const PREFIX = ['(без приставки)', 'Blessed', 'Stalwart', 'Venerable', 'Exalted', 'Empyrean'];
 
@@ -36,7 +36,7 @@ const UPGRADES = [
 ];
 
 const SPADES = [
-  { id: 'ANCESTRAL_SPADE', chain: 4, cd: '3 с', loot: 'мобы, Griffin Feather, монеты', how: 'Продаёт Diana в Хабе во время ивента' },
+  { id: 'ANCESTRAL_SPADE', chain: 4, cd: '3 с', loot: 'мобы, Griffin Feather, монеты', how: 'Продаёт Diana в Hub во время ивента' },
   { id: 'ARCHAIC_SPADE', chain: 6, cd: '2 с', loot: '+ Mythos Fragment', how: 'Крафт: Ancestral Spade, Hilt of Revelations, 8 Enchanted Ancient Claw, 32 Griffin Feather, 2 Enchanted Gold Block' },
   { id: 'DEIFIC_SPADE', chain: 8, cd: '1 с', loot: '+ Braided Griffin Feather', how: 'Крафт: Archaic Spade, Hilt of Revelations, Braided Griffin Feather, 16 Mythos Fragment, 128 Enchanted Ancient Claw, 128 Enchanted Gold Block' },
 ];
@@ -97,7 +97,7 @@ export function build(m, ctx) {
       why: taming >= 40 ? `Daedalus Blade даёт +4 урона за каждый уровень Taming (у тебя ${taming}) и копирует боевые статы питомца. Нужны 2 Daedalus Stick (с Minotaur) и Sword of Revelations.` : 'Урон ×1,5 по мифическим мобам и +5 Magic Find. Крафт: Hilt of Revelations (с Minos Hunter), 12 Griffin Feather, 8 Enchanted Ancient Claw.' });
   }
   if (challPieces < 4) {
-    next.push({ priority: 25, title: 'Броня Challenger или Mythos на время ивента', why: 'В Хабе во время ритуала статы этой брони удваиваются, а бонус Unearthed (до 8 частей с аксессуарами снаряжения) усиливает против мифических мобов.' });
+    next.push({ priority: 25, title: 'Броня Challenger или Mythos на время ивента', why: 'В Hub во время ритуала статы этой брони удваиваются, а бонус Unearthed (до 8 частей с аксессуарами снаряжения) усиливает против мифических мобов.' });
   }
 
   // ---------- Таблицы ----------
@@ -140,7 +140,7 @@ export function build(m, ctx) {
     next: sortNext(next),
     sections: [
       { kind: 'text', title: 'Что это за ивент', text: [
-        'Мифологический ритуал (в игре Mythological Ritual) — ивент Diana: он идёт весь срок, пока у Diana этот перк (она мэр, или министр с этим перком). Ancestral Spade находит в Хабе норы грифонов (Griffin Burrows), которые идут цепочкой.',
+        'Мифологический ритуал (в игре Mythological Ritual) — ивент Diana: он идёт весь срок, пока у Diana этот перк (она мэр, или министр с этим перком). Ancestral Spade находит в Hub норы грифонов (Griffin Burrows), которые идут цепочкой.',
         'В норах бывают монеты, Griffin Feather и мифические мобы. Какие мобы и насколько сильные, решает редкость Griffin: с каждой редкостью добавляются 2 новых вида, а все мобы становятся сильнее (приставки Blessed → Empyrean) и дают редкий дроп чаще.',
         'С каждого мифического моба падает Ancient Claw (100%), с крупных — ещё Enchanted Ancient Claw. Перья, когти и фрагменты идут на камни Griffin, лопаты, броню и оружие ивента.',
         ritualOn ? `Сейчас ивент идёт: до смены мэра ${left(cal.termEnd - now)}.` : 'Сейчас ивента нет. Календарь и выборы — на странице «События».',
@@ -156,7 +156,7 @@ export function build(m, ctx) {
         { text: 'Griffin Legendary или выше (Minos Inquisitor и Chimera)', done: g >= 4, item: 'GRIFFIN;4', hint: g >= 0 ? `сейчас ${RARITY_RU[g]}` : 'нет Griffin' },
         { text: 'Лопата: Ancestral → Archaic → Deific', done: !!spade, item: spade?.id || 'ANCESTRAL_SPADE', hint: spade ? ctx.name(spade.id) : 'нет лопаты' },
         { text: 'Daedalus Blade (урон растёт с Taming) или Sword of Revelations', done: hasBlade || hasSword, item: hasBlade ? 'DAEDALUS_AXE' : 'SWORD_OF_REVELATIONS', hint: hasBlade ? 'есть Daedalus Blade' : hasSword ? 'есть Sword of Revelations' : `Taming ${taming}` },
-        { text: 'Броня Challenger / Mythos (×2 статы в Хабе во время ивента)', done: challPieces >= 4, item: 'MYTHOS_LEGGINGS', hint: `${challPieces}/8 частей${mythosPieces ? `, из них Mythos ${mythosPieces}` : ''}` },
+        { text: 'Броня Challenger / Mythos (×2 статы в Hub во время ивента)', done: challPieces >= 4, item: 'MYTHOS_LEGGINGS', hint: `${challPieces}/8 частей${mythosPieces ? `, из них Mythos ${mythosPieces}` : ''}` },
         { text: 'Crown of Greed: ×2 монет из нор и +5 Magic Find (но урон по тебе ×1,25)', done: !!crown, item: crown || 'CROWN_OF_GREED' },
         { text: 'Daedalus Notes на лопату (перековка Erudite: +2 норы в цепочке, нужен Mining 30)', done: false, item: 'DAEDALUS_NOTES' },
         { text: 'Beastmaster Crest: аксессуар, который растёт от убитых мифических мобов', done: ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY'].some(r => ctx.has(`BEASTMASTER_CREST_${r}`)) || ctx.has('BEASTMASTER_CREST'), item: 'BEASTMASTER_CREST_LEGENDARY' },

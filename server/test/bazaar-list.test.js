@@ -17,7 +17,7 @@ const bazaar = new Map([
 // 2000 «прочих» товаров — как на настоящем Bazaar
 for (let i = 0; i < 2000; i++) bazaar.set(`FILLER_${i}`, rec(10 + i, 9 + i, i));
 const row = (id, p) => ({ id, name: displayName(id), nameEn: getNames(id)?.nameEn || id, ...p, spread: p.buy - p.sell });
-const search = q => (/остр/.test(q) ? new Map([['SHARPNESS;5', 0]]) : null);
+const search = q => (/остр/.test(q) ? new Map([['SHARPNESS;5', 0]]) : /зачарованный алмаз/.test(q) ? new Map([['ENCHANTED_DIAMOND', 0]]) : null);
 const opt = extra => ({ row, searchIds: search, keyOf: normalizeId, ...extra });
 
 test('без поиска видны все товары: total = размер Bazaar, страницы идут подряд', () => {
@@ -46,10 +46,10 @@ test('поиск: по-русски (через ID базы), по-англий�
   assert.ok(listBazaar(bazaar, opt({ q: 'cayenne' })).items.some(r => r.id === 'ENCHANTMENT_CAYENNE_1'));
 });
 
-test('названия без сырых ID: книги и материалы по-русски, осколки по базе', () => {
-  assert.equal(displayName('ENCHANTED_DIAMOND'), 'Зачарованный алмаз');
-  assert.match(displayName('ENCHANTMENT_SHARPNESS_5'), /^Книга: /);
-  assert.equal(displayName('INK_SACK:3'), 'Какао-бобы');
+test('названия без сырых ID: книги и материалы как в игре, осколки по базе', () => {
+  assert.equal(displayName('ENCHANTED_DIAMOND'), 'Enchanted Diamond');
+  assert.match(displayName('ENCHANTMENT_SHARPNESS_5'), /^Sharpness V$/);
+  assert.equal(displayName('INK_SACK:3'), 'Cocoa Beans');
   for (const [bz, en] of [['SHARD_CINDER_BAT', 'Cinderbat Shard'], ['SHARD_ENDSTONE_PROTECTOR', 'End Stone Protector Shard'],
     ['SHARD_PACKRAT_SKULL', 'Packrat Shard'], ['SHARD_ABYSSAL_LANTERN', 'Abyssal Lanternfish Shard'], ['SHARD_SEA_EMPEROR', 'Loch Emperor Shard']]) {
     assert.equal(getNames(bz)?.nameEn, en, bz);

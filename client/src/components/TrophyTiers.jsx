@@ -1,4 +1,4 @@
-// Счётчик трофейной рыбы по тирам: сколько видов из 18 поймано в бронзе, серебре, золоте и алмазе.
+// Счётчик Trophy Fish по тирам: сколько видов из 18 поймано в бронзе, серебре, золоте и алмазе.
 // counts = member.fishing.trophyTiers: { total: 18, species, tiers: { bronze: { exact, atLeast }, … } }
 import { Progress } from './ui.jsx';
 

@@ -57,11 +57,10 @@ export function ItemView({ id, uuid, onOpen }) {
         <ItemIcon id={data.id} size={96} />
         <div>
           <h2 style={{ color: RARITY_COLOR[data.rarity] }}>{data.name}</h2>
-          {data.ru?.nameRu && data.ru.nameRu !== data.name && <div className="name-ru">{data.ru.nameRu}</div>}
-          <div className="muted">{[...new Set([RARITY_RU[data.rarity], data.ru?.typeRu || data.type, data.ru?.categoryRu].filter(Boolean))].join(' · ')} · <code>{data.id}</code></div>
+          <div className="muted">{[...new Set([RARITY_RU[data.rarity], data.ru?.typeRu || data.type || data.ru?.categoryRu].filter(Boolean))].join(' · ')} · <code>{data.id}</code></div>
           <div className="price-tags">
             {bz && <><Badge color="#4ade80">Купить: {coins(bz.buy)}</Badge><Badge color="#60a5fa">Продать: {coins(bz.sell)}</Badge></>}
-            {bin && <Badge color="#f5c542">Аукцион: от {coins(bin.price)} ({bin.count} лотов)</Badge>}
+            {bin && <Badge color="#f5c542">Auction House: от {coins(bin.price)} ({bin.count} лотов)</Badge>}
             {data.npc && <Badge color="#aaa">NPC: {coins(data.npc)}</Badge>}
             {!bz && !bin && <span className="muted small">На рынке сейчас не продаётся</span>}
           </div>
@@ -175,7 +174,7 @@ export function ItemModal({ id, uuid, onClose }) {
 
 const PLACES = {
   inventory: 'инвентарь', armor: 'надето', equipment: 'экипировка', wardrobe: 'гардероб', enderChest: 'эндер-сундук',
-  vault: 'личное хранилище', talismans: 'сумка аксессуаров', quiver: 'колчан', potions: 'сумка зелий', fishingBag: 'сумка рыбака',
+  vault: 'личное хранилище', talismans: 'Accessory Bag', quiver: 'колчан', potions: 'Potion Bag', fishingBag: 'Fishing Bag',
 };
 // Где этот предмет лежит у игрока: «инвентарь ×1 · рюкзак 3 ×2 · мешки ×120»
 export function whereOwned(inv, id) {
@@ -262,7 +261,7 @@ export default function Wiki() {
           {res.map(r => (
             <div key={r.id} className="search-item" onClick={() => openItem(r.id)}>
               <ItemIcon id={r.id} size={40} />
-              <div className="grow"><div style={{ color: RARITY_COLOR[r.rarity] }}>{r.name}</div><div className="muted tiny">{[r.nameRu && r.nameRu !== r.name && r.nameRu !== `NPC ${r.name}` ? r.nameRu : '', RARITY_RU[r.rarity], r.type,
+              <div className="grow"><div style={{ color: RARITY_COLOR[r.rarity] }}>{r.name}</div><div className="muted tiny">{[RARITY_RU[r.rarity], r.type,
                 // два предмета с одним названием и редкостью (Rift Necklace) различаем по ID
                 res.some(x => x !== r && x.name === r.name && x.rarity === r.rarity) && variantLabel(r.id)].filter(Boolean).join(' · ')}</div></div>
               <div className="price">{r.price ? coins(r.price) : ''}</div>

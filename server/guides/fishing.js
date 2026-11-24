@@ -1,4 +1,4 @@
-// Гайд по рыбалке: уровень, удочки и броня, морские существа, трофейная рыба, события, заработок и что делать дальше.
+// Гайд по рыбалке: уровень, удочки и броня, Sea Creatures, Trophy Fish, события, заработок и что делать дальше.
 import {
   RODS, ROD_PARTS, ARMOR, armorIds, EQUIPMENT, CREATURES, ZONES, TROPHY_FISH, TIERS, TIER_RU, TROPHY_RANKS,
   DROPS, FISHING_PETS, COLLECTIONS, trophyTierCounts,
@@ -66,7 +66,7 @@ function armorOwned(ctx, a) {
 
 // ---------- сам гайд ----------
 export default {
-  id: 'fishing', title: 'Рыбалка', icon: 'FISHING_ROD', group: 'fishing',
+  id: 'fishing', title: 'Fishing', icon: 'FISHING_ROD', group: 'fishing',
   build(m, ctx) {
     const sk = m.skills?.fishing || { level: 0, maxLevel: 50, progress: 0 };
     const lvl = sk.level || 0;
@@ -153,8 +153,8 @@ export default {
         ['Уровень Fishing', `${lvl} из ${sk.maxLevel}${lvl < sk.maxLevel ? ` (${Math.round((sk.progress || 0) * 100)}% до ${lvl + 1})` : ''}`],
         ['Всего выловлено', fmtNum(fished.total)],
         ['Сокровища (обычные / крупные / outstanding)', `${fmtNum(fished.treasure)} / ${fmtNum(fished.large_treasure)} / ${fmtNum(fished.outstanding)}`],
-        ['Убито морских существ', fmtNum(f.seaCreatureKills)],
-        ['Трофейных рыб поймано', fmtNum(tf.total)],
+        ['Убито Sea Creatures', fmtNum(f.seaCreatureKills)],
+        ['Trophy Fish поймано', fmtNum(tf.total)],
         ['Лучшая удочка для воды', bestWater ? { text: name(bestWater.id), item: bestWater.id } : { text: 'нет', tone: 'warn' }],
         ['Лучшая удочка для лавы', bestLava ? { text: name(bestLava.id), item: bestLava.id } : { text: 'нет', tone: 'warn' }],
       ],
@@ -167,10 +167,10 @@ export default {
       kind: 'steps', title: 'Путь по уровням',
       note: 'Отмечено по твоему уровню Fishing. Клик по значку открывает рецепт и цену.',
       items: [
-        st(0, 10, '1–10: вода, первые существа', 'Любая вода у Fisherman’s Hut в Хабе или в Backwater Bayou. Challenging Rod с 5 уровня, Backwater Armor с 5.', ['CHALLENGE_ROD', 'BACKWATER_CHESTPLATE']),
+        st(0, 10, '1–10: вода, первые существа', 'Любая вода у Fisherman’s Hut в Hub или в Backwater Bayou. Challenging Rod с 5 уровня, Backwater Armor с 5.', ['CHALLENGE_ROD', 'BACKWATER_CHESTPLATE']),
         st(10, 20, '10–20: Rod of Champions и Sponge/Salmon', 'Sea Witch, Sea Archer, Rider of the Deep, Catfish. Rod of Champions с 15, Salmon Armor с 13, Sponge Armor с 17. Fishing Festival: акулы с 5 уровня.', ['CHAMP_ROD', 'SPONGE_CHESTPLATE']),
         st(20, 27, '20–27: Rod of the Sea, Shark Scale, Spooky', 'Sea Emperor на 20, Diver’s Armor, Rod of Legends → Rod of the Sea (24). Shark Scale Armor (24) из чешуи Great White Shark. На Spooky Festival: Phantom Fisher (21), Grim Reaper (26).', ['ROD_OF_THE_SEA', 'SHARK_SCALE_CHESTPLATE']),
-        st(27, 36, '27–36: лава Crimson Isle', 'Magma Rod (27) → Inferno Rod (30) → Hellfire Rod (35). Броню собираешь по частям с лавовых существ: Slug Boots, Moogma Leggings, Flaming Chestplate, Taurus Helmet. Параллельно трофейная рыба у Odger.', ['MAGMA_ROD', 'INFERNO_ROD', 'HELLFIRE_ROD']),
+        st(27, 36, '27–36: лава Crimson Isle', 'Magma Rod (27) → Inferno Rod (30) → Hellfire Rod (35). Броню собираешь по частям с лавовых существ: Slug Boots, Moogma Leggings, Flaming Chestplate, Taurus Helmet. Параллельно Trophy Fish у Odger.', ['MAGMA_ROD', 'INFERNO_ROD', 'HELLFIRE_ROD']),
         st(36, 45, '36–45: Thunder и Thunder Armor', 'Thunder ловится после награды Novice Trophy Fisher. Из Thunder Shards — Thunder Armor (36). Цель — 45 и награда Adept, чтобы открыть Lord Jawbus.', ['THUNDER_CHESTPLATE', 'THUNDER_SHARDS']),
         st(45, 50, '45–50: Lord Jawbus и Magma Lord', 'Magma Lord Armor (45) из Magma Lord Fragment. Radioactive Vial — самый дорогой дроп. Дальше бестиарий и Expert/Master Trophy Fisher.', ['MAGMA_LORD_CHESTPLATE', 'MAGMA_LORD_FRAGMENT']),
       ],
@@ -223,10 +223,10 @@ export default {
       ],
     });
 
-    // Трофейная рыба
+    // Trophy Fish
     sections.push({
-      kind: 'table', title: `Трофейная рыба (${tf.fish.filter(x => x.atLeast.bronze).length}/18 видов)`,
-      note: 'Ловится удочкой для лавы в Crimson Isle. Сдавай Odger на вершине Blazing Volcano. Точные условия, шансы, гарантия на 100-й/600-й улов и личный план до алмаза — в гайде «Трофейная рыба».',
+      kind: 'table', title: `Trophy Fish (${tf.fish.filter(x => x.atLeast.bronze).length}/18 видов)`,
+      note: 'Ловится удочкой для лавы в Crimson Isle. Сдавай Odger на вершине Blazing Volcano. Точные условия, шансы, гарантия на 100-й/600-й улов и личный план до алмаза — в гайде «Trophy Fish».',
       columns: ['Рыба', 'Как поймать', 'Бронза', 'Серебро', 'Золото', 'Алмаз', 'Всего'],
       rows: tf.fish.map(x => [
         { text: x.name, item: `${x.key.toUpperCase()}_${(x.best || 'bronze').toUpperCase()}` },
@@ -246,7 +246,7 @@ export default {
       })),
     });
 
-    // Морские существа
+    // Sea Creatures
     const zoneRows = Object.keys(ZONES).flatMap(z => CREATURES.filter(c => c.zone === z).map(c => {
       const k = killsOf(c, kills);
       return [
@@ -258,7 +258,7 @@ export default {
       ];
     }));
     sections.push({
-      kind: 'table', title: 'Морские существа и бестиарий', columns: ['Зона', 'Существо', 'Fishing', 'Где и когда', 'Убито / макс. бестиарий'],
+      kind: 'table', title: 'Sea Creatures и бестиарий', columns: ['Зона', 'Существо', 'Fishing', 'Где и когда', 'Убито / макс. бестиарий'],
       note: 'Уровни — по вики; «—» только у Nutcracker, его вики не описывает. Убийства — из бестиария профиля.',
       rows: zoneRows,
     });
@@ -280,7 +280,7 @@ export default {
     const dropRows = DROPS.map(d => [{ text: name(d.id), item: d.id }, d.from, price(d.id) ? fmtCoins(price(d.id)) : '—', d.note || '']);
     const magma = price('MAGMA_FISH');
     const filletValue = magma ? tf.fish.reduce((s, x) => s + TIERS.reduce((a, t, i) => a + x.tiers[t] * x.fillet[i], 0), 0) * magma : 0;
-    const methods = (ctx.analysis?.methods || []).filter(x => x.tag === 'Рыбалка');
+    const methods = (ctx.analysis?.methods || []).filter(x => x.tag === 'Fishing');
     sections.push({
       kind: 'table', title: 'Заработок: что продаётся', columns: ['Предмет', 'С кого', 'Цена сейчас', 'Зачем'],
       note: 'Цены живые (Bazaar / мин. BIN). Доход в час на рыбалке держится на редких дропах, поэтому сильно скачет.',

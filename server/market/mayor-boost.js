@@ -6,24 +6,24 @@
 
 export const MAYOR_RULES = [
   // Aatrox — слееры
-  { perk: 'Pathfinder', mayor: 'Aatrox', tags: ['Слееры'], factor: 1.1, note: 'редкие дропы с боссов выпадают на 20% чаще' },
-  { perk: 'SLASHED Pricing', mayor: 'Aatrox', tags: ['Слееры'], factor: 1.05, note: 'квесты слееров вдвое дешевле' },
+  { perk: 'Pathfinder', mayor: 'Aatrox', tags: ['Slayers'], factor: 1.1, note: 'редкие дропы с боссов выпадают на 20% чаще' },
+  { perk: 'SLASHED Pricing', mayor: 'Aatrox', tags: ['Slayers'], factor: 1.05, note: 'квесты слееров вдвое дешевле' },
   // Paul — данжи
-  { perk: 'Marauder', mayor: 'Paul', tags: ['Данжи'], factor: 1.1, note: 'сундуки в данжах на 20% дешевле' },
-  { perk: 'EZPZ', mayor: 'Paul', tags: ['Данжи'], factor: 1, note: '+10 к оценке: S+ и лучшие сундуки проще' },
+  { perk: 'Marauder', mayor: 'Paul', tags: ['Dungeons'], factor: 1.1, note: 'сундуки в данжах на 20% дешевле' },
+  { perk: 'EZPZ', mayor: 'Paul', tags: ['Dungeons'], factor: 1, note: '+10 к оценке: S+ и лучшие сундуки проще' },
   // Cole — добыча
   { perk: 'Molten Forge', mayor: 'Cole', ids: ['forge'], factor: 1.25, note: 'Forge работает на 25% быстрее' },
-  { perk: 'Mining Fiesta', mayor: 'Cole', tags: ['Добыча', 'Майнинг'], factor: 1, note: 'во время фиесты добычи дроп руды и гемов двойной: копай именно в эти дни (даты в «Событиях»)' },
+  { perk: 'Mining Fiesta', mayor: 'Cole', tags: ['Mining', 'Майнинг'], factor: 1, note: 'во время фиесты добычи дроп руды и гемов двойной: копай именно в эти дни (даты в «Событиях»)' },
   { perk: 'Prospection', mayor: 'Cole', tags: ['Миньоны'], factor: 1, note: 'миньоны добычи на 25% быстрее' },
-  // Finnegan — фермерство
-  { perk: 'Pest Eradicator', mayor: 'Finnegan', ids: ['farming'], factor: 1.05, note: 'бонусы за вредителей в Саду' },
+  // Finnegan — Farming
+  { perk: 'Pest Eradicator', mayor: 'Finnegan', ids: ['farming'], factor: 1.05, note: 'бонусы за Pests в Garden' },
   { perk: 'Farming Simulator', mayor: 'Finnegan', ids: ['farming'], factor: 1, note: 'счётчики культур на мотыгах засчитывают сбор дважды (урожай не растёт, быстрее качаются инструменты)' },
-  { perk: 'Blooming Business', mayor: 'Finnegan', ids: ['visitors'], factor: 1.2, note: 'гости Сада приходят чаще, редких больше' },
+  { perk: 'Blooming Business', mayor: 'Finnegan', ids: ['visitors'], factor: 1.2, note: 'Visitors Garden приходят чаще, редких больше' },
   { perk: 'GOATed', mayor: 'Finnegan', ids: ['farming'], factor: 1, note: 'медали Jacob\'s Contest получить проще' },
   // Marina — рыбалка
-  { perk: 'Double Trouble', mayor: 'Marina', tags: ['Рыбалка'], factor: 1.1, note: 'чаще Double Hook: два существа за заброс' },
-  { perk: 'Luck of the Sea 2.0', mayor: 'Marina', tags: ['Рыбалка'], factor: 1.1, note: '+15 Sea Creature Chance' },
-  { perk: 'Fishing Festival', mayor: 'Marina', tags: ['Рыбалка'], factor: 1, note: 'первые 3 дня каждого месяца ловятся акулы (Shark Fin, зубы)' },
+  { perk: 'Double Trouble', mayor: 'Marina', tags: ['Fishing'], factor: 1.1, note: 'чаще Double Hook: два существа за заброс' },
+  { perk: 'Luck of the Sea 2.0', mayor: 'Marina', tags: ['Fishing'], factor: 1.1, note: '+15 Sea Creature Chance' },
+  { perk: 'Fishing Festival', mayor: 'Marina', tags: ['Fishing'], factor: 1, note: 'первые 3 дня каждого месяца ловятся акулы (Shark Fin, зубы)' },
   // Diaz — экономика
   { perk: 'Stock Exchange', mayor: 'Diaz', ids: ['stonks'], factor: 1, note: 'идёт аукцион Stonks: можно выиграть Stock of Stonks' },
   { perk: 'Volume Trading', mayor: 'Diaz', tags: ['Торговля'], factor: 1, note: 'лимиты Bazaar выше: можно ставить больше ордеров' },
@@ -31,10 +31,10 @@ export const MAYOR_RULES = [
   // Derpy — особый мэр
   { perk: 'TURBO MINIONS!!!', mayor: 'Derpy', tags: ['Миньоны'], factor: 2, note: 'миньоны работают вдвое быстрее — топливо окупается вдвое лучше' },
   { perk: 'QUAD TAXES!!!', mayor: 'Derpy', tags: ['Торговля'], factor: 0.75, note: 'налоги на Bazaar и аукционе выше — флипы хуже' },
-  { perk: 'DOUBLE MOBS HP!!!', mayor: 'Derpy', tags: ['Слееры', 'Данжи', 'Crimson Isle'], factor: 0.7, note: 'у мобов вдвое больше здоровья — убийства медленнее' },
+  { perk: 'DOUBLE MOBS HP!!!', mayor: 'Derpy', tags: ['Slayers', 'Dungeons', 'Crimson Isle'], factor: 0.7, note: 'у мобов вдвое больше здоровья — убийства медленнее' },
   // Scorpius и Foxy
   { perk: 'Darker Auctions', mayor: 'Scorpius', ids: ['dark-auction'], factor: 1, note: 'на Dark Auction больше лотов' },
-  { perk: 'Sweet Benevolence', mayor: 'Foxy', tags: ['Ивенты'], factor: 1.1, note: 'больше конфет, подарков и шоколада с ивентов' },
+  { perk: 'Sweet Benevolence', mayor: 'Foxy', tags: ['Ивенты'], factor: 1.1, note: 'больше конфет, подарков и Chocolate с ивентов' },
 ];
 
 /**

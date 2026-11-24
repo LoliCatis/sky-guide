@@ -57,9 +57,9 @@ export async function drawShareCard(canvas, { name, member: m, analysis: a }) {
     ['Состояние', coins(a?.gear?.networth?.total), 'оценка по рынку', '#f5c542'],
     ['Magical Power', num(m.magicalPower), m.selectedPower ? `сила ${prettyId(m.selectedPower)}` : 'сила не выбрана', '#c879ff'],
     ['Catacombs', String(m.dungeons?.catacombs?.level ?? '—'), `классы ~${fx(m.dungeons?.classAverage)}`, '#ff5e5e'],
-    ['Средний скилл', fx(m.skillAverage), '9 основных скиллов', '#4ade80'],
-    ['Слееры', sl.join(' / ') || '—', 'зомби · паук · волк · эндер · блейз · вамп', '#fb923c'],
-    ['Банк', coins(m.bank), `кошелёк ${coins(m.purse)}`, '#60a5fa'],
+    ['Skill Average', fx(m.skillAverage), '9 основных скиллов', '#4ade80'],
+    ['Slayers', sl.join(' / ') || '—', 'зомби · паук · волк · эндер · блейз · вамп', '#fb923c'],
+    ['Bank', coins(m.bank), `кошелёк ${coins(m.purse)}`, '#60a5fa'],
   ];
   const tw = 348, th = 150, gx = 24, x0 = 56, y0 = 262;
   tiles.forEach(([label, value, sub, color], i) => {

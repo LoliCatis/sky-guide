@@ -83,8 +83,8 @@ export function priceTag(ctx, id, count = 1) {
 }
 
 const STORAGE = [
-  ['inventory', 'Инвентарь'], ['armor', 'Надето'], ['equipment', 'Экипировка'], ['wardrobe', 'Гардероб'],
-  ['enderChest', 'Эндер-сундук'], ['vault', 'Личное хранилище'], ['quiver', 'Колчан'], ['talismans', 'Сумка аксессуаров'],
+  ['inventory', 'Инвентарь'], ['armor', 'Надето'], ['equipment', 'Экипировка'], ['wardrobe', 'Wardrobe'],
+  ['enderChest', 'Ender Chest'], ['vault', 'Personal Vault'], ['quiver', 'Quiver'], ['talismans', 'Accessory Bag'],
 ];
 
 /**
@@ -101,7 +101,7 @@ export function collectOwned(m) {
     map.set(it.id, arr);
   };
   for (const [k, where] of STORAGE) for (const it of inv[k] || []) push(it, where);
-  for (const [k, list] of Object.entries(inv.backpacks || {})) for (const it of list || []) push(it, `Рюкзак ${Number(k) + 1}`);
+  for (const [k, list] of Object.entries(inv.backpacks || {})) for (const it of list || []) push(it, `Backpack ${Number(k) + 1}`);
   return map;
 }
 

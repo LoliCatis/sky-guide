@@ -75,7 +75,7 @@ export const FACTIONS = {
 export const QUEST_TYPES = [
   { name: 'Miniboss', ru: 'Мини-босс', text: 'Убить мини-босса острова. Быстрее всего, если он как раз жив.' },
   { name: 'Fetch', ru: 'Принести', text: 'Сдать предметы (часто материалы Crimson Isle). Проверь мешки и Bazaar, прежде чем фармить.' },
-  { name: 'Fishing', ru: 'Рыбалка', text: 'Поймать лавовых существ или трофейную рыбу.' },
+  { name: 'Fishing', ru: 'Fishing', text: 'Поймать лавовых существ или Trophy Fish.' },
   { name: 'Rescue', ru: 'Спасение', text: 'Вызволить пленника из лагеря врага: Cathedral у Barbarians, The Bastion у Mages.' },
   { name: 'Dojo', ru: 'Dojo', text: 'Пройти испытание Dojo с рангом не ниже указанного.' },
   { name: 'Kuudra', ru: 'Kuudra', text: 'Пройти Kuudra нужного тира.' },

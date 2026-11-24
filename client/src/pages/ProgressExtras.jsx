@@ -1,4 +1,4 @@
-// Нижние блоки «Прогресса»: шоколадная фабрика, эксперименты, аукцион, Hunting, сад, Galatea, кооператив и рекорды.
+// Нижние блоки «Прогресса»: шоколадная фабрика, эксперименты, аукцион, Hunting, Garden, Galatea, кооператив и рекорды.
 // Данные готовит сервер (server/parse/extras-view.js): названия вместо сырых ID, ID для иконок, максимумы.
 import { useState, Fragment } from 'react';
 import { Card, Progress } from '../components/ui.jsx';
@@ -36,10 +36,10 @@ function Chocolate({ ch, view, advice }) {
   // Советы считают сотрудников по тем же данным, что и плитки; без советов — вид с сервера
   const emps = advice?.employees?.filter(e => e.hired).map(e => ({ id: e.key, name: e.name, level: e.level })) || view?.employees || [];
   return (
-    <Card title="Шоколадная фабрика" icon={<ItemIcon id="PRESTIGE_CHOCOLATE_REALM" size={22} />} className="span-6 ex-card ex-choco">
+    <Card title="Chocolate Factory" icon={<ItemIcon id="PRESTIGE_CHOCOLATE_REALM" size={22} />} className="span-6 ex-card ex-choco">
       <div className="ex-tiles">
         <Tile icon="PRESTIGE_CHOCOLATE_REALM" label="Престиж" value={advice ? <>{ch.prestige}<span className="muted small">/{advice.maxPrestige} · {String(advice.mult).replace('.', ',')}×</span></> : ch.prestige} sub={advice ? `кроликов найдено: ${num(ch.rabbits)} из ${num(advice.rabbits.total)}` : `кроликов найдено: ${num(ch.rabbits)}`} tone="gold" />
-        <Tile icon="SUPREME_CHOCOLATE_BAR" label="Шоколад сейчас" value={coins(ch.chocolate)} sub={`за всё время ${coins(ch.total)}`} />
+        <Tile icon="SUPREME_CHOCOLATE_BAR" label="Chocolate сейчас" value={coins(ch.chocolate)} sub={`за всё время ${coins(ch.total)}`} />
       </div>
       <div className="ex-bar-row">
         <span>Time Tower</span>
@@ -47,7 +47,7 @@ function Chocolate({ ch, view, advice }) {
         <b>{ch.timeTower}<span className="muted">/{tt}</span></b>
       </div>
       <div className="ex-kv">
-        {ch.sincePrestige > 0 && <><span>Шоколад с последнего престижа</span><b>{coins(ch.sincePrestige)}</b></>}
+        {ch.sincePrestige > 0 && <><span>Chocolate с последнего престижа</span><b>{coins(ch.sincePrestige)}</b></>}
         {ch.barn > 0 && <><span>Rabbit Barn (вместимость)</span><b>ур. {ch.barn}</b></>}
         {ch.clickUpgrades > 0 && <><span>Hand-Baked Chocolate (клик)</span><b>ур. {ch.clickUpgrades}</b></>}
       </div>
@@ -82,7 +82,7 @@ function ChocoTips({ advice }) {
       ))}
     </ol>
     {advice.residents?.byIsland?.length > 0 && <details className="ex-eggs ex-res">
-      <summary>Кролики-резиденты: найдено {advice.residents.found} из {advice.residents.total}</summary>
+      <summary>Rabbits-резиденты: найдено {advice.residents.found} из {advice.residents.total}</summary>
       <div className="ex-res-list">
         {advice.residents.byIsland.map(r => (
           <div key={r.island} className={`ex-res-row ${r.missing.length ? '' : 'full'}`}>
@@ -116,7 +116,7 @@ function ExperimentsAuction({ x }) {
         ))}
       </div>
       {a && <>
-        <Section>Аукцион за всё время</Section>
+        <Section>Auction House за всё время</Section>
         <div className="ex-tiles">
           <Tile icon="GOLD_INGOT" label="Продано лотов" value={num(a.sold)} sub={`заработано ${coins(a.earned)}`} tone="green" />
           <Tile icon="ENCHANTED_GOLD_BLOCK" label="Выиграно лотов" value={num(a.won)} sub={`потрачено ${coins(a.spent)}`} tone="red" />
@@ -138,7 +138,7 @@ function Hunting({ x, view }) {
   const shown = all ? attrs : attrs.slice(0, 12);
   const maxed = attrs.filter(a => a.max && a.n >= a.max).length;
   const h = x.shardHunts;
-  const hunts = [['Рыбалка', h.fishing, 'FISHING_ROD'], ['Бой', h.combat, 'DIAMOND_SWORD'], ['Лес', h.forest, 'JUNGLE_AXE'], ['Ловушки', h.trap, 'LEASH'], ['Соль', h.salt, 'SUGAR']].filter(([, v], i) => i < 3 || v);
+  const hunts = [['Fishing', h.fishing, 'FISHING_ROD'], ['Combat', h.combat, 'DIAMOND_SWORD'], ['Foraging', h.forest, 'JUNGLE_AXE'], ['Ловушки', h.trap, 'LEASH'], ['Соль', h.salt, 'SUGAR']].filter(([, v], i) => i < 3 || v);
   return (
     <Card title="Hunting: атрибуты и осколки" icon={<ItemIcon id="LEASH" size={22} />} className="span-12 ex-card">
       <div className="ex-hunts">
@@ -185,9 +185,9 @@ function Garden({ m, x, view }) {
   const gl = view?.gardenLevel;
   const plots = view?.max?.plots || 24;
   return (
-    <Card title="Сад" icon={<ItemIcon id="GARDEN_SCYTHE" size={22} />} className="span-6 ex-card">
+    <Card title="Garden" icon={<ItemIcon id="GARDEN_SCYTHE" size={22} />} className="span-6 ex-card">
       <div className="ex-tiles">
-        {gl && <Tile icon="WHEAT" label="Уровень сада" value={gl.level >= gl.max ? <>{gl.level} <span className="max-badge">МАКС</span></> : `${gl.level}/${gl.max}`} sub={gl.level >= gl.max ? `${num(gd.experience)} опыта` : `до след. ${num(gl.toNext)} опыта`} tone="green" />}
+        {gl && <Tile icon="WHEAT" label="Garden Level" value={gl.level >= gl.max ? <>{gl.level} <span className="max-badge">МАКС</span></> : `${gl.level}/${gl.max}`} sub={gl.level >= gl.max ? `${num(gd.experience)} опыта` : `до след. ${num(gl.toNext)} опыта`} tone="green" />}
         <Tile icon="COMPOST" label="Компостер" value={`${num(gd.composterData?.organic)} / ${num(gd.composterData?.fuel)}`} sub="органика / топливо" />
       </div>
       <div className="ex-bar-row">
@@ -200,7 +200,7 @@ function Garden({ m, x, view }) {
         {view.greenhouse.map(u => <span key={u.key} className="ex-pill">{u.name} <b>{u.level}</b></span>)}
       </div>}
       {view?.chips?.length > 0 && <>
-        <Section right={<span className="ex-note">{view.chips.filter(c => c.level >= c.max).length} из {view.chips.length} на макс.</span>}>Чипы сада</Section>
+        <Section right={<span className="ex-note">{view.chips.filter(c => c.level >= c.max).length} из {view.chips.length} на макс.</span>}>Garden Chips</Section>
         <div className="ex-chips">
           {view.chips.map(c => (
             <div key={c.key} className={`ex-chip ${c.level >= c.max ? 'full' : ''}`}>
@@ -214,7 +214,7 @@ function Garden({ m, x, view }) {
         </div>
       </>}
       {view?.visitors?.length > 0 && <>
-        <Section right={<span className="ex-note">{view.visitors.length} {plural(view.visitors.length, 'гость', 'гостя', 'гостей')}</span>}>Гости в саду сейчас</Section>
+        <Section right={<span className="ex-note">{view.visitors.length} {plural(view.visitors.length, 'гость', 'гостя', 'Visitors')}</span>}>Visitors в Garden сейчас</Section>
         <div className="ex-visitors">
           {view.visitors.map(v => (
             <div key={v.npc} className="ex-visitor">

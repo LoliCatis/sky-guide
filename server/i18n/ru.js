@@ -2,55 +2,58 @@
 // как принято в русскоязычном комьюнити SkyBlock, потому что в игре и на аукционе они только на английском.
 
 export const SKILLS = {
-  farming: 'Фермерство', mining: 'Добыча', combat: 'Бой', foraging: 'Лесорубство',
-  fishing: 'Рыбалка', enchanting: 'Зачарование', alchemy: 'Алхимия', carpentry: 'Плотничество',
-  runecrafting: 'Руническое ремесло', taming: 'Приручение', social: 'Общение', hunting: 'Охота',
+  farming: 'Farming', mining: 'Mining', combat: 'Combat', foraging: 'Foraging',
+  fishing: 'Fishing', enchanting: 'Enchanting', alchemy: 'Alchemy', carpentry: 'Carpentry',
+  runecrafting: 'Runecrafting', taming: 'Taming', social: 'Social', hunting: 'Hunting',
 };
 
 export const SLAYERS = {
-  zombie: { name: 'Revenant Horror', ru: 'Зомби' },
-  spider: { name: 'Tarantula Broodfather', ru: 'Паук' },
-  wolf: { name: 'Sven Packmaster', ru: 'Волк' },
-  enderman: { name: 'Voidgloom Seraph', ru: 'Эндермен' },
-  blaze: { name: 'Inferno Demonlord', ru: 'Блейз' },
-  vampire: { name: 'Riftstalker Bloodfiend', ru: 'Вампир' },
+  zombie: { name: 'Revenant Horror', ru: 'Zombie' },
+  spider: { name: 'Tarantula Broodfather', ru: 'Spider' },
+  wolf: { name: 'Sven Packmaster', ru: 'Wolf' },
+  enderman: { name: 'Voidgloom Seraph', ru: 'Enderman' },
+  blaze: { name: 'Inferno Demonlord', ru: 'Blaze' },
+  vampire: { name: 'Riftstalker Bloodfiend', ru: 'Vampire' },
 };
 
-export const CLASSES = { healer: 'Хилер', mage: 'Маг', berserk: 'Берсерк', archer: 'Лучник', tank: 'Танк' };
+export const CLASSES = { healer: 'Healer', mage: 'Mage', berserk: 'Berserk', archer: 'Archer', tank: 'Tank' };
 
 export const RARITY = {
-  COMMON: 'Обычный', UNCOMMON: 'Необычный', RARE: 'Редкий', EPIC: 'Эпический', LEGENDARY: 'Легендарный',
-  MYTHIC: 'Мифический', DIVINE: 'Божественный', SPECIAL: 'Особый', 'VERY SPECIAL': 'Очень особый',
-  ULTIMATE: 'Ультимативный', ADMIN: 'Админский',
+  COMMON: 'Common', UNCOMMON: 'Uncommon', RARE: 'Rare', EPIC: 'Epic', LEGENDARY: 'Legendary',
+  MYTHIC: 'Mythic', DIVINE: 'Divine', SPECIAL: 'Special', 'VERY SPECIAL': 'Very Special',
+  ULTIMATE: 'Ultimate', ADMIN: 'Admin',
 };
 
-export const STATS = {
-  'Health': 'Здоровье', 'Defense': 'Защита', 'True Defense': 'Истинная защита', 'Strength': 'Сила',
-  'Speed': 'Скорость', 'Crit Chance': 'Шанс крита', 'Crit Damage': 'Крит. урон', 'Intelligence': 'Интеллект',
-  'Bonus Attack Speed': 'Скорость атаки', 'Attack Speed': 'Скорость атаки', 'Sea Creature Chance': 'Шанс морского существа',
-  'Magic Find': 'Magic Find (удача на дроп)', 'Pet Luck': 'Удача питомцев', 'Ferocity': 'Свирепость',
-  'Ability Damage': 'Урон способностей', 'Mining Speed': 'Скорость добычи', 'Mining Fortune': 'Удача добычи',
-  'Farming Fortune': 'Фермерская удача', 'Foraging Fortune': 'Удача лесорубства', 'Pristine': 'Чистота (Pristine)',
-  'Health Regen': 'Регенерация здоровья', 'Vitality': 'Живучесть', 'Mending': 'Лечение', 'Damage': 'Урон',
-  'Gear Score': 'Рейтинг снаряжения', 'Fishing Speed': 'Скорость рыбалки', 'Swing Range': 'Дальность удара',
-  'Combat Wisdom': 'Мудрость боя', 'Mining Wisdom': 'Мудрость добычи', 'Farming Wisdom': 'Мудрость фермерства',
-  'Breaking Power': 'Сила разрушения', 'Heat Resistance': 'Термостойкость', 'Cold Resistance': 'Морозостойкость',
-  'Bonus Pest Chance': 'Шанс вредителей', 'Trophy Fish Chance': 'Шанс трофейной рыбы', 'Double Hook Chance': 'Шанс двойного улова',
-};
+// Статы показываем как в игре, на английском (24.11.2026: игроки просили не переводить игровые термины)
+export const STATS = Object.fromEntries([
+  'Health', 'Defense', 'True Defense', 'Strength', 'Speed', 'Crit Chance', 'Crit Damage', 'Intelligence',
+  'Bonus Attack Speed', 'Attack Speed', 'Sea Creature Chance', 'Magic Find', 'Pet Luck', 'Ferocity',
+  'Ability Damage', 'Mining Speed', 'Mining Fortune', 'Farming Fortune', 'Foraging Fortune', 'Pristine',
+  'Health Regen', 'Vitality', 'Mending', 'Damage', 'Gear Score', 'Fishing Speed', 'Swing Range', 'Combat Wisdom',
+  'Mining Wisdom', 'Farming Wisdom', 'Breaking Power', 'Heat Resistance', 'Cold Resistance', 'Bonus Pest Chance',
+  'Trophy Fish Chance', 'Double Hook Chance',
+].map(k => [k, k]));
 
 export const ISLANDS = {
-  hub: 'Хаб', dungeon_hub: 'Хаб данжей', crimson_isle: 'Crimson Isle (Багровый остров)', the_end: 'Энд',
-  dwarven_mines: 'Dwarven Mines (Гномьи шахты)', crystal_hollows: 'Crystal Hollows (Хрустальные пещеры)',
-  garden: 'Сад (Garden)', rift: 'Rift (Разлом)', park: 'Парк', galatea: 'Galatea', spider_den: "Spider's Den (Паучье логово)",
-  deep_caverns: 'Deep Caverns', gold_mine: 'Золотой рудник', barn: 'Ферма', mushroom_desert: 'Грибная пустыня',
-  backwater_bayou: 'Backwater Bayou (Болото)', jerry: 'Остров Джерри', glacite_tunnels: 'Glacite Tunnels (Ледниковые тоннели)',
+  hub: 'Hub', dungeon_hub: 'Dungeon Hub', crimson_isle: 'Crimson Isle', the_end: 'The End', combat_3: 'The End',
+  dwarven_mines: 'Dwarven Mines', mining_3: 'Dwarven Mines',
+  crystal_hollows: 'Crystal Hollows', garden: 'Garden', rift: 'Rift',
+  park: 'The Park', foraging_1: 'The Park', galatea: 'Galatea', foraging_2: 'Galatea (Moonglade Marsh)',
+  spider_den: "Spider's Den", combat_1: "Spider's Den",
+  deep_caverns: 'Deep Caverns', mining_2: 'Deep Caverns',
+  gold_mine: 'Gold Mine', mining_1: 'Gold Mine',
+  barn: 'The Barn', farming_1: 'The Farming Islands', mushroom_desert: 'Mushroom Desert',
+  backwater_bayou: 'Backwater Bayou', fishing_1: 'Backwater Bayou', jerry: "Jerry's Workshop",
+  winter: "Jerry's Workshop", glacite_tunnels: 'Glacite Tunnels',
+  mineshaft: 'Glacite Mineshafts', dynamic: 'Private Island', dungeon: 'The Catacombs',
+  kuudra: "Kuudra's Hollow", lotus_atoll: 'Lotus Atoll',
 };
 
 export const CROPS = {
-  WHEAT: 'Пшеница', CARROT_ITEM: 'Морковь', POTATO_ITEM: 'Картофель', PUMPKIN: 'Тыква', MELON: 'Арбуз',
-  SUGAR_CANE: 'Сахарный тростник', CACTUS: 'Кактус', INK_SACK_3: 'Какао-бобы', 'INK_SACK:3': 'Какао-бобы',
-  MUSHROOM_COLLECTION: 'Грибы', NETHER_STALK: 'Незерский нарост', DOUBLE_PLANT: 'Подсолнух', MOONFLOWER: 'Лунный цветок',
-  WILD_ROSE: 'Дикая роза',
+  WHEAT: 'Wheat', CARROT_ITEM: 'Carrot', POTATO_ITEM: 'Potato', PUMPKIN: 'Pumpkin', MELON: 'Melon',
+  SUGAR_CANE: 'Sugar Cane', CACTUS: 'Cactus', INK_SACK_3: 'Cocoa Beans', 'INK_SACK:3': 'Cocoa Beans',
+  MUSHROOM_COLLECTION: 'Mushroom', NETHER_STALK: 'Nether Wart', DOUBLE_PLANT: 'Sunflower', MOONFLOWER: 'Moonflower',
+  WILD_ROSE: 'Wild Rose',
 };
 
 export function rarityRu(r) { return RARITY[r] || r || ''; }

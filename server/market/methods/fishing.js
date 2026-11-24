@@ -1,4 +1,4 @@
-// Методы заработка на рыбалке: доход считается по таблице морских существ (веса и дропы с вики) и живым ценам.
+// Методы заработка на рыбалке: доход считается по таблице Sea Creatures (веса и дропы с вики) и живым ценам.
 // Подключается в methods.js (FISHING_METHODS) и method-details.js (FISHING_DETAILS) одной строкой.
 //
 // Как считаем доход одного существа: вероятность поймать его = вес / сумма весов доступных тебе существ в этом месте
@@ -68,7 +68,7 @@ export function creaturePool(m, zones, { lvl: lv = fishingLvl(m), ranks = trophy
 }
 
 /**
- * Доход с морских существ в час при scPerHour существах в час.
+ * Доход с Sea Creatures в час при scPerHour существах в час.
  * @returns {{ perHour: number, perSc: number, xpPerHour: number, drops: object[], creatures: object[] }}
  */
 export function poolIncome(ctx, pool, scPerHour) {
@@ -101,14 +101,14 @@ export function poolIncome(ctx, pool, scPerHour) {
 }
 
 /**
- * Темп: морских существ в час для осторожной и хорошей игры. Числа — оценка: личный лимит существ (5 в Crimson Isle,
+ * Темп: Sea Creatures в час для осторожной и хорошей игры. Числа — оценка: личный лимит существ (5 в Crimson Isle,
  * 20 в Crystal Hollows), время на убийство крупных существ и переходы между Хотспотами.
  */
 export const SC_PER_HOUR = {
   water: [150, 300], bayou: [150, 300], hotspot: [110, 220], lava: [90, 170], lavaHotspot: [80, 150],
   hollows: [150, 280], galatea: [120, 240], spooky: [150, 300], winter: [150, 300], festival: [150, 300], trophy: [40, 80],
 };
-/** Шанс морского существа за улов, чтобы перевести существ в число забросов (для расхода наживки). */
+/** Шанс Sea Creature за улов, чтобы перевести существ в число забросов (для расхода наживки). */
 const SCC = 0.5;
 
 /**
@@ -229,8 +229,8 @@ const eventReq = (o, id, label) => {
 
 export const FISHING_METHODS = [
   {
-    id: 'fish-crimson-lava', title: 'Лава Crimson Isle: Thunder и Lord Jawbus', tag: 'Рыбалка', mode: 'active',
-    desc: 'Ловишь лавовых морских существ в Crimson Isle. Основной доход — Magma Lord Fragment с Lord Jawbus, Thunder Fragment с Thunder и броня существ. Thunder открывает награда Odger Novice, Lord Jawbus — Adept.',
+    id: 'fish-crimson-lava', title: 'Лава Crimson Isle: Thunder и Lord Jawbus', tag: 'Fishing', mode: 'active',
+    desc: 'Ловишь лавовых Sea Creatures в Crimson Isle. Основной доход — Magma Lord Fragment с Lord Jawbus, Thunder Fragment с Thunder и броня существ. Thunder открывает награда Odger Novice, Lord Jawbus — Adept.',
     req: m => {
       const r = trophyRanks(m);
       return [need('Fishing', fishingLvl(m), 27), crimsonAccess(m),
@@ -252,7 +252,7 @@ export const FISHING_METHODS = [
     drops: ['MAGMA_LORD_FRAGMENT', 'THUNDER_SHARDS', 'FLAMING_HEART', 'ORB_OF_ENERGY', 'RADIOACTIVE_VIAL'],
   },
   {
-    id: 'fish-lava-hotspot', title: 'Лавовые Хотспоты: Fiery Scuttler и Ragnarok', tag: 'Рыбалка', mode: 'active',
+    id: 'fish-lava-hotspot', title: 'Лавовые Хотспоты: Fiery Scuttler и Ragnarok', tag: 'Fishing', mode: 'active',
     desc: 'Хотспот — временное пятно с частицами на лаве Crimson Isle. В нём к обычным лавовым существам добавляются Fried Chicken, Fireproof Witch, Fiery Scuttler (с Fishing 37) и мифический Ragnarok (с Fishing 47).',
     req: m => [need('Fishing', fishingLvl(m), 37), crimsonAccess(m),
       { text: 'Удочка для лавы (Magma, Inferno, Hellfire Rod)', ok: hasAny(m, GOOD_LAVA_RODS), soft: true, buy: ['MAGMA_ROD', 'INFERNO_ROD'] },
@@ -264,8 +264,8 @@ export const FISHING_METHODS = [
     drops: ['SCORCHED_CRAB_STICK', 'BRIMSTONE_HANDLE', 'CHAIN_END_TIMES', 'BURNT_TEXTS', 'SCUTTLER_SHELL'],
   },
   {
-    id: 'fish-water-hotspot', title: 'Водные Хотспоты: Blue Ringed Octopus и Wiki Tiki', tag: 'Рыбалка', mode: 'active',
-    desc: 'Хотспоты на воде Хаба, Spider\'s Den и Backwater Bayou. К обычным водным существам добавляются Frog Man, Snapping Turtle, Blue Ringed Octopus (с Fishing 35) и мифический Wiki Tiki (с Fishing 40).',
+    id: 'fish-water-hotspot', title: 'Водные Хотспоты: Blue Ringed Octopus и Wiki Tiki', tag: 'Fishing', mode: 'active',
+    desc: 'Хотспоты на воде Hub, Spider\'s Den и Backwater Bayou. К обычным водным существам добавляются Frog Man, Snapping Turtle, Blue Ringed Octopus (с Fishing 35) и мифический Wiki Tiki (с Fishing 40).',
     req: m => [need('Fishing', fishingLvl(m), 35),
       { text: 'Водная удочка (Rod of the Sea, Rod of Legends)', ok: hasAny(m, WATER_RODS), soft: true, buy: ['ROD_OF_THE_SEA'] },
       { text: 'Hotspot Hook (существа Хотспота вдвое чаще)', ok: hasAny(m, ['HOTSPOT_HOOK']), soft: true, buy: ['HOTSPOT_HOOK'] }],
@@ -275,8 +275,8 @@ export const FISHING_METHODS = [
     drops: ['BLUE_RING', 'TIKI_MASK', 'TROUBLED_BUBBLE', 'OCTOPUS_TENDRIL', 'EDIBLE_SEAWEED'],
   },
   {
-    id: 'fish-bayou', title: 'Backwater Bayou: Titanoboa и Alligator', tag: 'Рыбалка', mode: 'active',
-    desc: 'Болото Backwater Bayou (вход из Хаба). Свои существа: Trash Gobbler, Dumpster Diver, Banshee, Bayou Sludge, Alligator и мифический Titanoboa с Titanoboa Shed. Плюс обычные водные существа.',
+    id: 'fish-bayou', title: 'Backwater Bayou: Titanoboa и Alligator', tag: 'Fishing', mode: 'active',
+    desc: 'Болото Backwater Bayou (вход из Hub). Свои существа: Trash Gobbler, Dumpster Diver, Banshee, Bayou Sludge, Alligator и мифический Titanoboa с Titanoboa Shed. Плюс обычные водные существа.',
     req: m => [need('Fishing', fishingLvl(m), 5),
       { text: 'Водная удочка (Rod of the Sea, Rod of Legends)', ok: hasAny(m, WATER_RODS), soft: true, buy: ['ROD_OF_THE_SEA'] }],
     compute: (ctx, m) => fishCompute(ctx, m, { zones: ['water', 'bayou'], pace: 'bayou', bait: 'WHALE_BAIT',
@@ -284,16 +284,16 @@ export const FISHING_METHODS = [
     drops: ['TITANOBOA_SHED', 'ALLIGATOR_SKIN', 'CALCIFIED_HEART', 'OVERFLOWING_TRASH_CAN', 'POISON_SAMPLE'],
   },
   {
-    id: 'fish-water', title: 'Обычная вода: Water Hydra', tag: 'Рыбалка', mode: 'active',
-    desc: 'Рыбалка в любой воде (обычно у Хаба или на своём острове). Денег немного: главное — опыт Fishing, Sponge, книги вроде Luck of the Sea VI и голова Water Hydra.',
+    id: 'fish-water', title: 'Обычная вода: Water Hydra', tag: 'Fishing', mode: 'active',
+    desc: 'Рыбалка в любой воде (обычно у Hub или на своём острове). Денег немного: главное — опыт Fishing, Sponge, книги вроде Luck of the Sea VI и голова Water Hydra.',
     req: m => [need('Fishing', fishingLvl(m), 1),
       { text: 'Водная удочка (Rod of the Sea, Rod of Legends)', ok: hasAny(m, WATER_RODS), soft: true, buy: ['ROD_OF_THE_SEA'] }],
     compute: (ctx, m) => fishCompute(ctx, m, { zones: ['water'], pace: 'water', bait: 'WHALE_BAIT',
-      intro: 'На своём острове шанс морского существа ниже, поэтому лови в Хабе.' }),
+      intro: 'На своём острове шанс Sea Creature ниже, поэтому лови в Hub.' }),
     drops: ['WATER_HYDRA_HEAD', 'ENCHANTMENT_LUCK_OF_THE_SEA_6', 'SPONGE', 'FISH_AFFINITY_TALISMAN'],
   },
   {
-    id: 'fish-hollows', title: 'Crystal Hollows: черви и лава Magma Fields', tag: 'Рыбалка', mode: 'active',
+    id: 'fish-hollows', title: 'Crystal Hollows: черви и лава Magma Fields', tag: 'Fishing', mode: 'active',
     desc: 'В воде Goblin Holdout ловятся Water Worm и Poisoned Water Worm (янтарь), в Mithril Deposits и Precursor Remnants — Abyssal Miner (три вида гемов). Лава: Flaming Worm (сапфир), в Magma Fields — Lava Blaze и Lava Pigman (топаз, Magma Core).',
     req: m => [need('Fishing', fishingLvl(m), 15),
       { text: 'Доступ в Crystal Hollows (Crystal Hollows Pass или HotM)', ok: !!m?.mining?.hotm, soft: true, unknown: !m?.mining },
@@ -309,16 +309,16 @@ export const FISHING_METHODS = [
     drops: ['WORM_MEMBRANE', 'MAGMA_CORE', 'ETERNAL_FLAME_RING', 'BLAZEN_SPHERE', 'FLAWED_JADE_GEM'],
   },
   {
-    id: 'fish-galatea', title: 'Galatea: Loch Emperor и Nessie', tag: 'Рыбалка', mode: 'active',
+    id: 'fish-galatea', title: 'Galatea: Loch Emperor и Nessie', tag: 'Fishing', mode: 'active',
     desc: 'Вода острова Galatea: Bogged, Wetwing, Tadgang, Ent, The Loch Emperor (Emperor\'s Skull, питомец Flying Fish) и Nessie (Mangcore, Vibrant Coral). Лава Galatea — Stridersurfer.',
     req: m => [need('Fishing', fishingLvl(m), 5),
       { text: 'Остров Galatea открыт', ok: false, unknown: true, have: 'по профилю не видно' }],
     compute: (ctx, m) => fishCompute(ctx, m, { zones: ['galatea'], pace: 'galatea', bait: 'WHALE_BAIT',
-      intro: 'Лимит морских существ на сервере Galatea ниже обычного (около 30), в людных лобби меньше поймаешь.' }),
+      intro: 'Лимит Sea Creatures на сервере Galatea ниже обычного (около 30), в людных лобби меньше поймаешь.' }),
     drops: ['MANGCORE', 'DIVER_FRAGMENT', 'VIBRANT_CORAL', 'MOUND_OF_SEAGRASS', 'FLYING_FISH;4'],
   },
   {
-    id: 'fish-spooky', title: 'Spooky Festival: Grim Reaper и конфеты', tag: 'Рыбалка', mode: 'active',
+    id: 'fish-spooky', title: 'Spooky Festival: Grim Reaper и конфеты', tag: 'Fishing', mode: 'active',
     desc: 'Три дня SkyBlock (1 реальный час) в конце осени в любой воде ловятся Scarecrow, Nightmare, Werewolf, Phantom Fisher и Grim Reaper. Конфеты, Deep Sea Orb, Spooky Hook, Bobbin\' Scriptures.',
     req: (m, o) => [need('Fishing', fishingLvl(m), 9), eventReq(o, 'spooky', 'Идёт Spooky Festival')],
     compute: (ctx, m) => fishCompute(ctx, m, { zones: ['water', 'spooky'], pace: 'spooky', bait: 'SPOOKY_BAIT',
@@ -327,7 +327,7 @@ export const FISHING_METHODS = [
     drops: ['DEEP_SEA_ORB', 'PHANTOM_HOOK', 'PURPLE_CANDY', 'GREEN_CANDY', 'BOBBIN_SCRIPTURES'],
   },
   {
-    id: 'fish-winter', title: "Jerry's Workshop: Yeti и Reindrake", tag: 'Рыбалка', mode: 'active',
+    id: 'fish-winter', title: "Jerry's Workshop: Yeti и Reindrake", tag: 'Fishing', mode: 'active',
     desc: "Весь Late Winter (около 10 часов) открыт остров Jerry: Frozen Steve, Frosty, Grinch, Nutcracker, Yeti (питомец Baby Yeti) и Reindrake (подарки, книга Prosperity). Ice Essence продаётся и идёт в перки.",
     req: (m, o) => [need('Fishing', fishingLvl(m), 1), eventReq(o, 'winter', "Открыт Jerry's Workshop")],
     compute: (ctx, m) => fishCompute(ctx, m, { zones: ['winter'], pace: 'winter', bait: null,
@@ -335,7 +335,7 @@ export const FISHING_METHODS = [
     drops: ['ESSENCE_ICE', 'RED_GIFT', 'BABY_YETI;3', 'HILT_OF_TRUE_ICE', 'ENCHANTMENT_PROSPERITY_1'],
   },
   {
-    id: 'fish-festival', title: 'Fishing Festival: акулы', tag: 'Рыбалка', mode: 'active',
+    id: 'fish-festival', title: 'Fishing Festival: акулы', tag: 'Fishing', mode: 'active',
     desc: 'Когда у мэра Marina перк Fishing Festival, первые 3 дня каждого месяца SkyBlock в любой воде ловятся акулы: Shark Fin, зубы и питомец Megalodon.',
     req: (m, o) => [need('Fishing', fishingLvl(m), 5),
       (() => {
@@ -352,8 +352,8 @@ export const FISHING_METHODS = [
     drops: ['GREAT_WHITE_SHARK_TOOTH', 'TIGER_SHARK_TOOTH', 'SHARK_FIN', 'MEGALODON;4'],
   },
   {
-    id: 'trophy', title: 'Trophy Fishing', tag: 'Рыбалка', mode: 'active',
-    desc: 'Lava Fishing в Crimson Isle ради трофейной рыбы: прогресс наград Odger (они открывают Thunder и Lord Jawbus), Magmafish за разделку и продажа золотых и алмазных трофеев. Денег меньше, чем охота на существ.',
+    id: 'trophy', title: 'Trophy Fishing', tag: 'Fishing', mode: 'active',
+    desc: 'Lava Fishing в Crimson Isle ради Trophy Fish: прогресс наград Odger (они открывают Thunder и Lord Jawbus), Magmafish за разделку и продажа золотых и алмазных трофеев. Денег меньше, чем охота на существ.',
     req: m => [need('Fishing', fishingLvl(m), 30),
       { text: 'Удочка для лавы (Magma, Inferno, Hellfire Rod)', ok: hasAny(m, GOOD_LAVA_RODS), soft: true, buy: ['MAGMA_ROD'] }],
     compute: (ctx, m) => {
@@ -363,7 +363,7 @@ export const FISHING_METHODS = [
         .sort((a, b) => b.v.unit - a.v.unit).slice(0, 3);
       const ranks = trophyRanks(m);
       return fishCompute(ctx, m, { zones: ['lava'], pace: 'trophy', bait: null,
-        intro: 'Сюда входят только морские существа, пойманные по пути; трофеи в основном идут на разделку у Odger и в награды.',
+        intro: 'Сюда входят только Sea Creatures, пойманные по пути; трофеи в основном идут на разделку у Odger и в награды.',
         extra: [prices.length ? `Дороже всего сейчас продаются: ${prices.map(p => `${nameOf(ctx, p.id)} ${fmtK(p.v.unit)}`).join(', ')}.` : '',
           `Твои награды Odger: ${ranks.adept ? 'Adept получен' : ranks.novice ? `Novice есть, для Adept не хватает серебра у ${18 - ranks.silver} видов` : `для Novice нужно ещё ${Math.max(0, 15 - ranks.bronze)} видов от бронзы`}.`].filter(Boolean).join(' ') });
     },
@@ -408,7 +408,7 @@ export const FISHING_DETAILS = {
   'fish-water-hotspot': {
     effort: 'focus', risk: 'mid', xp: 'Опыт Fishing',
     steps: [
-      'Найди водный Хотспот (Хаб, Spider\'s Den, Backwater Bayou), помогает Hotspot Radar.',
+      'Найди водный Хотспот (Hub, Spider\'s Den, Backwater Bayou), помогает Hotspot Radar.',
       'Поставь Hotspot Hook, Hotspot Sinker и возьми Hotspot Bait.',
       'Лови внутри пятна: Blue Ringed Octopus даёт Blue Ring, мифический Wiki Tiki — Tiki Mask и Troubled Bubble.',
       'Edible Seaweed и Broken Radar продавай на аукционе.',
@@ -419,7 +419,7 @@ export const FISHING_DETAILS = {
   'fish-bayou': {
     effort: 'semi', risk: 'low', xp: 'Опыт Fishing, бестиарий Bayou',
     steps: [
-      'Иди в Backwater Bayou (вход из Хаба) и лови в воде болота.',
+      'Иди в Backwater Bayou (вход из Hub) и лови в воде болота.',
       'Возьми Whale Bait: он поднимает шанс редких существ.',
       'Alligator даёт Alligator Skin, Banshee — Calcified Heart, мифический Titanoboa — Titanoboa Shed.',
       'Мусор вроде Overflowing Trash Can и Bronze Bowl тоже продаётся: проверяй цену на аукционе.',
@@ -430,7 +430,7 @@ export const FISHING_DETAILS = {
   'fish-water': {
     effort: 'semi', risk: 'low', xp: 'Опыт Fishing — главный плюс метода',
     steps: [
-      'Встань у воды в Хабе (на своём острове шанс существа ниже).',
+      'Встань у воды в Hub (на своём острове шанс существа ниже).',
       'Возьми водную удочку, Whale Bait и сет на Sea Creature Chance.',
       'Собирай существ пачкой и бей по площади: так выше темп.',
       'Продавай Sponge, книги Luck of the Sea VI и Water Hydra Head, остальное — сжатыми формами на Bazaar.',
@@ -465,7 +465,7 @@ export const FISHING_DETAILS = {
       'Дождись Spooky Festival (29–31 Autumn, время видно в «Событиях»).',
       'Поставь Spooky Hook, возьми Spooky Bait и лови в любой воде (ночью конфет больше).',
       'Убивай Grim Reaper и Phantom Fisher первыми: с них Deep Sea Orb, Spooky Hook и Bobbin\' Scriptures.',
-      'Конфеты меняй у Fear Mongerer в Хабе или продавай на Bazaar.',
+      'Конфеты меняй у Fear Mongerer в Hub или продавай на Bazaar.',
     ],
     risks: ['Событие длится всего час реального времени.', 'Цены конфет во время фестиваля падают: продавай позже.'],
     kit: fishKit,

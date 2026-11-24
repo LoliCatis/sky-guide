@@ -113,7 +113,7 @@ export default function Compare({ sub }) {
           </div>
         )}
         {note && <div className="small" role="status" style={{ marginTop: 8, color: 'var(--gold)' }}>{note}</div>}
-        <div className="tiny muted" style={{ marginTop: 8 }}>Лучшее значение в строке подсвечено. Банк, сад и миньоны у кооп-соседей общие.</div>
+        <div className="tiny muted" style={{ marginTop: 8 }}>Лучшее значение в строке подсвечено. Bank, Garden и миньоны у кооп-соседей общие.</div>
       </Card>
 
       {coopGroups(ok).map(g => (
@@ -121,7 +121,7 @@ export default function Compare({ sub }) {
           <span className="cmp-coop-ico" aria-hidden>🤝</span>
           <div>
             <b>{g.players.map(p => p.player.name).join(' и ')}</b> играют на одном кооп-острове <b>{g.players[0].profile}</b>.
-            {' '}Банк, сад, миньоны и тиры коллекций у них общие, поэтому эти строки помечены «общее» и не соревнуются, а «Состояние» посчитано с банком, поделённым поровну.
+            {' '}Bank, Garden, миньоны и тиры коллекций у них общие, поэтому эти строки помечены «общее» и не соревнуются, а «Состояние» посчитано с банком, поделённым поровну.
             {' '}Кто сколько насобирал сам — в строке «Вклад в коллекции».
           </div>
         </div>
@@ -149,8 +149,8 @@ export function coopGroups(players) {
 }
 
 /**
- * Состояние для сравнения. Банк кооп-острова входит в состояние каждого соседа; если соседи сравниваются
- * между собой, банк делим поровну, иначе у каждого «лишние» миллиарды соседа.
+ * Состояние для сравнения. Bank кооп-острова входит в состояние каждого соседа; если соседи сравниваются
+ * между собой, Bank делим поровну, иначе у каждого «лишние» миллиарды соседа.
  */
 export function comparableNetworth(p, grouped) {
   const total = p.networth?.total;
@@ -191,7 +191,7 @@ const Section = ({ title, players, children }) => (
 );
 
 function CompareTable({ players, openItem, colorOf }) {
-  // Соседи по коопу среди сравниваемых: общие строки помечаем, банк в состоянии делим
+  // Соседи по коопу среди сравниваемых: общие строки помечаем, Bank в состоянии делим
   const groups = coopGroups(players);
   const mateOf = new Map(groups.flatMap(g => g.players.map(p => [p, g.players.filter(x => x !== p)])));
   const shared = p => mateOf.get(p)?.map(x => x.player.name).join(', ') || null;
@@ -231,7 +231,7 @@ function CompareTable({ players, openItem, colorOf }) {
                     <div className="cmp-name">{p.player.name}</div>
                   </a>
                   <div className="tiny muted">{p.profile}{p.gameMode !== 'normal' ? ` · ${p.gameMode}` : ''} · {p.coop > 1 ? `кооп из ${p.coop}` : 'соло'}</div>
-                  {shared(p) && <div className="cmp-coop-badge" title="Один кооп-остров: банк, сад, миньоны и коллекции общие">🤝 кооп с {shared(p)}</div>}
+                  {shared(p) && <div className="cmp-coop-badge" title="Один кооп-остров: Bank, Garden, миньоны и коллекции общие">🤝 кооп с {shared(p)}</div>}
                   {p.missingProfile && <div className="tiny warn-text" title="Такого профиля у игрока нет">профиля «{p.missingProfile}» нет, показан {p.profile}</div>}
                   {lead > 0 && wins[i] === lead && <div className="cmp-lead">впереди по {wins[i]} из {KEYS.length}</div>}
                 </th>
@@ -242,14 +242,14 @@ function CompareTable({ players, openItem, colorOf }) {
             <Section title="Главное" players={players}>
               <Row label="Уровень SkyBlock" icon="nether_star" players={players} get={p => Math.floor(p.sbLevel)} bar={p => p.sbLevel % 1} />
               <Row label="Состояние" icon="gold_ingot" players={players} get={nw} fmt={coins}
-                sub={p => (p.networth ? `предметы ${coins(p.networth.items)} · питомцы ${coins(p.networth.pets)}${mateOf.has(p) && p.bank ? ` · банк ÷${p.coop}` : ''}` : '')} />
-              <Row label="Банк" icon="gold_block" players={players} get={p => p.bank} fmt={coins} sub={p => `кошелёк ${coins(p.purse)}`} shared={shared} />
-              <Row label="Средний скилл" icon="experience_bottle" players={players} get={p => +p.skillAverage.toFixed(2)} fmt={v => v.toFixed(1).replace('.', ',')} />
+                sub={p => (p.networth ? `предметы ${coins(p.networth.items)} · питомцы ${coins(p.networth.pets)}${mateOf.has(p) && p.bank ? ` · Bank ÷${p.coop}` : ''}` : '')} />
+              <Row label="Bank" icon="gold_block" players={players} get={p => p.bank} fmt={coins} sub={p => `кошелёк ${coins(p.purse)}`} shared={shared} />
+              <Row label="Skill Average" icon="experience_bottle" players={players} get={p => +p.skillAverage.toFixed(2)} fmt={v => v.toFixed(1).replace('.', ',')} />
               <Row label="Magical Power" icon="ender_eye" players={players} get={p => p.accessories.mp} sub={p => `${p.accessories.count ?? '—'} аксессуаров${p.accessories.power ? ` · ${prettyId(p.accessories.power)}` : ''}`} />
               <Row label="Catacombs" icon="bone" players={players} get={p => p.dungeons.level} bar={p => p.dungeons.progress} />
               <Row label="Heart of the Mountain" icon="diamond_pickaxe" players={players} get={p => p.mining.hotm} />
-              <Row label="Уровень сада" icon="sunflower" players={players} get={p => p.garden.level} shared={shared} />
-              <Row label="Души фей" icon="pink_dye" players={players} get={p => p.fairySouls} />
+              <Row label="Garden Level" icon="sunflower" players={players} get={p => p.garden.level} shared={shared} />
+              <Row label="Fairy Souls" icon="pink_dye" players={players} get={p => p.fairySouls} />
               <Row label="Enigma Souls" icon="purple_dye" players={players} get={p => p.rift?.enigma} />
               <Row label="Контакты Abiphone" icon="paper" players={players} get={p => p.abiphone} />
               <Row label="Песни арфы" icon="note_block" players={players} get={p => p.harp} />
@@ -271,7 +271,7 @@ function CompareTable({ players, openItem, colorOf }) {
               <Row label="Оценка музея" icon="emerald" players={players} get={p => (p.museum?.status === 'ok' && p.museum.value ? p.museum.value : null)} fmt={coins}
                 sub={p => (p.museum?.status === 'ok' && p.museum.special ? `особых предметов: ${p.museum.special}` : '')} />
             </Section>
-            <Section title="Скиллы" players={players}>
+            <Section title="Skills" players={players}>
               {skills.map(k => (
                 <Row key={k} label={players.find(p => p.skills[k])?.skills[k]?.name || k} icon={SKILL_ICON[k]} players={players}
                   get={p => (p.skills[k] ? p.skills[k].level + (p.skills[k].level < p.skills[k].maxLevel ? p.skills[k].progress : 0) : null)}
@@ -279,13 +279,13 @@ function CompareTable({ players, openItem, colorOf }) {
                   sub={p => (p.skills[k]?.apiMissing ? 'API скиллов выключен' : '')} />
               ))}
             </Section>
-            <Section title="Слееры" players={players}>
+            <Section title="Slayers" players={players}>
               {Object.keys(players[0].slayers || {}).map(k => (
                 <Row key={k} label={players[0].slayers[k].name} icon={SLAYER_ICON[k]} players={players} get={p => p.slayers[k]?.xp}
                   fmt={(v, p) => `${p.slayers[k]?.level ?? 0} ур.`} sub={p => `${num(p.slayers[k]?.xp)} опыта`} />
               ))}
             </Section>
-            <Section title="Данжи и Kuudra" players={players}>
+            <Section title="Dungeons и Kuudra" players={players}>
               <Row label="Средний класс" icon="iron_sword" players={players} get={p => +p.dungeons.classAverage.toFixed(2)} fmt={v => v.toFixed(1).replace('.', ',')}
                 sub={p => (p.dungeons.selectedClass ? `играет: ${p.dungeons.classes[p.dungeons.selectedClass]?.name || p.dungeons.selectedClass}` : '')} />
               {Object.keys(players[0].dungeons.classes || {}).map(k => (

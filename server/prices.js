@@ -201,7 +201,7 @@ export function petPriceOf(id, maxed) {
 
 /**
  * Изменение цены за 24 часа и 7 дней.
- * @returns {{ id, market: 'Bazaar'|'Аукцион'|null, now, d1: {from, pct}|null, d7: {from, pct}|null, min7, max7, median7, volatility, label }}
+ * @returns {{ id, market: 'Bazaar'|'Auction House'|null, now, d1: {from, pct}|null, d7: {from, pct}|null, min7, max7, median7, volatility, label }}
  */
 export function priceTrend(id) {
   const bz = prices.bazaar.get(id);
@@ -213,7 +213,7 @@ export function priceTrend(id) {
   const b = prices.bin.get(id);
   if (b) {
     const t = trend(prices.binHistory[id], b.price, 1);
-    return { id, market: 'Аукцион', ...t, label: trendLabel(t) };
+    return { id, market: 'Auction House', ...t, label: trendLabel(t) };
   }
   return { id, market: null, now: 0, d1: null, d7: null, min7: null, max7: null, median7: null, volatility: null, label: 'нет данных' };
 }

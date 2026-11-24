@@ -50,7 +50,7 @@ export function createPlayers(o) {
   const friendBudget = o.friendBudget ?? 150; // из 300 запросов за 5 минут; свой профиль тратит ~15
   const maxViews = o.maxViews ?? 12;
   const maxRaw = o.maxRaw ?? 16;          // сырые ответы Hypixel (по несколько МБ каждый) — не больше стольких игроков
-  const rawTtl = o.rawTtlMs ?? 60 * MIN;  // и не дольше часа: на публичном сайте гости смотрят сотни разных ников
+  const rawTtl = o.rawTtlMs ?? 60 * MIN;  // и не дольше часа: на публичном сайте Visitors смотрят сотни разных ников
 
   const names = new Map();     // ник в нижнем регистре → { uuid, name, at }
   const rawProfiles = new Map(); // uuid → { resp, at, promise }
@@ -108,7 +108,7 @@ export function createPlayers(o) {
     return promise;
   }
 
-  /** Сад (общий для острова) и музей (у каждого свой, но один ответ на весь остров) */
+  /** Garden (общий для острова) и музей (у каждого свой, но один ответ на весь остров) */
   async function extrasOf(profileId, uuid) {
     const own = o.owner();
     if (own.raw?.profileId === profileId && own.raw.at && (own.raw.garden || own.raw.museum)) {

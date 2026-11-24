@@ -14,7 +14,7 @@ export function profileMode(gameMode) {
   return { id, ...MODES[id] };
 }
 
-// Скиллы, у которых кап по умолчанию ниже настоящего максимума, и как его поднять
+// Skills, у которых кап по умолчанию ниже настоящего максимума, и как его поднять
 export const CAP_RAISE = {
   farming: { max: 60, how: 'у NPC Anita (рядом с Jacob) за медали Jacob\'s Farming Contest' },
   taming: { max: 60, how: 'сдавая питомцев новых типов в Pet Care (каждый тип +1 к капу)' },

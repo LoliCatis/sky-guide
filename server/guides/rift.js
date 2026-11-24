@@ -8,13 +8,13 @@ const fmt = n => Math.round(n || 0).toLocaleString('ru-RU');
 const posText = p => p ? p.split(':').join(' ') : '—';
 
 export const MECHANICS = [
-  'Вход: Dimensional Infusion у Wizard в Wizard Tower (Хаб), потом портал за горой. Бесплатный Infusion — раз в 4 часа, иначе 32 Grand Experience Bottle или 200 Bits. Rift Prism делает вход всегда бесплатным.',
+  'Вход: Dimensional Infusion у Wizard в Wizard Tower (Hub), потом портал за горой. Бесплатный Infusion — раз в 4 часа, иначе 32 Grand Experience Bottle или 200 Bits. Rift Prism делает вход всегда бесплатным.',
   'Rift Time (ф) — главный ресурс: база 8:00, тикает 1 ф в секунду, некоторые мобы и эффекты отнимают ещё. На нуле тебя выкидывает в Wizard Tower, прогресс квестов остаётся.',
   'Что поднимает максимум: Enigma Cloak +20 с за каждую душу (до +1040 за все 52), Rift Necklace от таймчармов, уровни Vampire Slayer (+235 с суммарно), глаза Porhtal (до +280 с), Montezuma (+15 с и ещё +15 за каждую часть), пояса Leech / Vermin, линейка Crux-аксессуаров, Wyld-броня (+15 с за часть).',
   'Respiration-аксессуары (Talisman → Ring → Artifact) задерживают начало потери времени на 10 / 20 / 30 с при входе.',
   'В замке Stillgore монстры бьют по ❤ здоровью — для этого нужен Healing Melon (крафт открывается после 12 убитых вампиров).',
   'Обычное снаряжение в Рифт не берётся, кроме помеченного «Rift-Transferable». Переносить предметы между мирами можно через эндер-сундук у Inverted Sirius (за Dark Auction).',
-  'Каждый таймчарм в галерее Elise даёт +100 SkyBlock XP и усиливает Rift Necklace — он работает и вне Рифта (в Хабе скажи Elise «CARAMEL»).',
+  'Каждый таймчарм в галерее Elise даёт +100 SkyBlock XP и усиливает Rift Necklace — он работает и вне Рифта (в Hub скажи Elise «CARAMEL»).',
 ];
 
 export const MOTES_TIPS = [
@@ -26,7 +26,7 @@ export const MOTES_TIPS = [
 ];
 
 export default {
-  id: 'rift', title: 'Рифт', icon: 'RIFT_PRISM', group: 'rift',
+  id: 'rift', title: 'Rift', icon: 'RIFT_PRISM', group: 'rift',
   build(m) {
     const r = analyzeRift(m, { marks: getMarks(m.uuid), petLevel });
     const s = r.souls;

@@ -146,7 +146,7 @@ export function build(m, ctx) {
     }),
   ];
 
-  const income = (ctx.analysis?.methods || []).filter(x => x.tag === 'Данжи').map(methodText).filter(Boolean);
+  const income = (ctx.analysis?.methods || []).filter(x => x.tag === 'Dungeons').map(methodText).filter(Boolean);
 
   const status = cata >= 50 && n(mf[7]) > 0 ? 'done' : highestF == null ? 'start' : 'progress';
   const summary = `Catacombs ${cata}, ${clsName} ${clsLvl}. F7 пройден ${f7} ${plural(f7, 'раз', 'раза', 'раз')}; Master Mode: ${mDone.length ? `пройдены M${mDone.join(', M')}` : 'ещё не начат'}.`;
@@ -211,4 +211,4 @@ function loadoutPlan(lo, ctx) {
   return { rows, cost };
 }
 
-export default { id: 'dungeons', title: 'Данжи', icon: 'NECRON_HANDLE', group: 'combat', build };
+export default { id: 'dungeons', title: 'Dungeons', icon: 'NECRON_HANDLE', group: 'combat', build };

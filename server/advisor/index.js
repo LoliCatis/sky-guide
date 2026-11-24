@@ -68,7 +68,7 @@ function run(ctx) {
       if (s.cost > ctx.liquid) {
         s.needsSaving = true;
         s.priority -= s.cost > ctx.liquid * 3 ? 40 : 30;
-        s.why += ` Сейчас на руках и в банке ${fmtCoins(ctx.liquid)}${(ctx.m?.coopMembers || 1) > 1 ? ' (банк общий на кооп-острове)' : ''} — нужно накопить.`;
+        s.why += ` Сейчас на руках и в банке ${fmtCoins(ctx.liquid)}${(ctx.m?.coopMembers || 1) > 1 ? ' (Bank общий на кооп-острове)' : ''} — нужно накопить.`;
       }
     }
     s.priority = Math.round(clamp(s.priority, 0, 100));

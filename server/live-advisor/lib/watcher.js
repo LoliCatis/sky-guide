@@ -3,14 +3,14 @@
 import { fmtCoins, fmtPct, pct, MIN } from './util.js';
 
 const SLAYER_RU = { zombie: 'Revenant (зомби)', spider: 'Tarantula (паук)', wolf: 'Sven (волк)', enderman: 'Voidgloom (эндермен)', blaze: 'Inferno Demonlord (блейз)', vampire: 'Riftstalker (вампир)' };
-const CLASS_RU = { healer: 'Хилер', mage: 'Маг', berserk: 'Берсерк', archer: 'Лучник', tank: 'Танк' };
-const SKILL_RU = { farming: 'Фермерство', mining: 'Добыча', combat: 'Бой', foraging: 'Лесорубство', fishing: 'Рыбалка', enchanting: 'Зачарование', alchemy: 'Алхимия', carpentry: 'Плотничество', runecrafting: 'Руническое ремесло', taming: 'Приручение', social: 'Общение', hunting: 'Охота' };
+const CLASS_RU = { healer: 'Healer', mage: 'Mage', berserk: 'Berserk', archer: 'Archer', tank: 'Tank' };
+const SKILL_RU = { farming: 'Farming', mining: 'Mining', combat: 'Combat', foraging: 'Foraging', fishing: 'Fishing', enchanting: 'Enchanting', alchemy: 'Alchemy', carpentry: 'Carpentry', runecrafting: 'Runecrafting', taming: 'Taming', social: 'Общение', hunting: 'Охота' };
 
 /**
  * @typedef {Object} Snapshot
  * @property {number} t
  * @property {number} sb
- * @property {number} coins           кошелёк + банк
+ * @property {number} coins           кошелёк + Bank
  * @property {number|null} networth
  * @property {number} mp
  * @property {Object<string, number>} skills   уровень с дробной частью
@@ -117,7 +117,7 @@ export function diffSnapshots(prev, cur, opt = {}) {
 
   for (const [k, s] of Object.entries(cur.slayers)) {
     const p = prev.slayers[k] || { level: 0, xp: 0 };
-    if (s.level > p.level) add('slayer', `Слеер ${SLAYER_RU[k] || k}: уровень ${p.level} → ${s.level}`, p.level === 0 ? 4 : 3);
+    if (s.level > p.level) add('slayer', `Slayer ${SLAYER_RU[k] || k}: уровень ${p.level} → ${s.level}`, p.level === 0 ? 4 : 3);
     else if (s.xp > p.xp && p.xp === 0) add('slayer', `Начат слеер ${SLAYER_RU[k] || k}`, 3);
   }
 
@@ -138,7 +138,7 @@ export function diffSnapshots(prev, cur, opt = {}) {
   const dc = cur.coins - prev.coins;
   const rel = prev.coins ? Math.abs(dc) / prev.coins : 1;
   if (Math.abs(dc) >= 20_000_000 || (Math.abs(dc) >= 2_000_000 && rel >= 0.10)) {
-    add('coins', `Монеты (кошелёк+банк): ${fmtCoins(prev.coins)} → ${fmtCoins(cur.coins)} (${dc > 0 ? '+' : ''}${fmtCoins(dc)})`, rel >= 0.5 ? 3 : 2);
+    add('coins', `Монеты (кошелёк+Bank): ${fmtCoins(prev.coins)} → ${fmtCoins(cur.coins)} (${dc > 0 ? '+' : ''}${fmtCoins(dc)})`, rel >= 0.5 ? 3 : 2);
   }
   if (cur.mp !== prev.mp) add('mp', `Magical Power: ${prev.mp} → ${cur.mp}`, Math.abs(cur.mp - prev.mp) >= 20 ? 3 : Math.abs(cur.mp - prev.mp) >= 10 ? 2 : 1);
   if (cur.fairy > prev.fairy) add('progress', `Fairy Souls: +${cur.fairy - prev.fairy}`, 0.5);

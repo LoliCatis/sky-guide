@@ -73,13 +73,13 @@ test('крафт-флипы: рецепт закрыт, если не откры
 });
 
 import { translateLoreLine } from '../items-ru/index.js';
-test('перевод строки редкости согласует род: «НЕОБЫЧНАЯ РУДА», «ЛЕГЕНДАРНЫЕ ПЕРЧАТКИ»', () => {
+test('строка редкости остаётся как в игре: «UNCOMMON ORE», «LEGENDARY DUNGEON SWORD»', () => {
   const t = l => translateLoreLine(l).replace(/§./g, '');
-  assert.equal(t('§a§lUNCOMMON ORE'), 'НЕОБЫЧНАЯ РУДА');
-  assert.equal(t('§6§lLEGENDARY GLOVES'), 'ЛЕГЕНДАРНЫЕ ПЕРЧАТКИ');
-  assert.equal(t('§5§lEPIC NECKLACE'), 'ЭПИЧЕСКОЕ ОЖЕРЕЛЬЕ');
-  assert.equal(t('§6§lLEGENDARY DUNGEON SWORD'), 'ЛЕГЕНДАРНЫЙ МЕЧ (ДАНЖ)');
-  assert.match(t('§c☠ Requires Master Mode The Catacombs Floor IV'), /Master Mode, этаж IV/);
+  assert.equal(t('§a§lUNCOMMON ORE'), 'UNCOMMON ORE');
+  assert.equal(t('§6§lLEGENDARY GLOVES'), 'LEGENDARY GLOVES');
+  assert.equal(t('§5§lEPIC NECKLACE'), 'EPIC NECKLACE');
+  assert.equal(t('§6§lLEGENDARY DUNGEON SWORD'), 'LEGENDARY DUNGEON SWORD');
+  assert.match(t('§c☠ Requires Master Mode The Catacombs Floor IV'), /Master Mode, Floor IV/);
 });
 
 test('доводка снаряжения: фермерской броне не советуем книги Hot Potato', () => {
@@ -158,12 +158,12 @@ test('типы предметов: слеер-мечи — оружие, оск�
   ]);
   const get = id => (Array.isArray(items) ? items.find(i => i.id === id) : items[id] || items.get?.(id));
   assert.equal(get('FIREDUST_DAGGER').category, 'weapon');
-  assert.equal(get('FIREDUST_DAGGER').typeRu, 'Меч слеера');
+  assert.equal(get('FIREDUST_DAGGER').typeRu, 'Slayer Sword');
   const sh = get('ATTRIBUTE_SHARD_X;1');
   assert.equal(sh.category, 'shard');
-  assert.match(sh.descriptionRu, /осколок \(лес\), ID U46/);
+  assert.match(sh.descriptionRu, /Forest Shard, ID U46/);
   assert.equal(get('SKYBLOCK_BIT').type, null);
-  assert.match(get('GARDEN_CHIP_X').descriptionRu, /чип Garden/);
+  assert.match(get('GARDEN_CHIP_X').descriptionRu, /^Epic Garden Chip\./);
 });
 
 import { mergeMobVariants } from '../items-ru/lib/build-db.js';
@@ -202,7 +202,7 @@ test('лор: детали бура и перезарядки в секунда�
   assert.equal(t.untranslated, 0);
   const s = t.lines.map(l => l.replace(/§./g, '')).join('\n');
   assert.match(s, /Топливный бак: не установлен/);
-  assert.match(s, /Перезарядка: 30 с/);
+  assert.match(s, /Cooldown: 30 с/);
 });
 
 test('лор: заряды брони Kuudra переведены целиком', () => {
@@ -211,7 +211,7 @@ test('лор: заряды брони Kuudra переведены целиком
   assert.equal(t.untranslated, 0, t.lines.join('|'));
   const s = t.lines.map(l => l.replace(/§./g, '')).join(' ').replace(/[ \n]+/g, ' ');
   assert.match(s, /Каждые 1\.5 с удары ближнего боя дают 1 заряд ᝐ Dominus\. Теряется 1 заряд, если 4 с не получать новых\./);
-  assert.match(s, /свирепость/);
+  assert.match(s, /Ferocity/);
 });
 
 test('лор: кролики, топливо Inferno и Abiphone', () => {
@@ -232,7 +232,7 @@ test('лор: требование на двух строках и способ�
   const t = translateLore(['§7Instead of dying, gain §a+50✦ Speed', '§7and damage immunity for §a3 §7seconds.', '', '§8This item can be reforged!',
     '§4❣ §cRequires Master Mode The Catacombs Floor IV', '§cCompletion.', '§5§lEPIC DUNGEON HELMET']);
   assert.equal(t.untranslated, 0, t.lines.join('|'));
-  assert.ok(t.lines.some(l => /Master Mode, этаж IV/.test(l.replace(/§./g, ''))));
+  assert.ok(t.lines.some(l => /Master Mode, Floor IV/.test(l.replace(/§./g, ''))));
   const k = translateLore(['§7Allows you to reroll a Dungeon', '§7or Kuudra reward chest.']);
   assert.equal(k.untranslated, 0);
 });
@@ -240,5 +240,5 @@ test('лор: требование на двух строках и способ�
 test('лор: строка SPECIAL с §k и лавовая рыбалка', () => {
   const t = translateLore(['§7Damage taken from §cLava Sea', '§cCreatures§7 is reduced by §a15% §7and', '§7damage dealt is increased by §c1.3x§7.', '', '§c§l§ka§r §c§lSPECIAL §c§l§ka']);
   assert.equal(t.untranslated, 0, t.lines.join('|'));
-  assert.equal(t.lines.at(-1).replace(/§./g, ''), 'ОСОБЫЙ');
+  assert.equal(t.lines.at(-1).replace(/§./g, ''), 'SPECIAL');
 });

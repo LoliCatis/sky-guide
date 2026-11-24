@@ -7,7 +7,7 @@ import { GUIDE_PAGES, WIKI_URL } from '../wiki/watch.js';
 export const DATA = {
   api: { title: 'Hypixel API', url: 'https://api.hypixel.net/', what: 'твой профиль, Bazaar и аукцион — обновляется само' },
   neu: { title: 'NEU-REPO', url: 'https://github.com/NotEnoughUpdates/NotEnoughUpdates-REPO', what: 'предметы, рецепты, требования и лор (база мода NotEnoughUpdates)' },
-  skyhanni: { title: 'SkyHanni-REPO', url: 'https://github.com/hannibal002/SkyHanni-REPO', what: 'шансы и разделка трофейной рыбы (база мода SkyHanni)' },
+  skyhanni: { title: 'SkyHanni-REPO', url: 'https://github.com/hannibal002/SkyHanni-REPO', what: 'шансы и разделка Trophy Fish (база мода SkyHanni)' },
   skycrypt: { title: 'SkyCrypt', url: 'https://sky.shiiyu.moe/', what: 'сверить свой профиль на другом сайте' },
 };
 
@@ -44,7 +44,7 @@ const SLAYER_ALL = { id: 'Pxw0k5hQNVU', label: 'Как прокачивать в
  */
 export const VIDEOS = {
   dungeons: [
-    { id: '7LDHl3MfA5M', label: 'Данжи с нуля: классы, этажи, снаряжение', channel: 'Blank', lang: 'en', title: 'The ONLY Dungeons Guide You’ll Ever Need - Hypixel Skyblock' },
+    { id: '7LDHl3MfA5M', label: 'Dungeons с нуля: классы, этажи, снаряжение', channel: 'Blank', lang: 'en', title: 'The ONLY Dungeons Guide You’ll Ever Need - Hypixel Skyblock' },
   ],
   'slayer-zombie': [
     { id: '0Jrax9efosE', label: 'Полный разбор Revenant Horror', channel: 'ZiggZagg', lang: 'en', year: 2024, title: 'The Complete Guide to Zombie Slayer | Hypixel Skyblock' },
@@ -88,8 +88,8 @@ export const VIDEOS = {
     { id: 'j8cfzN9sbo4', label: 'Прогрессия добычи: HotM, снаряжение, питомцы', channel: 'Skyployee', lang: 'en', year: 2026, title: 'COMPREHENSIVE Mining Progression Guide *2026 Updated* (Hypixel Skyblock)' },
   ],
   farming: [
-    { id: 'Afa-EaaFIGE', label: 'Гайд по Саду', channel: 'Pumpukk', lang: 'ru', title: 'Гайд на гарден! (Hypixel Skyblock)' },
-    { id: 'nw7nzNBxot4', label: 'Прогрессия фермерства', channel: 'Udex2', lang: 'en', year: 2026, title: 'The COMPLETE Farming Progression Guide! Hypixel SkyBlock 2026' },
+    { id: 'Afa-EaaFIGE', label: 'Гайд по Garden', channel: 'Pumpukk', lang: 'ru', title: 'Гайд на гарден! (Hypixel Skyblock)' },
+    { id: 'nw7nzNBxot4', label: 'Прогрессия Farming', channel: 'Udex2', lang: 'en', year: 2026, title: 'The COMPLETE Farming Progression Guide! Hypixel SkyBlock 2026' },
   ],
   foraging: [
     { id: 'f7QC4wX-6_Y', label: 'Foraging после обновления Galatea', channel: 'Asxent', lang: 'en', year: 2026, title: 'The Complete Guide To FORAGING *UPDATED 2026* | Hypixel Skyblock IRONMAN' },
@@ -113,7 +113,7 @@ export const VIDEOS = {
     { id: 'wmHOgxUjIOk', label: 'Гайд по событию Diana', channel: 'Import', lang: 'en', year: 2025, title: 'The Ultimate Diana Guide 2025 | Hypixel Skyblock' },
   ],
   chocolate: [
-    { id: 'VAcggHaHIQY', label: 'Шоколадная фабрика Hoppity', channel: 'Nameless4Now', lang: 'en', title: 'The ULTIMATE Hoppity Chocolate Factory Update Guide (Hypixel Skyblock)' },
+    { id: 'VAcggHaHIQY', label: 'Гайд по Chocolate Factory (Hoppity)', channel: 'Nameless4Now', lang: 'en', title: 'The ULTIMATE Hoppity Chocolate Factory Update Guide (Hypixel Skyblock)' },
   ],
 };
 

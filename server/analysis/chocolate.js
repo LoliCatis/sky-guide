@@ -1,7 +1,7 @@
-// Шоколадная фабрика (Hoppity): что качать дальше и что не забыть.
+// Chocolate Factory (Hoppity): что качать дальше и что не забыть.
 // Источники чисел:
 //  - fandom «Chocolate Factory» (2026-11-23): требования и множители престижей, кап сотрудников 120…220,
-//    прибавка сотрудников (+1…+7 шоколада/с за уровень), базовые цены, Time Tower, Rabbit Shrine, Coach Jackrabbit;
+//    прибавка сотрудников (+1…+7 Chocolate/с за уровень), базовые цены, Time Tower, Rabbit Shrine, Coach Jackrabbit;
 //  - SkyHanni-REPO constants/HoppityEggLocations.json: всего кроликов, вехи фабрики и магазина,
 //    кролики-резиденты по островам, места яиц, цены слотов Rabbit Hitman (data/chocolate.json).
 import DATA from './data/chocolate.json' with { type: 'json' };
@@ -14,7 +14,7 @@ export function employeeCost(i, level, cf) {
   if (i === 1 && level < 10) return (30 + 20 * cf) * BRO_FIRST[level];
   return (216 + 144 * cf) * i * i * Math.pow(1.05, level);
 }
-/** Сколько шоколада до уровня to (без скидки Zeta −1%). */
+/** Сколько Chocolate до уровня to (без скидки Zeta −1%). */
 export function employeeCostTo(i, from, to, cf) {
   let s = 0;
   for (let L = from; L < to; L++) s += employeeCost(i, L, cf);
@@ -23,7 +23,7 @@ export function employeeCostTo(i, from, to, cf) {
 // Time Tower: цена уровня = (4,5 млн + 0,5 млн·CF)·множитель уровня
 export const TOWER_MULT = [0, 1, 2, 3, 4, 6, 8, 10, 12, 14, 16, 20, 24, 30, 40];
 export const towerCost = (nextLevel, cf) => (4.5e6 + 0.5e6 * cf) * (TOWER_MULT[nextLevel - 1] || 0);
-// Престиж: [требуется шоколада с прошлого престижа, множитель, кап сотрудников, предел шоколада на фабрике]
+// Престиж: [требуется Chocolate с прошлого престижа, множитель, кап сотрудников, предел Chocolate на фабрике]
 export const PRESTIGES = {
   1: { need: 0, mult: 1, cap: 120, maxChocolate: 500e6 },
   2: { need: 150e6, mult: 1.1, cap: 140, maxChocolate: 1.2e9 },
@@ -57,7 +57,7 @@ const short = n => {
 };
 const snake = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
 const islandRu = k => ({
-  HUB: 'Хаб', THE_PARK: 'The Park', GOLD_MINES: 'Gold Mine', DEEP_CAVERNS: 'Deep Caverns', DWARVEN_MINES: 'Dwarven Mines',
+  HUB: 'Hub', THE_PARK: 'The Park', GOLD_MINES: 'Gold Mine', DEEP_CAVERNS: 'Deep Caverns', DWARVEN_MINES: 'Dwarven Mines',
   CRYSTAL_HOLLOWS: 'Crystal Hollows', THE_FARMING_ISLANDS: 'The Farming Islands', THE_END: 'The End', SPIDER_DEN: "Spider's Den",
   CRIMSON_ISLE: 'Crimson Isle', DUNGEON_HUB: 'Dungeon Hub', BACKWATER_BAYOU: 'Backwater Bayou', GALATEA: 'Galatea',
   LOTUS_ATOLL: 'Lotus Atoll', TORRHUS_CANYON: 'Torrhus Canyon',
@@ -82,7 +82,7 @@ export function chocolateAdvice(ch) {
   const next = PRESTIGES[prestige + 1];
   const cap = employeeCap(prestige, ch.employees);
 
-  // Сотрудники: сколько уровней до капа и сколько шоколада/с это даст
+  // Сотрудники: сколько уровней до капа и сколько Chocolate/с это даст
   const employees = EMPLOYEES.map((e, i) => {
     const level = Number(ch.employees?.[e.key]) || 0;
     return { ...e, n: i + 1, level, cap, left: Math.max(0, cap - level), gain: Math.max(0, cap - level) * e.cps, hired: level > 0 };
@@ -95,17 +95,17 @@ export function chocolateAdvice(ch) {
     tips.push({ id: 'cf-tower-charges', prio: 95, title: 'Time Tower: 3 заряда из 3, запусти',
       text: 'Заряды больше не копятся, пока полная башня стоит. Включи её, пока играешь: час ускоренного производства.' });
   }
-  // 2. Шоколад упёрся в предел фабрики
+  // 2. Chocolate упёрся в предел фабрики
   if (P.maxChocolate && ch.chocolate >= P.maxChocolate * 0.9) {
-    tips.push({ id: 'cf-full', prio: 90, title: `Шоколада почти под потолок: ${short(ch.chocolate)} из ${short(P.maxChocolate)}`,
+    tips.push({ id: 'cf-full', prio: 90, title: `Chocolate почти под потолок: ${short(ch.chocolate)} из ${short(P.maxChocolate)}`,
       text: 'Сверх предела фабрика не копит. Потрать на улучшения ниже или в Chocolate Shop (траты там открывают кроликов-вех).' });
   }
   // 3. Сотрудники ниже капа
   if (behind.length) {
     const first = behind[0];
     tips.push({ id: 'cf-employees', prio: 80, title: `Сотрудники: до капа ${cap} не хватает ${behind.reduce((s, e) => s + e.left, 0)} ур.`,
-      text: `Подними ${behind.map(e => `${e.name} (${e.level}→${cap})`).join(', ')}: это +${short(behind.reduce((s, e) => s + e.gain, 0))} шоколада/с до множителей. `
-        + `Всего до капа ≈${short(behind.reduce((s2, e) => s2 + employeeCostTo(e.n, e.level, cap, prestige), 0))} шоколада. Начни с младших (${first.name}): при равном уровне у них +1 шоколад/с дешевле.` });
+      text: `Подними ${behind.map(e => `${e.name} (${e.level}→${cap})`).join(', ')}: это +${short(behind.reduce((s, e) => s + e.gain, 0))} Chocolate/с до множителей. `
+        + `Всего до капа ≈${short(behind.reduce((s2, e) => s2 + employeeCostTo(e.n, e.level, cap, prestige), 0))} Chocolate. Начни с младших (${first.name}): при равном уровне у них +1 Chocolate/с дешевле.` });
   }
   // 4. Престиж
   if (next) {
@@ -114,7 +114,7 @@ export function chocolateAdvice(ch) {
     tips.push({ id: 'cf-prestige', prio: ready ? 88 : 60, icon: 'PRESTIGE_CHOCOLATE_REALM',
       title: ready ? `Можно сделать престиж ${prestige + 1}` : `Престиж ${prestige + 1}: ${short(since)} из ${short(next.need)}`,
       text: `Множитель ${P.mult}× → ${next.mult}×, кап сотрудников ${P.cap} → ${next.cap}${prestige + 1 === 2 ? ', откроется Time Tower' : prestige + 1 === 3 ? ', откроется Rabbit Shrine' : prestige + 1 === 4 ? ', откроется Coach Jackrabbit' : prestige + 1 === 6 ? ', откроются Divine-кролики' : ''}. `
-        + (ready ? 'Престиж сбрасывает шоколад и сотрудников, найденные кролики и Rabbit Barn остаются. Что ещё обнулится, видно в подсказке кнопки престижа: потрать перед ним лишний шоколад в Chocolate Shop (траты там открывают кроликов-вех).' : `Осталось ${short(next.need - since)} шоколада с прошлого престижа.`) });
+        + (ready ? 'Престиж сбрасывает Chocolate и сотрудников, найденные кролики и Rabbit Barn остаются. Что ещё обнулится, видно в подсказке кнопки престижа: потрать перед ним лишний Chocolate в Chocolate Shop (траты там открывают кроликов-вех).' : `Осталось ${short(next.need - since)} Chocolate с прошлого престижа.`) });
   }
   // 5. Апгрейды, которые не сбрасываются престижем
   if (prestige >= 2 && ch.timeTower < TIME_TOWER_MAX) {
@@ -123,11 +123,11 @@ export function chocolateAdvice(ch) {
   }
   if (prestige >= 4 && ch.coach != null && ch.coach < COACH_COSTS.length) {
     tips.push({ id: 'cf-coach', prio: 68, title: `Coach Jackrabbit: ур. ${ch.coach} из ${COACH_COSTS.length}`,
-      text: `Следующий уровень ${short(COACH_COSTS[ch.coach])} шоколада: +0,01× к множителю навсегда (на 20 ур. +0,2×). Самые дешёвые уровни окупаются быстрее всего.` });
+      text: `Следующий уровень ${short(COACH_COSTS[ch.coach])} Chocolate: +0,01× к множителю навсегда (на 20 ур. +0,2×). Самые дешёвые уровни окупаются быстрее всего.` });
   }
   if (prestige >= 3 && ch.shrine != null && ch.shrine < SHRINE_COSTS.length) {
     tips.push({ id: 'cf-shrine', prio: 50, title: `Rabbit Shrine: ур. ${ch.shrine} из ${SHRINE_COSTS.length}`,
-      text: `Следующий уровень ${short(SHRINE_COSTS[ch.shrine])} шоколада: +2% к шансу более редкого кролика в Hoppity's Hunt. Бери, когда сотрудники и Coach уже на капе.` });
+      text: `Следующий уровень ${short(SHRINE_COSTS[ch.shrine])} Chocolate: +2% к шансу более редкого кролика в Hoppity's Hunt. Бери, когда сотрудники и Coach уже на капе.` });
   }
   if (ch.hitmanSlots != null && ch.hitmanSlots < HITMAN_SLOTS) {
     const cost = CF.hitmanCosts[ch.hitmanSlots];
@@ -135,19 +135,19 @@ export function chocolateAdvice(ch) {
       text: `${cost ? `Следующий слот ${short(cost)} монет. ` : ''}Слоты покупаются за монеты (все ${HITMAN_SLOTS} — около 292 млн), часть открывается только на высоком престиже. Hitman ловит пропущенные яйца Hoppity, пока тебя нет в игре.` });
   }
 
-  // 6. Кролики: вехи фабрики и магазина
+  // 6. Rabbits: вехи фабрики и магазина
   const nextFactory = CF.factoryMilestones.find(m => m.amount > (ch.total || 0));
   if (nextFactory) {
     tips.push({ id: 'cf-milestone', prio: 35, title: `Веха фабрики: кролик ${nextFactory.rabbit}`,
-      text: `Откроется на ${short(nextFactory.amount)} шоколада за всё время, у тебя ${short(ch.total || 0)}: осталось ${short(nextFactory.amount - (ch.total || 0))}.` });
+      text: `Откроется на ${short(nextFactory.amount)} Chocolate за всё время, у тебя ${short(ch.total || 0)}: осталось ${short(nextFactory.amount - (ch.total || 0))}.` });
   }
   if (ch.shopSpent != null) {
     const nextShop = CF.shopMilestones.find(m => m.amount > ch.shopSpent);
     if (nextShop) tips.push({ id: 'cf-shop', prio: 34, title: `Веха Chocolate Shop: кролик ${nextShop.rabbit}`,
-      text: `Откроется, когда потратишь в Chocolate Shop ${short(nextShop.amount)} шоколада (сейчас ${short(ch.shopSpent)}).` });
+      text: `Откроется, когда потратишь в Chocolate Shop ${short(nextShop.amount)} Chocolate (сейчас ${short(ch.shopSpent)}).` });
   }
 
-  // 7. Кролики-резиденты, которых ещё нет (каждый живёт в одном месте острова и ловится в любой момент)
+  // 7. Rabbits-резиденты, которых ещё нет (каждый живёт в одном месте острова и ловится в любой момент)
   const found = new Set((ch.found || []).map(snake));
   const residents = [];
   const byIsland = [];
@@ -164,7 +164,7 @@ export function chocolateAdvice(ch) {
   const residentsKnown = residentsFound > 0;
   if (residentsKnown && residents.length) {
     const full = byIsland.filter(r => r.missing.length === r.missing.length + r.found.length).length;
-    tips.push({ id: 'cf-residents', prio: 55, title: `Кролики-резиденты: найдено ${residentsFound} из ${residentsFound + residents.length}`,
+    tips.push({ id: 'cf-residents', prio: 55, title: `Rabbits-резиденты: найдено ${residentsFound} из ${residentsFound + residents.length}`,
       text: `Они живут на островах круглый год, каждый в своём месте: зайди на остров и кликни по кролику. Не тронуты ${full} ${full === 1 ? 'остров' : full < 5 ? 'острова' : 'островов'} целиком. Список по островам — ниже, места подсвечивает мод SkyHanni.` });
   }
 

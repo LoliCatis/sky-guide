@@ -7,7 +7,7 @@
  * Тип эссенции → справка. `shop` — где магазин перков (null — вики его не описывает), `get` — откуда берётся, `use` — на что тратить. */
 export const ESSENCE_INFO = {
   WITHER: {
-    ru: 'Wither', color: '#7c7c9c', area: 'Данжи',
+    ru: 'Wither', color: '#7c7c9c', area: 'Dungeons',
     what: 'Самая ценная данжевая эссенция. Нужна для звёзд на поздних данжевых предметах (Necron, Storm, Goldor, Maxor, Wither-клинки) и для перков Forbidden, которые дают статы навсегда.',
     get: ['Сундуки после данжа (больше на поздних этажах F5–F7 и в Master Mode).', 'Секреты в данжах.', 'Гонки Guildford в Dungeon Hub.', 'Salvage данжевых предметов у Salvager в Dungeon Hub.', 'Bazaar — покупка открывается с Catacombs 20.'],
     use: ['Звёзды на Wither-предметах.', 'Перки магазина: Forbidden Health/Defense/Strength/Intelligence/Speed — статы навсегда, не только в данже.'],
@@ -15,7 +15,7 @@ export const ESSENCE_INFO = {
     npc: 'MALIK_NPC',
   },
   UNDEAD: {
-    ru: 'Undead', color: '#8fbf6a', area: 'Данжи',
+    ru: 'Undead', color: '#8fbf6a', area: 'Dungeons',
     what: 'Основная эссенция ранних и средних данжей. Звёзды на большинство данжевых предметов F1–F4 и перки, которые помогают именно в данжах.',
     get: ['Сундуки после данжа на любом этаже.', 'Мобы Crypt Undead в данжах.', 'Salvage данжевых предметов (особенно ранних: Zombie Soldier, Skeleton Grunt и т. п.).', 'Bazaar с Catacombs 20.'],
     use: ['Звёзды на Undead-предметах (Shadow Assassin, Livid Dagger, Bonzo и др.).', 'Перки: статы в данже, Looting и Boss Luck — больше и лучше лут, Help of the Fairies — бесплатный Revive Stone в каждом забеге.'],
@@ -24,7 +24,7 @@ export const ESSENCE_INFO = {
   },
   DRAGON: {
     ru: 'Dragon', color: '#c084fc', area: 'Край и данжи',
-    what: 'Эссенция драконьих предметов: драконья броня, Aspect of the Dragons, Juju и Dragon Shortbow.',
+    what: 'Essence драконьих предметов: драконья броня, Aspect of the Dragons, Juju и Dragon Shortbow.',
     get: ['Ender Dragon в Крае (за вклад в бой).', 'Lost Adventurer в данжах.', 'Жертвы на Draconic Altar в Void Slate.', 'Salvage драконьих предметов.', 'Bazaar — покупка открывается с Catacombs 20.'],
     use: ['Звёзды на драконьей броне и оружии.', 'Перки для Края: Zealuck (шанс Special Zealot), Ender Training (Combat Wisdom в Крае), Dragon Piper (шанс Superior Dragon), One Punch и Recharge против эндерменов.'],
     shop: 'Tyzzo у Draconic Altar в Void Slate (Край).',
@@ -32,7 +32,7 @@ export const ESSENCE_INFO = {
   },
   SPIDER: {
     ru: 'Spider', color: '#ef4444', area: "Spider's Den",
-    what: 'Эссенция паучьих предметов: Arachne, Primordial, Recluse Fang, Mosquito Bow и т. п.',
+    what: 'Essence паучьих предметов: Arachne, Primordial, Recluse Fang, Mosquito Bow и т. п.',
     get: ['Arachne.', 'Lonely Spider и Cellar Spider.', 'Salvage паучьих предметов.', 'Bazaar — покупка открывается с Catacombs 20.'],
     use: ['Звёзды на паучьих предметах.', 'Перки: Bane (урон по паукам), Vermin Control (меньше урона от пауков), Spider Training (Combat Wisdom в Spider\'s Den), Toxophilite (опыт класса Archer).'],
     shop: "Spider Tamer в Arachne's Sanctuary (Spider's Den).",
@@ -40,15 +40,15 @@ export const ESSENCE_INFO = {
   },
   ICE: {
     ru: 'Ice', color: '#7dd3fc', area: "Jerry's Workshop и шахты",
-    what: 'Эссенция ледяных предметов: Frozen Blaze, Yeti Sword, Glacial Scythe, Ice Spray Wand.',
-    get: ['Зимние морские существа (рыбалка в Jerry\'s Workshop).', 'Frozen Adventurer в данжах.', 'Salvage ледяных предметов.', 'Bazaar — покупка открывается с Catacombs 20.'],
+    what: 'Essence ледяных предметов: Frozen Blaze, Yeti Sword, Glacial Scythe, Ice Spray Wand.',
+    get: ['Зимние Sea Creatures (рыбалка в Jerry\'s Workshop).', 'Frozen Adventurer в данжах.', 'Salvage ледяных предметов.', 'Bazaar — покупка открывается с Catacombs 20.'],
     use: ['Звёзды на ледяных предметах.', 'Перки: Cooled Forges (больше эссенции при Salvage), Season of Joy (больше подарков в Gift Attack), Drake Piper (шанс Reindrake), Frozen Skin (сопротивление холоду), Cold Efficiency (опыт класса Mage).'],
     shop: "Frozen Alex у Jerry Pond в Jerry's Workshop (остров открыт в Late Winter).",
     npc: 'FROZEN_ALEX_NPC',
   },
   CRIMSON: {
     ru: 'Crimson', color: '#f97316', area: 'Crimson Isle',
-    what: 'Эссенция Crimson Isle и Kuudra. Единственная, на которую броня Kuudra и оружие острова получают звёзды выше 5 (до 10, а Infernal — до 15 за Kuudra Teeth).',
+    what: 'Essence Crimson Isle и Kuudra. Единственная, на которую броня Kuudra и оружие острова получают звёзды выше 5 (до 10, а Infernal — до 15 за Kuudra Teeth).',
     get: ['Каждый пройденный Kuudra (больше на высоких тирах).', 'Salvage брони Kuudra и предметов Crimson Isle.', 'Bazaar — покупка открывается с Catacombs 20.'],
     use: ['Звёзды на броне Kuudra (Crimson, Aurora, Terror, Fervor, Hollow) и оружии Crimson Isle.', 'Перки Kuudra (Fresh Tools, Headstart, Strongarm) и Crimson Isle.'],
     shop: 'Vulcan в Forgotten Skull на Crimson Isle (и в Dungeon Hub), открывается после первой победы над Kuudra.',
@@ -56,7 +56,7 @@ export const ESSENCE_INFO = {
   },
   GOLD: {
     ru: 'Gold', color: '#facc15', area: 'Crystal Hollows',
-    what: 'Эссенция золотых предметов: Midas Sword/Staff, Giant/Hyper Cleaver, золотые головы боссов.',
+    what: 'Essence золотых предметов: Midas Sword/Staff, Giant/Hyper Cleaver, золотые головы боссов.',
     get: ['Сундуки с сокровищами в Crystal Hollows и прохождение Crystal Nucleus.', 'Golden Goblin и King Midas.', 'Секреты в данжах и «золотые» Undead от Watcher.', 'Salvage золотых предметов.', 'Bazaar — покупка открывается с Catacombs 20.'],
     use: ['Звёзды на золотых предметах.', 'Перки: Dwarven Training (Mining Wisdom на шахтёрских островах), Eager Miner (Mining Speed там же), Treasure of the Earth (шанс Worm или Scatha), Unbreaking (Vitality), Heart of Gold (опыт класса Healer), Midas Lure (шанс золотого трофея).'],
     shop: 'Marigold в Royal Mines (Dwarven Mines).',
@@ -64,7 +64,7 @@ export const ESSENCE_INFO = {
   },
   DIAMOND: {
     ru: 'Diamond', color: '#22d3ee', area: 'Crystal Hollows',
-    what: 'Эссенция алмазных предметов: Hardened Diamond, Perfect Armor, алмазные головы боссов.',
+    what: 'Essence алмазных предметов: Hardened Diamond, Perfect Armor, алмазные головы боссов.',
     get: ['Сундуки с сокровищами в Crystal Hollows и прохождение Crystal Nucleus.', 'Diamond Goblin и Angry Archaeologist.', 'Секреты в данжах.', 'Salvage алмазных предметов.', 'Bazaar — покупка открывается с Catacombs 20.'],
     use: ['Звёзды на алмазных предметах.', 'Перки: Radiant Fisher (шанс алмазного трофея), Rhinestone Infusion (Gemstone Fortune на шахтёрских островах), Under Pressure (Strength там же), Return to Sender (шанс Diamond Goblin), High Roller (лишний дроп из Crystal Nucleus Bundle), Diamond in the Rough (опыт класса Tank).'],
     shop: 'Gemma в Crystal Nucleus (Crystal Hollows).',
@@ -72,7 +72,7 @@ export const ESSENCE_INFO = {
   },
   FOREST: {
     ru: 'Forest', color: '#4ade80', area: 'Galatea',
-    what: 'Эссенция Foraging, появилась в обновлении Galatea (июнь 2025). Звёзды на топоры Fig/Figstone/Helix Chopper и перки для лесоруба.',
+    what: 'Essence Foraging, появилась в обновлении Galatea (июнь 2025). Звёзды на топоры Fig/Figstone/Helix Chopper и перки для лесоруба.',
     get: ['Tree Gifts в Galatea.', 'Рубка Fig и Mangrove.', 'Награды Agatha.', 'Bazaar — единственная эссенция, которую можно купить без Catacombs 20.'],
     use: ['Звёзды на Fig Axe, Figstone Axe, Helix Chopper.', 'Перки: Lumberjack (Foraging Fortune), Forest Training (Foraging Wisdom), Axed (статы топоров сильнее), Trapped (ловушки быстрее), Tasty (ягоды сильнее), Extreme Pressure (сопротивление давлению).'],
     shop: 'Rosemary в Murkwater Outpost (Galatea).',
@@ -80,7 +80,7 @@ export const ESSENCE_INFO = {
   },
   FOSSIL: {
     ru: 'Fossil', color: '#d6b98c', area: 'Glacite Tunnels',
-    what: 'Эссенция Glacite Tunnels. Звёзд за неё нет, только перки магазина для шахт и раскопок.',
+    what: 'Essence Glacite Tunnels. Звёзд за неё нет, только перки магазина для шахт и раскопок.',
     get: ['Раскопки окаменелостей в Glacite Tunnels.'],
     use: ['Перки: Dwarven Expertise, Prehistorian, Chilled To The Bone (холод в туннелях), Resourceful.'],
     shop: 'Researcher Beryl на верхнем этаже Fossil Research Center (Dwarven Base Camp, у входа в Glacite Tunnels).',
@@ -88,7 +88,7 @@ export const ESSENCE_INFO = {
   },
   SAFARI: {
     ru: 'Safari', color: '#a3e635', area: 'Hunting',
-    what: 'Эссенция охоты (Hunting). Звёзд за неё нет, только перки для ловли существ.',
+    what: 'Essence охоты (Hunting). Звёзд за неё нет, только перки для ловли существ.',
     get: ['Охота на существ (Hunting) в Galatea.'],
     use: ['Перки охоты: Critter Catcher, Critter Master, Hunting Hotspot, Fresh Footprints и др.'],
     shop: 'Archie в Torrhus Canyon (по поиску по вики и базе NEU; в игре не сверено).',
@@ -180,7 +180,7 @@ export const PERK_NAME_RU = {
   catacombs_defense: 'Защита',
   catacombs_strength: 'Сила',
   catacombs_intelligence: 'Интеллект',
-  catacombs_crit_damage: 'Крит. урон',
+  catacombs_crit_damage: 'Crit Damage',
   permanent_health: 'Запретное здоровье',
   permanent_defense: 'Запретная защита',
   permanent_speed: 'Запретная скорость',
@@ -198,7 +198,7 @@ export const PERK_NAME_RU = {
   increased_sup_chances: 'Драконья дудка',
   unbridled_rage: 'Необузданная ярость',
   empowered_agility: 'Усиленная ловкость',
-  vermin_control: 'Борьба с вредителями',
+  vermin_control: 'Борьба с Pests',
   bane: 'Погибель пауков',
   spider_training: 'Тренировка в логове пауков',
   toxophilite: 'Друг лука',

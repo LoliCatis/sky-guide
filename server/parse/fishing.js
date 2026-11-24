@@ -1,4 +1,4 @@
-// Рыбалка из сырого профиля: пойманное, морские существа, трофейная рыба, убийства существ для бестиария.
+// Рыбалка из сырого профиля: пойманное, Sea Creatures, Trophy Fish, убийства существ для бестиария.
 import { FISHING_MOB_KEYS, trophyTierCounts } from '../guides/fishing-data.js';
 
 /**
@@ -10,12 +10,12 @@ export function parseFishing(m = {}) {
   const best = m.bestiary?.kills || {};
   const statKills = ps.kills || {};
   const kills = {};
-  // Бестиарий точнее (ключ с уровнем моба, как в NEU); если его нет — берём player_stats.kills
+  // Bestiary точнее (ключ с уровнем моба, как в NEU); если его нет — берём player_stats.kills
   for (const k of FISHING_MOB_KEYS) {
     const v = Number(best[k] ?? statKills[k] ?? 0);
     if (v > 0) kills[k] = v;
   }
-  // Трофейная рыба лежит в members[uuid].trophy_fish (старое место — nether_island_player_data.trophy_fish)
+  // Trophy Fish лежит в members[uuid].trophy_fish (старое место — nether_island_player_data.trophy_fish)
   const tf = m.trophy_fish || m.nether_island_player_data?.trophy_fish || {};
   return {
     itemsFished: ps.items_fished || {},

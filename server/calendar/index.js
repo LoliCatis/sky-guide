@@ -54,7 +54,7 @@ function allEvents(now) {
   ev.push({ id: 'term', name: 'Смена мэра', icon: 'PAPER', color: '#c3a6ff', tier: 'big', start: termEnd, end: termEnd + DAY,
     what: 'Итоги выборов: новый мэр и министр.', tip: 'Победитель выборов становится мэром на год SkyBlock, второй по голосам — министром с одним перком.' });
   if (!w.open) ev.push({ id: 'election-open', name: 'Открытие выборов', icon: 'PAPER', color: '#c3a6ff', tier: 'big', start: w.opens, end: w.opens + DAY,
-    what: 'Election Booth в Хабе: можно голосовать за мэра.', tip: 'Голосуй у Election Booth в Хабе.' });
+    what: 'Election Booth в Hub: можно голосовать за мэра.', tip: 'Голосуй у Election Booth в Hub.' });
   // убираем повтор «открытия выборов» из годового списка, если оно уже есть
   const seen = new Set();
   return ev.filter(e => { const k = `${e.id}|${e.start}`; if (seen.has(k)) return false; seen.add(k); return true; });

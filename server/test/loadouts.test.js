@@ -77,7 +77,7 @@ test('советчик ИИ: сводка знает про смешанный W
   const { buildDigest } = await import('../live-advisor/lib/digest.js');
   const m = member();
   const d = buildDigest(m, buildRoadmap(m, deps), {});
-  assert.match(d, /Гардероб:.*слот гардероба 5: POWER_WITHER_HELMET/);
+  assert.match(d, /Wardrobe:.*слот гардероба 5: POWER_WITHER_HELMET/);
   assert.match(d, /Сет для данжей: слот гардероба 5: 4\/4 частей Wither вперемешку \(Necron \+ Maxor \+ Storm\)/);
   assert.match(d, /НЕ советуй покупать Wither-броню с нуля/);
   assert.match(d, /Под класс archer хуже подходят: ботинки Storm/);

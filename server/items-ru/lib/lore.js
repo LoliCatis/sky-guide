@@ -94,20 +94,19 @@ function translateRequirement(text) {
   const t = text.replace(/\.$/, '');
   if ((m = /^Requires (\w+) Skill (\d+)$/.exec(t))) {
     const sk = SKILL_EN[m[1]];
-    if (sk) return `Требуется навык «${sk}» ${m[2]}.`;
+    if (sk) return `Требуется ${sk} ${m[2]}.`;
     if (m[1] === 'Catacombs') return `Требуется уровень Catacombs ${m[2]}.`;
   }
   if ((m = /^Requires (Zombie|Spider|Wolf|Enderman|Blaze|Vampire) Slayer (\d+)$/.exec(t))) {
-    const ru = { Zombie: 'Зомби', Spider: 'Паук', Wolf: 'Волк', Enderman: 'Эндермен', Blaze: 'Блейз', Vampire: 'Вампир' }[m[1]];
-    return `Требуется слеер «${ru}» (${m[1]}) уровня ${m[2]}.`;
+    return `Требуется ${m[1]} Slayer ${m[2]}.`;
   }
-  if ((m = /^Requires The Catacombs Floor ([IVX]+) Completion$/.exec(t))) return `Требуется пройти The Catacombs, этаж ${m[1]}.`;
-  if ((m = /^Requires (?:The Catacombs Master Mode|Master Mode The Catacombs) Floor ([IVX]+)(?: Completion)?$/.exec(t))) return `Требуется пройти Master Mode, этаж ${m[1]}.`;
-  if ((m = /^Requires Heart of the Mountain Tier (\d+)$/.exec(t))) return `Требуется Heart of the Mountain уровня ${m[1]}.`;
-  if ((m = /^Requires Heart of the Forest Tier (\d+)$/.exec(t))) return `Требуется Heart of the Forest уровня ${m[1]}.`;
-  if ((m = /^Requires Garden Level (\d+)$/.exec(t))) return `Требуется уровень Garden ${m[1]}.`;
+  if ((m = /^Requires The Catacombs Floor ([IVX]+) Completion$/.exec(t))) return `Требуется пройти The Catacombs, Floor ${m[1]}.`;
+  if ((m = /^Requires (?:The Catacombs Master Mode|Master Mode The Catacombs) Floor ([IVX]+)(?: Completion)?$/.exec(t))) return `Требуется пройти Master Mode, Floor ${m[1]}.`;
+  if ((m = /^Requires Heart of the Mountain Tier (\d+)$/.exec(t))) return `Требуется Heart of the Mountain Tier ${m[1]}.`;
+  if ((m = /^Requires Heart of the Forest Tier (\d+)$/.exec(t))) return `Требуется Heart of the Forest Tier ${m[1]}.`;
+  if ((m = /^Requires Garden Level (\d+)$/.exec(t))) return `Требуется Garden Level ${m[1]}.`;
   if ((m = /^Requires Kuudra (\w+) Tier Completion$/.exec(t))) return `Требуется пройти Kuudra, тир ${m[1]}.`;
-  if ((m = /^Requires SkyBlock Level (\d+)$/.exec(t))) return `Требуется уровень SkyBlock ${m[1]}.`;
+  if ((m = /^Requires SkyBlock Level (\d+)$/.exec(t))) return `Требуется SkyBlock Level ${m[1]}.`;
   if ((m = /^Requires level (\d+)$/.exec(t))) return `Требуется уровень ${m[1]}.`;
   if ((m = /^Requires (.+) Reputation$/.exec(t))) return `Требуется репутация: ${m[1]}.`;
   if ((m = /^Requires wearing (.+)!?$/.exec(t))) return `Нужно носить ${m[1].replace(/!$/, '')}!`;
@@ -146,13 +145,8 @@ function translateLineInner(line) {
   // Последняя строка: редкость + тип
   const rm = RARITY_LINE.exec(line.trim());
   if (rm && plain === plain.toUpperCase()) {
-    const r = RARITY[rm[2]];
-    const type = rm[4] ? (ITEM_TYPES[rm[4]] || rm[4]) : '';
-    // прилагательное редкости согласуем с родом типа: «НЕОБЫЧНАЯ РУДА», «ЭПИЧЕСКАЯ УДОЧКА», «ЛЕГЕНДАРНЫЕ ПЕРЧАТКИ»
-    const parts = [agreeAdj(r, rm[4] ? TYPE_GENDER[rm[4]] : 'm').toUpperCase()];
-    if (type) parts.push(type.toUpperCase());
-    if (rm[3]) parts.push('(ДАНЖ)');
-    return { text: `${rm[1]}${parts.join(' ')}`, ok: true };
+    // редкость и тип оставляем как в игре: «LEGENDARY DUNGEON SWORD»
+    return { text: line, ok: true };
   }
   // Требования
   const req = /^([❣☠✖]?\s*)(Requires .+)$/.exec(plain);
@@ -170,7 +164,7 @@ function translateLineInner(line) {
     const name = li[1];
     let m;
     if (LIST_ITEMS[name]) return { text: ` §7- §f${LIST_ITEMS[name]}${li[3] ? ` §7(§a${li[3]}§7)` : ''}`, ok: true };
-    if ((m = /^(\w+) Level (\d+)$/.exec(name)) && SKILL_EN[m[1]]) return { text: ` §7- §bНавык «${SKILL_EN[m[1]]}» ${m[2]}`, ok: true };
+    if ((m = /^(\w+) Level (\d+)$/.exec(name)) && SKILL_EN[m[1]]) return { text: ` §7- §b${SKILL_EN[m[1]]} ${m[2]}`, ok: true };
     // имя собственное (чары, предметы) остаётся на английском — это не ошибка перевода
     if (/^([A-Z][\w'’-]*\s?)+$/.test(name)) return { text: line, ok: true };
   }
@@ -206,15 +200,17 @@ const DAT = {
   'Pet Luck': 'удаче питомцев', 'Swing Range': 'дальности удара', 'Pristine': 'Pristine', 'Magic Find': 'Magic Find',
   'Trophy Fish Chance': 'шансу трофейной рыбы', 'Treasure Chance': 'шансу сокровища', 'Gemstone Fortune': 'удаче на самоцветы',
 };
-const kStat = st => `к ${DAT[st] || `«${STATS[st] || st}»`}`;
+// статы как в игре: «Даёт +5❁ Strength»
+const kStat = st => STATS[st] || st;
 const TRIGGERS = { 'RIGHT CLICK': 'ПКМ', 'LEFT CLICK': 'ЛКМ', SNEAK: 'присесть', 'SNEAK RIGHT CLICK': 'Shift+ПКМ', 'DOUBLE RIGHT CLICK': 'двойной ПКМ' };
-const BONUS = { 'Full Set Bonus': 'Бонус полного сета', 'Tiered Bonus': 'Ступенчатый бонус', 'Piece Bonus': 'Бонус предмета',
-  'Dungeon Bonus': 'Бонус в данже', 'Unique Bonus': 'Уникальный бонус' };
+// названия бонусов — как в игре
+const BONUS = { 'Full Set Bonus': 'Full Set Bonus', 'Tiered Bonus': 'Tiered Bonus', 'Piece Bonus': 'Piece Bonus',
+  'Dungeon Bonus': 'Dungeon Bonus', 'Unique Bonus': 'Unique Bonus' };
 /** @type {[RegExp, (m: RegExpExecArray) => string][]} */
 // «+0.1Ⓢ Swing Range and +1⫽ Ferocity» → «+0.1Ⓢ дальность удара и +1⫽ свирепость»
 const statsRu = list => list.split(/ and |, /).map(x => {
   const m = /^([+-]?[\d.,]+%?\S?)\s+(.+)$/.exec(x.trim());
-  return m && STATS[m[2]] ? `${m[1]} ${STATS[m[2]].toLowerCase()}` : x.trim();
+  return m && STATS[m[2]] ? `${m[1]} ${STATS[m[2]]}` : x.trim();
 }).join(' и ');
 
 const PARAGRAPHS = [
@@ -367,9 +363,9 @@ const PARAGRAPHS = [
   // ── отдельные предложения ──
   [/^Applies the (.+?) reforge when combined with (?:an? )?(.+?)\.?$/, m => `Даёт перековку ${m[1]} при объединении с предметом: ${LIST_ITEMS[m[2]] || m[2]}.`],
   [/^Grants \+?([\d.]+) ?(.)? ?(\w[\w ]*?) per (Catacombs|Combat|Mining|Farming|Fishing|Foraging|Enchanting|Taming) (?:skill )?level(?: you have)?\.?$/,
-    m => (STATS[m[3]] ? `Даёт +${m[1]}${m[2] || ''} ${kStat(m[3])} за каждый уровень ${m[4] === 'Catacombs' ? 'Catacombs' : `навыка «${SKILL_EN[m[4]]}»`}.` : null)],
+    m => (STATS[m[3]] ? `Даёт +${m[1]}${m[2] || ''} ${kStat(m[3])} за каждый уровень ${m[4] === 'Catacombs' ? 'Catacombs' : SKILL_EN[m[4]]}.` : null)],
   [/^Grants \+?([\d.]+) ?(.)? ?(\w[\w ]*?) and \+?([\d.]+) ?(.)? ?(\w[\w ]*?) per (Catacombs|Combat|Mining|Farming|Fishing|Foraging) (?:skill )?level(?: you have)?\.?$/,
-    m => (STATS[m[3]] && STATS[m[6]] ? `Даёт +${m[1]}${m[2] || ''} ${kStat(m[3])} и +${m[4]}${m[5] || ''} ${kStat(m[6])} за каждый уровень ${m[7] === 'Catacombs' ? 'Catacombs' : `навыка «${SKILL_EN[m[7]]}»`}.` : null)],
+    m => (STATS[m[3]] && STATS[m[6]] ? `Даёт +${m[1]}${m[2] || ''} ${kStat(m[3])} и +${m[4]}${m[5] || ''} ${kStat(m[6])} за каждый уровень ${m[7] === 'Catacombs' ? 'Catacombs' : SKILL_EN[m[7]]}.` : null)],
   [/^Teleport (\d+) blocks ahead of you and gain \+?(\d+) ?.? ?Speed for (\d+) seconds\.?$/, m => `Телепортирует на ${m[1]} блоков вперёд и даёт +${m[2]} ✦ скорости на ${m[3]} с.`],
   [/^Teleport (\d+) blocks ahead of you\.?$/, m => `Телепортирует на ${m[1]} блоков вперёд.`],
   [/^(\w+) Bonus$/, m => `Бонус ${m[1]}`],

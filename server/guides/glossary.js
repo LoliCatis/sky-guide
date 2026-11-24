@@ -14,24 +14,24 @@ export const GLOSSARY = {
   // ---------- Рыбалка ----------
   double_hook: {
     names: ['Double Hook Chance', 'Double Hook', 'двойной улов', 'Двойной улов', 'двойной крючок', 'Двойной крючок'], kind: 'stat', title: 'Double Hook Chance',
-    text: 'Шанс, что вместо одного морского существа клюнут сразу два. Вдвое больше опыта Fishing, дропа и убийств в бестиарий за один заброс.',
+    text: 'Шанс, что вместо одного Sea Creature клюнут сразу два. Вдвое больше опыта Fishing, дропа и убийств в бестиарий за один заброс.',
     how: ['Посмотри текущее значение: SkyBlock Menu → Your SkyBlock Profile, стат Double Hook Chance.', 'Подними его Titan Line (+2) у Roddy, реофорджами удочки и снаряжением с этим статом.'],
     items: ['TITAN_LINE'],
   },
   hotspot: {
-    names: ['Hotspot', 'Hotspots', 'Хотспот', 'Хотспота', 'Хотспоты', 'Хотспотах', 'Хотспотов', 'Хотспоту', 'Хотспотом', 'хотспот', 'хотспоты', 'хотспотах'], kind: 'place', title: 'Хотспот (Hotspot)',
+    names: ['Hotspot', 'Hotspots', 'Хотспот', 'Хотспота', 'Хотспоты', 'Хотспотах', 'Хотспотов', 'Хотспоту', 'Хотспотом', 'хотспот', 'хотспоты', 'хотспотах'], kind: 'place', title: 'Hotspot',
     text: 'Светящееся пятно с частицами на воде или лаве. Живёт несколько минут, потом появляется в другом месте. Пока поплавок внутри — действует бонус пятна (Fishing Speed, Sea Creature Chance, Treasure Chance или Trophy Chance) и клюют особые существа Хотспота.',
     how: ['Ищи частицы над водой: Backwater Bayou, Spider\'s Den, Crimson Isle (лава) и другие острова.', 'Закидывай поплавок прямо в круг — бонус работает, только пока поплавок внутри.', 'Hotspot Hook, Hotspot Sinker и Hotspot Bait усиливают пятно и шанс его существ.'],
     items: ['HOTSPOT_HOOK', 'HOTSPOT_SINKER', 'HOTSPOT_BAIT'],
   },
   scc: {
     names: ['Sea Creature Chance', 'SCC'], kind: 'stat', title: 'Sea Creature Chance',
-    text: 'Шанс, что вместо обычной рыбы клюнет морское существо. Существа дают почти весь опыт Fishing, дроп и прогресс бестиария, поэтому это главный стат рыбака.',
+    text: 'Шанс, что вместо обычной рыбы клюнет Sea Creature. Существа дают почти весь опыт Fishing, дроп и прогресс бестиария, поэтому это главный стат рыбака.',
     how: ['Даёт удочка (Rod of the Sea, Hellfire Rod), броня рыбака, питомцы (Flying Fish, Ammonite, Megalodon), аксессуары Sea Creature Talisman/Ring/Artifact и зелье Fishing.'],
   },
   trophy_chance: {
     names: ['Trophy Chance', 'Trophy Fish Chance'], kind: 'stat', title: 'Trophy Fish Chance',
-    text: 'Шанс поймать трофейную рыбу при рыбалке в лаве Crimson Isle. Чем выше, тем быстрее закрываются виды и тиры для наград Odger.',
+    text: 'Шанс поймать Trophy Fish при рыбалке в лаве Crimson Isle. Чем выше, тем быстрее закрываются виды и тиры для наград Odger.',
     how: ['Даёт лавовая удочка (Magma → Inferno → Hellfire Rod), Trophy Line и Hot Bait.'],
     items: ['TROPHY_LINE', 'HOT_BAIT'],
   },
@@ -45,22 +45,22 @@ export const GLOSSARY = {
     text: 'Шанс выловить сокровище (предметы и монеты) вместо рыбы. Для фарма опыта он почти не важен.',
   },
   trophy_fishing: {
-    names: ['Trophy Fishing', 'трофейная рыба', 'Трофейная рыба', 'трофейную рыбу', 'трофейной рыбы', 'Трофейной рыбы'], kind: 'mech', title: 'Трофейная рыба',
+    names: ['Trophy Fishing', 'Trophy Fish', 'трофейная рыба', 'Трофейная рыба', 'трофейную рыбу', 'трофейной рыбы', 'Трофейной рыбы'], kind: 'mech', title: 'Trophy Fish',
     text: '18 видов особой рыбы, которая ловится только в лаве Crimson Isle. У каждого вида 4 тира: бронза, серебро, золото и алмаз. За собранные виды Odger выдаёт награды Trophy Fisher.',
     how: ['Возьми лавовую удочку и рыбачь в лаве Crimson Isle.', 'Для редких видов выполни условие: место, время, наживку или способ заброса (они в таблице гайда).', 'Пойманную рыбу неси Odger на вершине Blazing Volcano: он засчитает виды и разделает лишнее на Magmafish.'],
   },
   trophy_pity: {
     names: ['гарантия на 100-й/600-й улов', 'гарантию на 100/600', 'гарантия на 100/600', 'Гарантия (pity)', 'pity'], kind: 'mech', title: 'Гарантия трофейного тира',
-    text: '100-й улов одного вида трофейной рыбы гарантированно золотой, 600-й — алмазный, если этого тира у тебя ещё нет. Счётчик — все уловы этого вида за всё время.',
+    text: '100-й улов одного вида Trophy Fish гарантированно золотой, 600-й — алмазный, если этого тира у тебя ещё нет. Счётчик — все уловы этого вида за всё время.',
   },
   charm: {
     names: ['Charm', 'Charm V', 'Charm VI'], kind: 'mech', title: 'Charm (зачарование)',
-    text: 'Зачарование удочки: +2% за уровень к шансу серебра, золота и алмаза у трофейной рыбы (Charm V: алмаз 0,2% → 0,22%). Не влияет на сам шанс поймать трофей.',
+    text: 'Зачарование удочки: +2% за уровень к шансу серебра, золота и алмаза у Trophy Fish (Charm V: алмаз 0,2% → 0,22%). Не влияет на сам шанс поймать трофей.',
     how: ['Книги Charm I–V — с рыбалки и на Bazaar, Charm VI — из Chain of the End Times. Нужен Enchanting 25.'],
   },
   peace_treaty: {
     names: ['Peace Treaty'], kind: 'mech', title: 'Peace Treaty (Hunter Armor)',
-    text: 'Бонус от 2 надетых частей Hunter Armor: морские существа больше не клюют и не бьют тебя, но и ты не можешь их бить. Хорошо для чистой охоты на трофеи, плохо для опыта Fishing.',
+    text: 'Бонус от 2 надетых частей Hunter Armor: Sea Creatures больше не клюют и не бьют тебя, но и ты не можешь их бить. Хорошо для чистой охоты на трофеи, плохо для опыта Fishing.',
   },
   odgers_blessing: {
     names: ["Odger's Blessing", 'Odger’s Blessing'], kind: 'mech', title: "Odger's Blessing",
@@ -68,27 +68,27 @@ export const GLOSSARY = {
   },
   trophy_fisher: {
     names: ['Novice Trophy Fisher', 'Adept Trophy Fisher', 'Expert Trophy Fisher', 'Master Trophy Fisher', 'Trophy Fisher'], kind: 'mech', title: 'Награды Trophy Fisher',
-    text: 'Ранги Odger за трофейную рыбу. Novice — 15 видов на бронзу, Adept — серебро у всех 18, Expert — золото у всех 18, Master — все тиры у всех 18. Novice открывает Thunder, Adept — Lord Jawbus.',
+    text: 'Ранги Odger за Trophy Fish. Novice — 15 видов на бронзу, Adept — серебро у всех 18, Expert — золото у всех 18, Master — все тиры у всех 18. Novice открывает Thunder, Adept — Lord Jawbus.',
     how: ['Поговори с Odger на вершине Blazing Volcano (Crimson Isle) и забери награду в его меню: само по себе условие ничего не открывает.'],
   },
   bait: {
-    names: ['наживка', 'наживку', 'наживки', 'Наживка', 'Наживки'], kind: 'mech', title: 'Наживка (Bait)',
+    names: ['наживка', 'наживку', 'наживки', 'Наживка', 'Наживки'], kind: 'mech', title: 'Bait',
     text: 'Расходник для рыбалки: лежит в инвентаре или Fishing Bag и тратится по одной штуке за заброс. Каждая наживка даёт свой бонус: больше существ, шанс акул, трофеев, ночных существ и т. п.',
-    how: ['Покупается у Fishing Merchant в Хабе и у Roddy, часть крафтится. Stingy Sinker экономит наживку.'],
+    how: ['Покупается у Fishing Merchant в Hub и у Roddy, часть крафтится. Stingy Sinker экономит наживку.'],
   },
   bestiary: {
-    names: ['бестиарий', 'бестиария', 'бестиарию', 'бестиарием', 'Бестиарий', 'Bestiary'], kind: 'mech', title: 'Бестиарий',
-    text: 'Счётчик убийств каждого вида мобов. За уровни бестиария дают постоянные статы и SkyBlock XP, а у морских существ — ещё и бонус к Sea Creature Chance по этому виду.',
-    how: ['Прогресс виден в SkyBlock Menu → Your SkyBlock Profile → Bestiary. Для морских существ просто лови их нужное число раз.'],
+    names: ['бестиарий', 'бестиария', 'бестиарию', 'бестиарием', 'Бестиарий', 'Bestiary'], kind: 'mech', title: 'Bestiary',
+    text: 'Счётчик убийств каждого вида мобов. За уровни бестиария дают постоянные статы и SkyBlock XP, а у Sea Creatures — ещё и бонус к Sea Creature Chance по этому виду.',
+    how: ['Прогресс виден в SkyBlock Menu → Your SkyBlock Profile → Bestiary. Для Sea Creatures просто лови их нужное число раз.'],
   },
   sea_creature: {
-    names: ['морские существа', 'морское существо', 'морских существ', 'Морские существа', 'существа', 'существ'], kind: 'mech', title: 'Морские существа',
+    names: ['Sea Creatures', 'Sea Creature', 'морские существа', 'морское существо', 'морских существ', 'Морские существа', 'существа', 'существ'], kind: 'mech', title: 'Sea Creatures',
     text: 'Мобы, которые иногда клюют вместо рыбы. Их надо убить. Дают основной опыт Fishing, дроп (материалы для брони и удочек) и бестиарий. Новые виды открываются уровнем Fishing.',
   },
   fishing_festival: {
     names: ['Fishing Festival'], kind: 'event', title: 'Fishing Festival',
     text: 'Рыболовный фестиваль: первые 3 дня каждого месяца SkyBlock, если мэр — Marina (или действует её перк). В любой воде клюют акулы: Nurse (5), Blue (10), Tiger (18), Great White (24).',
-    how: ['Проверь мэра в Хабе (здание Election).', 'Бери Shark Bait (+20% шанс акул) и рыбачь в любой воде.', 'Зубы и плавники акул продаются, из Shark Fin делается Shark Scale Armor.'],
+    how: ['Проверь мэра в Hub (здание Election).', 'Бери Shark Bait (+20% шанс акул) и рыбачь в любой воде.', 'Зубы и плавники акул продаются, из Shark Fin делается Shark Scale Armor.'],
     items: ['SHARK_BAIT', 'GREAT_WHITE_SHARK_TOOTH', 'SHARK_FIN'],
   },
   spooky_festival: {
@@ -100,14 +100,14 @@ export const GLOSSARY = {
   jerry_workshop: {
     names: ['Jerry\'s Workshop', 'Jerry’s Workshop'], kind: 'place', title: 'Jerry\'s Workshop', warp: 'winter',
     text: 'Зимний остров. Открыт только в месяц Late Winter. Там клюют зимние существа (Frozen Steve, Frosty, Grinch, Yeti, Reindrake), а Ice Bait и Frozen Bait работают только здесь.',
-    how: ['Дождись Late Winter, зайди через портал в Хабе или /warp winter.'],
+    how: ['Дождись Late Winter, зайди через портал в Hub или /warp winter.'],
   },
   season_of_jerry: {
     names: ['Season of Jerry'], kind: 'event', title: 'Season of Jerry',
     text: 'Зимнее событие в Jerry\'s Workshop (дни 24–26 Late Winter): защита острова, подарки и North Stars.',
   },
 
-  // ---------- Бой и данжи ----------
+  // ---------- Combat и Dungeons ----------
   ferocity: {
     names: ['Ferocity'], kind: 'stat', title: 'Ferocity',
     text: 'Шанс ударить ещё раз сразу же: 50 Ferocity — 50% шанс на второй удар, 100 — второй удар всегда, сверх 100 — шанс на третий. Полезен против существ и мобов с большим HP.',
@@ -143,7 +143,7 @@ export const GLOSSARY = {
     how: ['Открывается кликом по Catacombs-сундуку или у Maddox (слееры): выбери цель и просто фарми.'],
   },
   secrets: {
-    names: ['секреты', 'Секреты', 'секретов', 'Секретов', 'Secrets'], kind: 'mech', title: 'Секреты данжа',
+    names: ['секреты', 'Секреты', 'секретов', 'Секретов', 'Secrets'], kind: 'mech', title: 'Secrets',
     text: 'Спрятанные сундуки, предметы, летучие мыши и рычаги в комнатах. Дают очки Exploration для S+ и полезный лут; общее число секретов влияет на некоторые предметы.',
   },
   catacombs: {
@@ -151,11 +151,11 @@ export const GLOSSARY = {
     text: 'Уровень данжей (1–50). Растёт за победы на этажах; открывает новые этажи и Master Mode, усиливает данж-предметы внутри данжа.',
   },
   dungeon_class: {
-    names: ['Лучник', 'Берсерк', 'Маг', 'Хилер', 'Танк'], kind: 'mech', title: 'Классы данжа',
-    text: 'В данже выбирается класс: Лучник (Archer), Берсерк (Berserk), Маг (Mage), Хилер (Healer), Танк (Tank). Полный опыт получает только выбранный, остальные — 25%.',
+    names: ['Archer', 'Berserk', 'Mage', 'Healer', 'Tank', 'Лучник', 'Берсерк', 'Маг', 'Хилер', 'Танк'], kind: 'mech', title: 'Классы Dungeons',
+    text: 'В данже выбирается класс: Archer, Berserk, Mage, Healer, Tank. Полный опыт получает только выбранный, остальные — 25%.',
   },
   essence: {
-    names: ['эссенция', 'эссенцию', 'эссенции', 'Эссенция', 'Essence'], kind: 'cur', title: 'Эссенция',
+    names: ['эссенция', 'эссенцию', 'эссенции', 'Эссенция', 'Essence'], kind: 'cur', title: 'Essence',
     text: 'Материал для звёзд на данж- и Kuudra-предметах. Виды: Wither, Undead, Dragon, Gold, Diamond, Ice, Spider, Crimson. Падает из сундуков данжа и Kuudra, ещё её дают при разборе (salvage) предметов.',
     how: ['Звёзды ставятся в Dungeon Hub → Malik или в меню Essence Shop/Anvil.'],
   },
@@ -178,17 +178,17 @@ export const GLOSSARY = {
     items: ['FIREDUST_DAGGER', 'TWILIGHT_DAGGER'],
   },
   slayer: {
-    names: ['Zombie Slayer', 'Spider Slayer', 'Wolf Slayer', 'Enderman Slayer', 'Blaze Slayer', 'Vampire Slayer', 'Revenant Slayer', 'Tarantula Slayer', 'Sven Slayer', 'Voidgloom Slayer'], kind: 'mech', title: 'Уровень слеера',
+    names: ['Zombie Slayer', 'Spider Slayer', 'Wolf Slayer', 'Enderman Slayer', 'Blaze Slayer', 'Vampire Slayer', 'Revenant Slayer', 'Tarantula Slayer', 'Sven Slayer', 'Voidgloom Slayer'], kind: 'mech', title: 'Slayer Level',
     text: 'Уровень слеера растёт за убитых боссов этого вида (квесты у Maddox the Slayer). Уровни открывают рецепты, Batphone, новые тиры и дают постоянные статы. «Wolf Slayer 3» — это 3 уровень слеера волков (Sven Packmaster).',
   },
   slayer_xp: {
-    names: ['опыт слеера', 'опыта слеера', 'Slayer XP', 'Slayer XP Buff'], kind: 'mech', title: 'Опыт слеера',
+    names: ['опыт слеера', 'опыта слеера', 'Slayer XP', 'Slayer XP Buff'], kind: 'mech', title: 'Slayer XP',
     text: 'Каждый убитый босс даёт опыт своего слеера (T1 5, T2 25, T3 100, T4 500, T5 1500). Уровни слеера открывают рецепты и дают постоянные статы.',
   },
   aatrox: {
     names: ['Aatrox'], kind: 'npc', title: 'Мэр Aatrox',
     text: 'Мэр с перками для слееров: Slayer XP Buff (+25% опыта слеера), Pathfinder (шанс редких дропов) и дешёвые квесты. Когда он мэр — лучшее время качать слееры.',
-    how: ['Проверить мэра: здание Election в Хабе или /calendar.'],
+    how: ['Проверить мэра: здание Election в Hub или /calendar.'],
   },
   marina: {
     names: ['Marina'], kind: 'npc', title: 'Мэр Marina',
@@ -251,8 +251,8 @@ export const GLOSSARY = {
   },
   forge: {
     names: ['Forge', 'The Forge', 'Кузница', 'кузница', 'Кузнице'], kind: 'place', title: 'The Forge', warp: 'forge',
-    text: 'Кузница в Dwarven Mines: превращает материалы в предметы за реальное время (часы). Слотов тем больше, чем выше HotM. Хорошо приносит деньги пассивно.',
-    how: ['/warp forge, ПКМ по кузнице, положи материалы рецепта, вернись, когда таймер закончится.'],
+    text: 'Forge в Dwarven Mines: превращает материалы в предметы за реальное время (часы). Слотов тем больше, чем выше HotM. Хорошо приносит деньги пассивно.',
+    how: ['/warp forge, ПКМ по Forge, положи материалы рецепта, вернись, когда таймер закончится.'],
   },
   crystal_nucleus: {
     names: ['Crystal Nucleus'], kind: 'place', title: 'Crystal Nucleus',
@@ -277,7 +277,7 @@ export const GLOSSARY = {
   },
   mining_speed: {
     names: ['Mining Speed'], kind: 'stat', title: 'Mining Speed',
-    text: 'Скорость добычи: чем выше, тем быстрее ломаются руды, гемы и камень.',
+    text: 'Mining Speed: чем выше, тем быстрее ломаются руды, гемы и камень.',
   },
   hotf: {
     names: ['Heart of the Forest', 'HotF'], kind: 'mech', title: 'Heart of the Forest',
@@ -296,37 +296,37 @@ export const GLOSSARY = {
     text: 'Сколько брёвен ломается одним ударом топора. Главный стат скорости Foraging.',
   },
 
-  // ---------- Фермерство ----------
+  // ---------- Farming ----------
   farming_fortune: {
     names: ['Farming Fortune'], kind: 'stat', title: 'Farming Fortune',
     text: 'Сколько лишнего урожая падает с каждого блока: 100 Fortune = вдвое больше. Главный стат фермера.',
   },
   copper: {
-    names: ['медь', 'меди', 'медью', 'Copper'], kind: 'cur', title: 'Медь (Copper)',
-    text: 'Валюта Сада. Её дают гости (Visitors) за выполненные заказы. Тратится на Crop Upgrades, инструменты и предметы SkyMart.',
+    names: ['медь', 'меди', 'медью', 'Copper'], kind: 'cur', title: 'Copper',
+    text: 'Валюта Garden. Её дают Visitors за выполненные заказы. Тратится на Crop Upgrades, инструменты и предметы SkyMart.',
   },
   visitors: {
-    names: ['Visitors', 'гости', 'Гости', 'гостей'], kind: 'mech', title: 'Гости Сада',
-    text: 'NPC, которые сами приходят в Сад (до 5 в очереди) и просят немного урожая. За заказ — медь, опыт Сада и иногда редкий дроп.',
-    how: ['Заходи в Сад, выполняй заказы у Desk. Отказывайся, если заказ дороже награды.'],
+    names: ['Visitors', 'гости', 'Гости', 'гостей'], kind: 'mech', title: 'Garden Visitors',
+    text: 'NPC, которые сами приходят в Garden (до 5 в очереди) и просят немного урожая. За заказ — Copper, опыт Garden и иногда редкий дроп.',
+    how: ['Заходи в Garden, выполняй заказы у Desk. Отказывайся, если заказ дороже награды.'],
   },
   crop_upgrades: {
     names: ['Crop Upgrades', 'Crop Upgrade'], kind: 'mech', title: 'Crop Upgrades',
-    text: 'Улучшения культур в Саду за медь: +5 Farming Fortune этой культуре за уровень, максимум 9.',
-    how: ['В Саду: Desk → Crop Upgrades.'],
+    text: 'Улучшения культур в Garden за Copper: +5 Farming Fortune этой культуре за уровень, максимум 9.',
+    how: ['В Garden: Desk → Crop Upgrades.'],
   },
   composter: {
     names: ['Composter', 'Compost'], kind: 'mech', title: 'Composter',
-    text: 'Машина в Саду: из органики и топлива сама делает Compost. Compost нужен для новых участков и продаётся на Bazaar.',
+    text: 'Машина в Garden: из органики и топлива сама делает Compost. Compost нужен для новых участков и продаётся на Bazaar.',
   },
   pests: {
-    names: ['Pests', 'вредители', 'Вредители', 'вредителям', 'вредителей'], kind: 'mob', title: 'Вредители (Pests)',
-    text: 'Мелкие мобы, которые появляются на участках Сада при фарме и замедляют рост. Убивай пылесосом: с них падают Pest-дропы, а сами Pests меняются у Pesthunter Phillip.',
+    names: ['Pests', 'Pest', 'вредители', 'Вредители', 'вредителям', 'вредителей'], kind: 'mob', title: 'Pests',
+    text: 'Мелкие мобы, которые появляются на участках Garden при фарме и замедляют рост. Убивай пылесосом: с них падают Pest-дропы, а сами Pests меняются у Pesthunter Phillip.',
   },
   jacob_contest: {
     names: ['Jacob\'s Contest', 'Jacob’s Contest'], kind: 'event', title: 'Jacob\'s Contest',
     text: 'Фермерский конкурс каждый час: 3 культуры, побеждает тот, кто собрал больше. Медали (бронза/серебро/золото) и Jacob\'s Ticket.',
-    how: ['Когда начнётся — фарми одну из трёх культур 20 минут.', 'Награду забери у Jacob в Хабе (Farm) или в Саду.'],
+    how: ['Когда начнётся — фарми одну из трёх культур 20 минут.', 'Награду забери у Jacob в Hub (Farm) или в Garden.'],
   },
 
   // ---------- Рифт ----------
@@ -343,7 +343,7 @@ export const GLOSSARY = {
     text: '52 спрятанные души в Рифте. Каждая с Enigma Cloak даёт +20 с Rift Time.',
   },
   timecharm: {
-    names: ['таймчарм', 'таймчармы', 'таймчарма', 'таймчармов', 'Таймчармы', 'Timecharm'], kind: 'mech', title: 'Таймчармы',
+    names: ['таймчарм', 'таймчармы', 'таймчарма', 'таймчармов', 'Таймчармы', 'Timecharm'], kind: 'mech', title: 'Timecharms',
     text: '8 главных трофеев Рифта. Ставятся в галерею Elise, открывают зоны и усиливают Rift Necklace.',
   },
 
@@ -354,7 +354,7 @@ export const GLOSSARY = {
   },
   bazaar: {
     names: ['Bazaar'], kind: 'place', title: 'Bazaar',
-    text: 'Биржа ресурсов: мгновенная покупка/продажа или заказы по своей цене. /bz с Booster Cookie, иначе NPC Bazaar в Хабе.',
+    text: 'Биржа ресурсов: мгновенная покупка/продажа или заказы по своей цене. /bz с Booster Cookie, иначе NPC Bazaar в Hub.',
   },
   bin: {
     names: ['BIN', 'Lowest BIN', 'мин. BIN'], kind: 'mech', title: 'BIN',
@@ -370,8 +370,8 @@ export const GLOSSARY = {
     items: ['BOOSTER_COOKIE'],
   },
   reforge: {
-    names: ['реофордж', 'реофорджи', 'реофорджами', 'Реофордж', 'реформу'], kind: 'mech', title: 'Реофордж (Reforge)',
-    text: 'Приставка к предмету с бонусом статов. Делается у Blacksmith в Хабе за монеты или камнем реофорджа (Reforge Stone) на наковальне Reforge Anvil.',
+    names: ['реофордж', 'реофорджи', 'реофорджами', 'Реофордж', 'реформу'], kind: 'mech', title: 'Reforge',
+    text: 'Приставка к предмету с бонусом статов. Делается у Blacksmith в Hub за монеты или камнем реофорджа (Reforge Stone) на наковальне Reforge Anvil.',
   },
 
   // ---------- Навыки (заголовки таблиц) ----------
@@ -383,9 +383,9 @@ export const GLOSSARY = {
 
   // ---------- Музей ----------
   museum: {
-    names: ['Museum', 'Your Museum', 'музей', 'Музей', 'музее', 'музея', 'музею'], kind: 'place', title: 'Музей (Museum)', warp: 'hub',
-    text: 'Здание в Хабе, куда жертвуют предметы и сеты брони. Каждый пожертвованный предмет навсегда даёт SkyBlock XP, каждые 100 XP музея — веха с наградой.',
-    how: ['Иди в Хаб (/hub) к Madame Eleanor Q. Goldsworth III.', 'В меню Your Museum кликни по предмету в инвентаре → Confirm Donation.'],
+    names: ['Museum', 'Your Museum', 'музей', 'Музей', 'музее', 'музея', 'музею'], kind: 'place', title: 'Museum', warp: 'hub',
+    text: 'Здание в Hub, куда жертвуют предметы и сеты брони. Каждый пожертвованный предмет навсегда даёт SkyBlock XP, каждые 100 XP музея — веха с наградой.',
+    how: ['Иди в Hub (/hub) к Madame Eleanor Q. Goldsworth III.', 'В меню Your Museum кликни по предмету в инвентаре → Confirm Donation.'],
   },
   museum_milestone: {
     names: ['Museum Milestones', 'Museum Milestone', 'веха музея', 'Веха музея', 'вехи музея', 'Вехи музея', 'Вехи музея идут'], kind: 'mech', title: 'Вехи музея',
@@ -419,10 +419,10 @@ export const GLOSSARY = {
   },
   bank_interest: {
     names: ['Bank Interest'], kind: 'stat', title: 'Bank Interest',
-    text: 'Проценты, которые банк начисляет на вклад каждый сезон. Вехи музея добавляют +2% к ним.',
+    text: 'Проценты, которые Bank начисляет на вклад каждый сезон. Вехи музея добавляют +2% к ним.',
   },
   // ---------- Места ----------
-  hub: { names: ['Хаб', 'Хабе', 'Хаба', 'Hub'], kind: 'place', title: 'Хаб (Hub)', warp: 'hub', text: 'Главный остров с NPC, аукционом, Bazaar и порталами на другие острова.' },
+  hub: { names: ['Хаб', 'Хабе', 'Хаба', 'Hub'], kind: 'place', title: 'Hub', warp: 'hub', text: 'Главный остров с NPC, аукционом, Bazaar и порталами на другие острова.' },
   backwater_bayou: { names: ['Backwater Bayou'], kind: 'place', title: 'Backwater Bayou', warp: 'bayou', text: 'Остров рыбаков: Roddy ставит детали удочек, Junker Joel меняет Rusty Coin на Backwater Armor, свои существа (Titanoboa, Alligator) и Хотспоты.' },
   crimson_isle: { names: ['Crimson Isle'], kind: 'place', title: 'Crimson Isle', warp: 'nether', text: 'Огненный остров: фракции Mages/Barbarians, Kuudra, Inferno Demonlord, лавовая рыбалка и трофейная рыба.' },
   blazing_volcano: { names: ['Blazing Volcano'], kind: 'place', title: 'Blazing Volcano', warp: 'nether', text: 'Вулкан в центре Crimson Isle: на вершине Odger, вокруг гейзеры и лавовые пруды для трофейной рыбы.' },
@@ -446,7 +446,7 @@ export const GLOSSARY = {
   the_end: { names: ['The End', 'Dragon\'s Nest', 'Void Sepulture', 'Bruiser Hideout'], kind: 'place', title: 'The End', warp: 'end', text: 'Энд: эндермены, Voidgloom Seraph, драконы.' },
   the_park: { names: ['The Park', 'Howling Cave', 'Парке'], kind: 'place', title: 'The Park', warp: 'park', text: 'Лесной остров с деревьями и волками (Howling Cave — Sven Packmaster).' },
   galatea: { names: ['Galatea', 'Moonglade Marsh'], kind: 'place', title: 'Galatea', warp: 'galatea', text: 'Новый остров Foraging: Fig, Mangrove и Helix, Hina, Heart of the Forest.' },
-  garden: { names: ['Сад', 'Саду', 'Сада', 'Garden'], kind: 'place', title: 'Сад (Garden)', warp: 'garden', text: 'Личный фермерский остров: участки, гости, Composter, Crop Upgrades.' },
+  garden: { names: ['Сад', 'Саду', 'Сада', 'Garden'], kind: 'place', title: 'Garden', warp: 'garden', text: 'Личный фермерский остров: участки, гости, Composter, Crop Upgrades.' },
   mushroom_desert: { names: ['Mushroom Desert', 'Oasis'], kind: 'place', title: 'Mushroom Desert', warp: 'desert', text: 'Пустыня на Farming Islands: Trevor, Oasis (вода с Oasis-существами).' },
   dungeon_hub: { names: ['Dungeon Hub'], kind: 'place', title: 'Dungeon Hub', warp: 'dungeon_hub', text: 'Хаб данжей: вход в Catacombs, Party Finder, Malik (звёзды) и магазины эссенции.' },
   wizard_tower: { names: ['Wizard Tower'], kind: 'place', title: 'Wizard Tower', warp: 'wizard', text: 'Башня волшебника в Хабе: вход в Рифт.' },

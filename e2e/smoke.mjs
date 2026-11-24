@@ -48,7 +48,7 @@ async function waitReady() {
 }
 
 const PAGES = [
-  ['overview', 'Что делать прямо сейчас'], ['roadmap', 'план'], ['skills', 'Скиллы'], ['gear', 'Надето'],
+  ['overview', 'Что делать прямо сейчас'], ['roadmap', 'план'], ['skills', 'Skills'], ['gear', 'Надето'],
   ['accessories', 'Stats Tuning'], ['pets', 'Питомцы'], ['museum', 'Музей'], ['stash', 'Мешки'], ['stash/essence', 'Перки'], ['collections', 'Коллекции'], ['minions', 'Миньоны'], ['events', 'Мэр'], ['money', 'заработ'], ['money/bank', 'Как на самом деле работают проценты'], ['money/bits', 'монет даёт 1 Bit'], ['market', 'Bazaar'], ['wiki', 'Вики'], ['top', 'Рейтинг игроков'], ['news', 'Новости сайта'],
 ];
 const BAD_TEXT = /\bundefined\b|\bNaN\b|\[object Object\]|Infinity/;
@@ -173,7 +173,7 @@ async function phoneChecks() {
   await page.goto(`${BASE}/#/market`);
   await page.fill('.mk-side input.search', 'какао'); await page.waitForTimeout(1200);
   const first = (await page.locator('.mk-row').first().innerText().catch(() => '')).replace(/\s+/g, ' ');
-  /Какао-бобы/.test(first) ? ok('«какао» → «Какао-бобы» первым') : fail(`${where}/рынок`, `первая строка: «${first.slice(0, 60)}»`);
+  /Cocoa Beans/.test(first) ? ok('«какао» → «Cocoa Beans» первым') : fail(`${where}/рынок`, `первая строка: «${first.slice(0, 60)}»`);
   (await page.locator('.mk-title', { hasText: /^INK_SACK/ }).count()) ? fail(`${where}/рынок`, 'вместо названия сырой ID INK_SACK:3') : ok('нет сырых ID вида INK_SACK:3');
 
   console.log('- рынок на телефоне: сразу график сверху, список товаров под ним');
@@ -407,8 +407,8 @@ try {
     const planLink = page.locator('.card a.link', { hasText: 'шагов в плане' }).nth(1);
     if (await planLink.waitFor({ timeout: 10_000 }).then(() => true, () => false)) {
       await planLink.click();
-      const cat = await page.waitForFunction(() => /^Слееры/.test(document.querySelector('.chip.active')?.innerText || ''), null, { timeout: 5000 }).catch(() => null);
-      cat ? ok('открылись шаги «Слееры»') : fail(`${label}/план`, 'ссылка со слееров не открыла категорию «Слееры»');
+      const cat = await page.waitForFunction(() => /^Slayers/.test(document.querySelector('.chip.active')?.innerText || ''), null, { timeout: 5000 }).catch(() => null);
+      cat ? ok('открылись шаги «Slayers»') : fail(`${label}/план`, 'ссылка со слееров не открыла категорию «Slayers»');
     } else fail(`${label}/план`, 'нет ссылки «шагов в плане» на странице «Прогресс»');
 
     console.log('- рынок по-русски');

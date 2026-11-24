@@ -184,7 +184,7 @@ function dungeonCompute(floors) {
     const others = vals.filter(v => v !== best).map(v => `${v.floor} ≈ ${fmtC(mid(v))}/ч${v.open ? '' : ' (закрыт)'}`).join(', ');
     return {
       coinsPerHour: Math.round((lo + hi) / 2), range: [Math.round(lo), Math.round(hi)],
-      detail: `${open.includes(best) ? 'Выгоднее всего для тебя' : 'Цель'}: ${best.floor}. Сундук ${best.main} на S+ в среднем приносит ${fmtC(best.low)} за заход: считаем, что ты открываешь его, только если предмет дороже цены открытия.${best.high > best.low ? ` Второй сундук (Obsidian) за Dungeon Chest Key (${fmtC(best.key)}) добавляет ещё до ${fmtC(best.high - best.low).replace(/\.$/, '')}.` : ''} Самое ценное: ${top.map(r => `${r.name} (${pct(r.chance)}, ${fmtC(r.unit)})`).join(', ') || 'нет выгодных предметов'}. Темп ${fmtN(best.rate[0])}–${fmtN(best.rate[1])} заходов в час с быстрой группой. ${best.meter ? `RNG-метр (≈${fmtN(DUNGEON_SCORE)} очков Dungeon Score за S+) выгоднее всего ставить на ${best.meter.name}: шкала ${fmtN(best.meter.xp)} очков — это ${fmtN(best.meter.runs)} заходов; с ним предмет выходит в среднем за ${fmtN(best.meter.avgRuns)} вместо ${fmtN(Math.round(1 / best.meter.natural))} заходов и добавляет ≈${fmtC(best.meter.lift)} за заход (уже в доходе). ` : ''}Эссенция и бесплатный сундук не учтены, Kismet Feather и Boss Luck повышают доход.${others ? ` Другие этажи: ${others}.` : ''}`,
+      detail: `${open.includes(best) ? 'Выгоднее всего для тебя' : 'Цель'}: ${best.floor}. Сундук ${best.main} на S+ в среднем приносит ${fmtC(best.low)} за заход: считаем, что ты открываешь его, только если предмет дороже цены открытия.${best.high > best.low ? ` Второй сундук (Obsidian) за Dungeon Chest Key (${fmtC(best.key)}) добавляет ещё до ${fmtC(best.high - best.low).replace(/\.$/, '')}.` : ''} Самое ценное: ${top.map(r => `${r.name} (${pct(r.chance)}, ${fmtC(r.unit)})`).join(', ') || 'нет выгодных предметов'}. Темп ${fmtN(best.rate[0])}–${fmtN(best.rate[1])} заходов в час с быстрой группой. ${best.meter ? `RNG-метр (≈${fmtN(DUNGEON_SCORE)} очков Dungeon Score за S+) выгоднее всего ставить на ${best.meter.name}: шкала ${fmtN(best.meter.xp)} очков — это ${fmtN(best.meter.runs)} заходов; с ним предмет выходит в среднем за ${fmtN(best.meter.avgRuns)} вместо ${fmtN(Math.round(1 / best.meter.natural))} заходов и добавляет ≈${fmtC(best.meter.lift)} за заход (уже в доходе). ` : ''}Essence и бесплатный сундук не учтены, Kismet Feather и Boss Luck повышают доход.${others ? ` Другие этажи: ${others}.` : ''}`,
       top: top.map(r => ({ id: r.id, name: r.name, perHour: Math.round(r.perRun * best.rate[0]) })),
       breakdown: best.rows.slice(0, 12).map(r => ({ id: r.id, name: r.name, chance: r.chance, unit: r.unit, cost: r.cost, perKill: Math.round(r.perRun),
         perHour: Math.round(r.perRun * best.rate[0]), everyHours: r.chance > 0 ? 1 / (r.chance * best.rate[0]) : null, rare: r.chance < RARE_CHANCE })),
@@ -297,67 +297,67 @@ const slayerDrops = key => LOOT.slayers[key].drops.filter(d => d.lvl >= 5).sort(
 
 export const COMBAT_METHODS = [
   {
-    id: 'slayer-zombie', title: 'Revenant Horror (Zombie Slayer)', tag: 'Слееры', mode: 'active',
+    id: 'slayer-zombie', title: 'Revenant Horror (Zombie Slayer)', tag: 'Slayers', mode: 'active',
     desc: 'Бьёшь зомби в склепах Graveyard, пока не появится босс. Revenant Flesh и Foul Flesh дают стабильный доход, Scythe Blade, Shard of the Shredded и Warden Heart — редкая удача. Сайт сам выбирает самый выгодный открытый тир.',
     req: slayerReq('zombie', 3), compute: slayerCompute('zombie'), drops: slayerDrops('zombie'),
   },
   {
-    id: 'slayer-spider', title: 'Tarantula Broodfather (Spider Slayer)', tag: 'Слееры', mode: 'active',
+    id: 'slayer-spider', title: 'Tarantula Broodfather (Spider Slayer)', tag: 'Slayers', mode: 'active',
     desc: 'Пауки в Spider\'s Den. Tarantula Web и Toxic Arrow Poison продаются всегда, T5 даёт Tarantula Silk; редкие Digested Mosquito, Shriveled Wasp и Primordial Eye.',
     req: slayerReq('spider', 3), compute: slayerCompute('spider'), drops: slayerDrops('spider'),
   },
   {
-    id: 'slayer-wolf', title: 'Sven Packmaster (Wolf Slayer)', tag: 'Слееры', mode: 'active',
+    id: 'slayer-wolf', title: 'Sven Packmaster (Wolf Slayer)', tag: 'Slayers', mode: 'active',
     desc: 'Волки в Howling Cave. Деньги средние: Wolf Tooth и Hamster Wheel, редко Overflux Capacitor и Red Claw Egg. Главная польза — уровни Wolf Slayer для экипировки.',
     req: slayerReq('wolf', 3), compute: slayerCompute('wolf'), drops: slayerDrops('wolf'),
   },
   {
-    id: 'slayer-enderman', title: 'Voidgloom Seraph (Enderman Slayer)', tag: 'Слееры', mode: 'active',
+    id: 'slayer-enderman', title: 'Voidgloom Seraph (Enderman Slayer)', tag: 'Slayers', mode: 'active',
     desc: 'Эндермены в Void Sepulture. Null Sphere и Null Atom стабильно, Summoning Eye, Pocket Espresso Machine и Judgement Core — редкие дропы.',
     req: m => [...slayerReq('enderman', 3)(m),
       { text: 'Оружие против эндерменов (Atomsplit/Vorpal Katana, Terminator, Hyperion)', ok: hasAny(m, ['ATOMSPLIT_KATANA', 'VORPAL_KATANA', 'TERMINATOR', 'HYPERION', 'JUJU_SHORTBOW']), soft: true, buy: ['ATOMSPLIT_KATANA', 'JUJU_SHORTBOW'] }],
     compute: slayerCompute('enderman'), drops: slayerDrops('enderman'),
   },
   {
-    id: 'slayer-blaze', title: 'Inferno Demonlord (Blaze Slayer)', tag: 'Слееры', mode: 'active',
+    id: 'slayer-blaze', title: 'Inferno Demonlord (Blaze Slayer)', tag: 'Slayers', mode: 'active',
     desc: 'Блейзы на Crimson Isle. Derelict Ashe и дистилляты стабильно, Archfiend Dice, книги Duplex и Fire Aspect, High Class Archfiend Dice — редкие. Нужны кинжалы Blaze Slayer и броня Crimson Isle.',
     req: m => [...slayerReq('blaze', 2)(m),
       { text: 'Броня Crimson Isle (Crimson/Aurora/Terror/Fervor/Hollow)', ok: hasAny(m, ['*CRIMSON_CHESTPLATE', '*AURORA_CHESTPLATE', '*TERROR_CHESTPLATE', '*FERVOR_CHESTPLATE', '*HOLLOW_CHESTPLATE']), soft: true, buy: ['CRIMSON_CHESTPLATE', 'AURORA_CHESTPLATE'] }],
     compute: slayerCompute('blaze'), drops: slayerDrops('blaze'),
   },
   {
-    id: 'dungeon-f1-f4', title: 'Catacombs F1–F4', tag: 'Данжи', mode: 'active',
+    id: 'dungeon-f1-f4', title: 'Catacombs F1–F4', tag: 'Dungeons', mode: 'active',
     desc: 'Первые этажи: Hot Potato Book, Necromancer\'s Brooch, Bonzo\'s Staff, Spirit Wing и Spirit Bow. Денег немного, зато быстро растёт Catacombs.',
     req: m => [need('Catacombs', cata(m), 0, { text: 'Catacombs (вход на F1 открыт всем)' })], compute: dungeonCompute(['F1', 'F2', 'F3', 'F4']),
     drops: ['SPIRIT_WING', 'BONZO_STAFF', 'RECOMBOBULATOR_3000', 'HOT_POTATO_BOOK'],
   },
   {
-    id: 'dungeon-f5-f6', title: 'Catacombs F5–F6', tag: 'Данжи', mode: 'active',
+    id: 'dungeon-f5-f6', title: 'Catacombs F5–F6', tag: 'Dungeons', mode: 'active',
     desc: 'Появляется сундук Bedrock: Shadow Assassin, Livid Dagger, Shadow Fury, Necromancer Lord, Giant\'s Sword, книги Ultimate Wise и Last Stand.',
     req: m => [need('Catacombs', cata(m), 9), { text: 'Пройден F4', ok: floorRuns(m, 'F4') > 0 || floorRuns(m, 'F5') > 0 || cata(m) >= 14, have: floorRuns(m, 'F4') > 0 ? 'да' : 'не видно в профиле' }],
     compute: dungeonCompute(['F5', 'F6']), drops: ['SHADOW_FURY', 'GIANTS_SWORD', 'LIVID_DAGGER', 'SHADOW_ASSASSIN_CHESTPLATE'],
   },
   {
-    id: 'dungeon-f7', title: 'Catacombs F7', tag: 'Данжи', mode: 'active',
+    id: 'dungeon-f7', title: 'Catacombs F7', tag: 'Dungeons', mode: 'active',
     desc: 'Сундуки F7: Necron\'s Handle, свитки Implosion, Shadow Warp и Wither Shield, Wither-броня, Auto Recombobulator. Ступень к Master Mode.',
     req: m => [{ text: 'F7 открыт (Catacombs 20+, пройден F6)', ok: floorOpen(m, 'F7'), have: `Catacombs ${cata(m)}` }, need('Catacombs', cata(m), 24, { soft: true, text: 'Catacombs 24+ (комфортно)' })],
     compute: dungeonCompute(['F7']), drops: ['NECRON_HANDLE', 'IMPLOSION_SCROLL', 'SHADOW_WARP_SCROLL', 'WITHER_SHIELD_SCROLL', 'AUTO_RECOMBOBULATOR'],
   },
   {
-    id: 'dungeon-m1-m3', title: 'Master Mode M1–M3', tag: 'Данжи', mode: 'active',
+    id: 'dungeon-m1-m3', title: 'Master Mode M1–M3', tag: 'Dungeons', mode: 'active',
     desc: 'Recombobulator, First Master Star и много опыта Catacombs. Быстрые заходы.',
     req: m => [{ text: 'F7 пройден', ok: floorRuns(m, 'F7') > 0, have: floorRuns(m, 'F7') > 0 ? `пройден ${fmtN(floorRuns(m, 'F7'))} ${raz(floorRuns(m, 'F7'))}` : 'ещё не пройден' }, { text: 'Catacombs 24+ (M1), 28+ (M3)', ok: cata(m) >= 24, have: `у тебя ${cata(m)}` }],
     compute: dungeonCompute(['M1', 'M2', 'M3']), drops: ['FIRST_MASTER_STAR', 'RECOMBOBULATOR_3000', 'FUMING_POTATO_BOOK'],
   },
   {
-    id: 'dungeon-m4-m6', title: 'Master Mode M4–M6', tag: 'Данжи', mode: 'active',
+    id: 'dungeon-m4-m6', title: 'Master Mode M4–M6', tag: 'Dungeons', mode: 'active',
     desc: 'Second, Third и Fourth Master Star, Spirit Wing, Shadow Fury, Giant\'s Sword, Summoning Ring. Нужна топовая экипировка и команда.',
     req: m => [{ text: 'Catacombs 30+ (M4), 34+ (M6)', ok: cata(m) >= 30, have: `у тебя ${cata(m)}` }, { text: 'Пройден M3', ok: floorRuns(m, 'M3') > 0, have: floorRuns(m, 'M3') > 0 ? 'да' : 'ещё не пройден' },
       { text: 'Оружие для данжей (Terminator, Hyperion/Astraea, Giant\'s Sword)', ok: hasAny(m, ['TERMINATOR', 'HYPERION', 'ASTRAEA', 'VALKYRIE', 'SCYLLA', 'GIANTS_SWORD']), soft: true, buy: ['TERMINATOR', 'HYPERION'] }],
     compute: dungeonCompute(['M4', 'M5', 'M6']), drops: ['FOURTH_MASTER_STAR', 'GIANTS_SWORD', 'SHADOW_FURY', 'SECOND_MASTER_STAR'],
   },
   {
-    id: 'dungeon-m7', title: 'Master Mode M7', tag: 'Данжи', mode: 'active',
+    id: 'dungeon-m7', title: 'Master Mode M7', tag: 'Dungeons', mode: 'active',
     desc: 'Самый дорогой этаж: Dark Claymore, Necron\'s Handle, Fifth Master Star, свитки и Wither-броня.',
     req: m => [need('Catacombs', cata(m), 36), { text: 'Пройден M6', ok: floorRuns(m, 'M6') > 0, have: floorRuns(m, 'M6') > 0 ? 'да' : 'ещё не пройден' },
       { text: 'Necron/Storm/Goldor/Maxor броня', ok: hasAny(m, ['POWER_WITHER_CHESTPLATE', 'WISE_WITHER_CHESTPLATE', 'TANK_WITHER_CHESTPLATE', 'SPEED_WITHER_CHESTPLATE']), soft: true, buy: ['POWER_WITHER_CHESTPLATE'] }],

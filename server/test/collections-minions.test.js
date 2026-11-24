@@ -40,7 +40,7 @@ test('награды тира: миньон, рецепт со ссылкой, �
   const r = parseUnlock('Farm Suit Helmet Recipe', ITEMS);
   assert.equal(r.kind, 'recipe'); assert.equal(r.item, 'FARM_SUIT_HELMET');
   assert.equal(parseUnlock('+4 SkyBlock XP').kind, 'xp');
-  assert.equal(parseUnlock('+10,000 Farming Experience').ru, '+10,000 опыта Фермерство');
+  assert.equal(parseUnlock('+10,000 Farming Experience').ru, '+10,000 опыта Farming');
   assert.equal(parseUnlock('Harvesting Exp Discount (-25%)').ru, 'Зачарование Harvesting на 25% дешевле по опыту');
   assert.equal(parseUnlock('Medium Accessory Bag Upgrade (+6 slots)').ru, 'Medium Accessory Bag: +6 слотов');
   assert.equal(parseUnlock('+1 Foraging Level Cap').ru, '+1 к максимальному уровню Foraging');

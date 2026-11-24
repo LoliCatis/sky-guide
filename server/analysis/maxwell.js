@@ -42,9 +42,9 @@ export function maxwellAnalysis(member) {
   const best = powers[0];
   const cur = powers.find(p => p.selected) || null;
   const tips = [];
-  if (!selected) tips.push('Сила не выбрана: открой сумку аксессуаров → Accessory Bag Thaumaturgy (Maxwell) и выбери силу, иначе Magical Power почти ничего не даёт.');
+  if (!selected) tips.push('Сила не выбрана: открой Accessory Bag → Accessory Bag Thaumaturgy (Maxwell) и выбери силу, иначе Magical Power почти ничего не даёт.');
   else if (cur && best && cur.power !== best.power && best.score > cur.score * 1.05) {
-    tips.push(`Для стиля «${ROLE[role].label}» ${best.power} даёт больше (${best.score} против ${cur.score} очков Strength+Crit Damage${role === 'mage' ? '/Intelligence' : ''}). ${best.unlocked ? 'Она уже открыта — просто переключись у Maxwell.' : `Нужно 9 × ${best.stoneName} у Thaumaturgist в Хабе${best.combatOk ? '' : ` и Combat ${best.reqCombat}`}.`}`);
+    tips.push(`Для стиля «${ROLE[role].label}» ${best.power} даёт больше (${best.score} против ${cur.score} очков Strength+Crit Damage${role === 'mage' ? '/Intelligence' : ''}). ${best.unlocked ? 'Она уже открыта — просто переключись у Maxwell.' : `Нужно 9 × ${best.stoneName} у Thaumaturgist в Hub${best.combatOk ? '' : ` и Combat ${best.reqCombat}`}.`}`);
   } else if (cur) tips.push(`${cur.power} — одна из лучших сил для стиля «${ROLE[role].label}». Менять не нужно.`);
   if (!cur && selected && STARTER_POWERS.map(s => s.toLowerCase()).includes(selected)) tips.push(`Сейчас стоит стартовая сила (${selected[0].toUpperCase() + selected.slice(1)}). Силы из Power Stone заметно сильнее: см. таблицу.`);
 
@@ -57,7 +57,7 @@ export function maxwellAnalysis(member) {
   const free = Math.max(0, points - spent);
   if (free > 0) tips.push(`Не распределено ${free} очков Tuning из ${points}: это бесплатные статы. Stats Tuning в том же меню.`);
   const tuningAdvice = role === 'mage'
-    ? 'Магу почти все очки — в Intelligence (2 Intelligence за очко).'
+    ? 'Mage почти все очки — в Intelligence (2 Intelligence за очко).'
     : 'Для урона оружием делят между Strength и Crit Damage (по 1 за очко). Выгоднее докладывать в тот стат, которого у тебя меньше относительно другого: урон растёт как (1 + Strength/100) × (1 + Crit Damage/100).';
   if (role === 'melee' && spent > 20 && dist.length === 1 && ['critical_damage', 'strength'].includes(dist[0].key)) {
     tips.push(`Все ${spent} очков сейчас в ${dist[0].name}. Если ${dist[0].key === 'strength' ? 'Crit Damage' : 'Strength'} у тебя заметно меньше, часть очков лучше перенести туда.`);

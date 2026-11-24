@@ -142,7 +142,7 @@ test('гайд Diana: ивент идёт / не идёт', () => {
   assert.equal(on.level.value, 4);
   assert.match(on.summary, /Ивент идёт/);
   assert.match(on.next[0].title, /копай норы грифонов/);
-  assert.ok(on.next.some(n => /Эпический → Легендарный/.test(n.title)));
+  assert.ok(on.next.some(n => /Epic → Legendary/.test(n.title)));
   setElection({ ...RAW, mayor: { key: 'dungeons', name: 'Paul', perks: [{ name: 'EZPZ', description: '' }] } }, NOW);
   const off = diana.build({ pets: [] , skills: {} }, { has: () => false, name: id => id, price: () => 0 });
   assert.equal(off.status, 'locked');

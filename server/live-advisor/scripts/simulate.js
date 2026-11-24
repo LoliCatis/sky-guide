@@ -44,7 +44,7 @@ const SCRIPT = {
   45: ['Блейз-слеер 1 → 2', () => { Object.assign(m.slayers.blaze, { level: 2, xp: 30 }); }],
   70: ['Первое прохождение M1', () => { m.dungeons.masterFloors = { 1: 1 }; }],
   100: ['Firedust Dagger подешевел на 30% на аукционе', () => { prices.FIREDUST_DAGGER = 1_400_000; }],
-  130: ['Продал предмет: +120M в банк', () => { m.bank += 120_000_000; }],
+  130: ['Продал предмет: +120M в Bank', () => { m.bank += 120_000_000; }],
   160: ['Купил аксессуары: MP 1009 → 1031', () => { m.magicalPower = 1031; }],
   200: ['Catacombs 27 → 28', () => { m.dungeons.catacombs.level = 28; m.dungeons.catacombs.progress = 0.02; }],
 };

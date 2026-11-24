@@ -37,7 +37,7 @@ export function ownKuudraSet(ctx, families) {
   return null;
 }
 
-/** Эссенция, Heavy Pearl и монеты, чтобы поднять часть тира t со звёзд from до 10 */
+/** Essence, Heavy Pearl и монеты, чтобы поднять часть тира t со звёзд from до 10 */
 function starsCost(ess, from) {
   const out = { essence: 0, pearls: 0, coins: 0 };
   if (!ess) return out;

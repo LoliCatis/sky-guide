@@ -15,7 +15,7 @@ export function build(m, ctx) {
   sections.push({
     kind: 'text', title: 'Как устроен музей',
     text: [
-      `Музей в Хабе принимает ${cat.total} предметов и сетов брони в 7 разделах: Combat, Farming, Mining, Fishing, Foraging, Dungeoneering и Hunting. Каждый пожертвованный предмет навсегда даёт SkyBlock XP (от 1 до 30), всего ${fmt(cat.xpMax)} XP.`,
+      `Музей в Hub принимает ${cat.total} предметов и сетов брони в 7 разделах: Combat, Farming, Mining, Fishing, Foraging, Dungeoneering и Hunting. Каждый пожертвованный предмет навсегда даёт SkyBlock XP (от 1 до 30), всего ${fmt(cat.xpMax)} XP.`,
       'Вехи музея идут каждые 100 XP музея, всего 40. Каждая даёт +1% Bits Multiplier и +2% Bank Interest, а некоторые ещё и свои награды: на вехе 3 открывается Museum Appraisal и Deluxe Bank Upgrade.',
       'Высший тир засчитывает низшие: пожертвовал Aspect of the Void — Aspect of the End тоже считается сданным. Поэтому иногда выгоднее сдать дорогой предмет и сразу закрыть несколько строк.',
       'Сет брони сдаётся только целиком: все части должны лежать в инвентаре одновременно. Звёздные версии данжевых предметов засчитываются как обычные.',
@@ -164,7 +164,7 @@ export function build(m, ctx) {
   };
 }
 
-const CAT_RU = { combat: 'Бой', farming: 'Фермерство', mining: 'Добыча', fishing: 'Рыбалка', foraging: 'Лесорубство', dungeoneering: 'Данжи', hunting: 'Охота' };
+const CAT_RU = { combat: 'Combat', farming: 'Farming', mining: 'Mining', fishing: 'Fishing', foraging: 'Foraging', dungeoneering: 'Dungeons', hunting: 'Охота' };
 const catRu = id => CAT_RU[id] || id;
 
 export default { id: 'museum', title: 'Музей', icon: 'ITEM_FRAME', group: 'other', build };

@@ -30,7 +30,7 @@ test('открытые разделы и гайды: свои заголовок
   const g = seo.pageFor('/guides/fishing');
   assert.equal(g.page, 'guides');
   assert.equal(g.sub, 'fishing');
-  assert.ok(g.body.includes('<h1>Рыбалка</h1>') && g.body.includes('<ol>'), 'пошаговая инструкция в тексте');
+  assert.ok(g.body.includes('<h1>Fishing</h1>') && g.body.includes('<ol>'), 'пошаговая инструкция в тексте');
   assert.ok(!/Твоя рыбалка в цифрах/.test(g.body), 'пустые личные разделы гостя убраны');
   assert.equal(seo.pageFor('/guides/nope'), null);
   assert.equal(seo.pageFor('/compare'), null, 'сравнение профилей не индексируем');
@@ -58,7 +58,7 @@ test('карта сайта, llms.txt и llms-full.txt без ников и со
   assert.ok(n > 1000 && n < 50_000, `адресов: ${n}`);
   const llms = seo.llms(O), full = seo.llmsFull(O);
   assert.ok(llms.startsWith('# ') && llms.includes(`${O}/guides/fishing`));
-  assert.ok(full.length > 50_000 && full.includes('## Рыбалка'));
+  assert.ok(full.length > 50_000 && full.includes('## Fishing'));
   const all = [llms, full, seo.pageFor('/').body, seo.pageFor('/guides').body, seo.pageFor('/top').body, seo.pageFor('/news').body];
   for (const t of all) for (const bad of BAD) assert.ok(!t.includes(bad), `нашлось: ${bad}`);
 });

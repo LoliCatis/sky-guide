@@ -55,7 +55,7 @@ export function mountPriceRoutes(app, { getMember = () => null, getView = null, 
     res.json({ plan: money.moneyPlan(m, extra, methods), methods, refs: methodRefs(methods), settings: money.moneyState.settings });
   });
   r.get('/settings', (req, res) => res.json(money.moneyState.settings));
-  // Общие настройки расчёта (налог, мэр, слоты кузницы) меняет только владелец; друзьям Farming Fortune хранит их браузер
+  // Общие настройки расчёта (налог, мэр, слоты Forge) меняет только владелец; друзьям Farming Fortune хранит их браузер
   // Гость (без входа) — тоже не владелец: раньше req.sbUser у гостя пустой и проверка его пропускала
   const notOwner = req => !!req.sbGuest || (!!req.sbUser && !req.sbUser.owner);
   r.post('/settings', express.json(), (req, res) => res.json(notOwner(req) ? money.moneyState.settings : money.setMoneySettings(req.body || {})));

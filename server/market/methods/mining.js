@@ -286,18 +286,18 @@ const rateText = (r, unit) => `${fmtN(r[0])}–${fmtN(r[1])} ${unit} в час`;
 // ---------- методы ----------
 export const MINING_METHODS = [
   {
-    id: 'mining-mithril', title: 'Mithril и Titanium', tag: 'Добыча', mode: 'active',
-    desc: 'Первый денежный майнинг: копаешь Mithril в Dwarven Mines, попутно падает Titanium. Мало денег, зато заодно идут коммишны, порошок Mithril и опыт HotM.',
+    id: 'mining-mithril', title: 'Mithril и Titanium', tag: 'Mining', mode: 'active',
+    desc: 'Первый денежный майнинг: копаешь Mithril в Dwarven Mines, попутно падает Titanium. Мало денег, зато заодно идут коммишны, Powder Mithril и опыт HotM.',
     req: m => [minesReq(m), need('HotM', hotm(m), 1)],
     compute: (ctx) => {
       const loot = [{ id: 'MITHRIL_ORE', n: 1 }, { id: 'TITANIUM_ORE', n: RATES.titanium[1] / RATES.mithril[1] }];
       const r = twoRates(ctx, loot, RATES.mithril);
-      return result(ctx, r, `Считаем ${rateText(RATES.mithril, 'Mithril')} и ${rateText(RATES.titanium, 'Titanium')}. Продаём в самой выгодной форме: ${r?.rows.slice(0, 2).map(x => rowText(ctx, x)).join('; ')}. Порошок и опыт HotM в деньги не входят.`);
+      return result(ctx, r, `Считаем ${rateText(RATES.mithril, 'Mithril')} и ${rateText(RATES.titanium, 'Titanium')}. Продаём в самой выгодной форме: ${r?.rows.slice(0, 2).map(x => rowText(ctx, x)).join('; ')}. Powder и опыт HotM в деньги не входят.`);
     },
     drops: ['ENCHANTED_MITHRIL', 'ENCHANTED_TITANIUM', 'REFINED_MITHRIL', 'REFINED_TITANIUM'],
   },
   {
-    id: 'gemstones', title: 'Добыча гемов', tag: 'Добыча', mode: 'active',
+    id: 'gemstones', title: 'Добыча гемов', tag: 'Mining', mode: 'active',
     desc: 'Crystal Hollows (Ruby, Jade, Amber, Sapphire, Amethyst, Topaz) и Glacite Tunnels (Onyx, Aquamarine, Citrine, Peridot). Доход посчитан по каждому гему отдельно с учётом прочности блока после патча 0.27.3, лучший показан сверху.',
     req: m => [hollowsReq(m),
       { text: 'Гемовая дрель (Divan, Gemstone/Titanium Drill, Gemstone Gauntlet)', ok: hasAny(m, DRILLS.filter(d => !/MITHRIL|PICKONIMBUS|JUNGLE/.test(d))), soft: true, buy: ['GEMSTONE_DRILL_2', 'GEMSTONE_GAUNTLET', 'DIVAN_DRILL'] }],
@@ -321,7 +321,7 @@ export const MINING_METHODS = [
     drops: ['FLAWLESS_RUBY_GEM', 'FLAWLESS_JADE_GEM', 'FLAWLESS_AMBER_GEM', 'FLAWLESS_TOPAZ_GEM', 'FLAWLESS_PERIDOT_GEM'],
   },
   {
-    id: 'glacite-metals', title: 'Umber, Tungsten и Glacite', tag: 'Добыча', mode: 'active',
+    id: 'glacite-metals', title: 'Umber, Tungsten и Glacite', tag: 'Mining', mode: 'active',
     desc: 'Металлы Glacite Tunnels: идут на крафт брони и инструментов Dwarven Tunnels, поэтому спрос стабильный. Считаем лучший из трёх. Холод (Cold) режет скорость копания: выходи погреться вовремя.',
     req: m => [tunnelsReq(m)],
     compute: (ctx) => {
@@ -337,7 +337,7 @@ export const MINING_METHODS = [
     drops: ['ENCHANTED_UMBER', 'ENCHANTED_TUNGSTEN', 'ENCHANTED_GLACITE', 'REFINED_UMBER', 'REFINED_TUNGSTEN'],
   },
   {
-    id: 'glacite-mineshaft', title: 'Glacite Mineshaft и трупы', tag: 'Добыча', mode: 'active',
+    id: 'glacite-mineshaft', title: 'Glacite Mineshaft и трупы', tag: 'Mining', mode: 'active',
     desc: 'Во время копания в Glacite Tunnels открывается вход в шахту. Внутри трупы: Lapis (без ключа), Umber и Tungsten (нужен ключ своего типа), а в редкой шахте Fairy — Vanguard (Skeleton Key). С трупов падают Fine гемы, Suspicious Scrap, яйца гоблинов и редкие Opal Crystal, Frozen Scute.',
     req: m => [tunnelsReq(m), { text: 'Mineshaft уже открывал', ok: Number(m?.mining?.mineshafts || 0) > 0, soft: true, have: `входов: ${fmtN(m?.mining?.mineshafts || 0)}` }],
     compute: (ctx) => {
@@ -363,7 +363,7 @@ export const MINING_METHODS = [
       if (hi.perHour <= 0 && !gems.hi) return null;
       const r = { lo: Math.max(0, lo.perHour) + gems.lo, hi: Math.max(0, hi.perHour) + gems.hi, rows: hi.rows };
       const keyText = k => k == null ? 'ключа нет в продаже — не открываем' : fmtK(k);
-      return result(ctx, r, `Трупы: Lapis ≈${fmtK(lapis)}, Umber/Tungsten ≈${fmtK(metal.perHour)} за труп; ключ Umber ${keyText(keyU)}, Tungsten ${keyText(keyT)}${!openU || !openT ? ' (труп, который не окупает ключ, не открываем)' : ''}. При ${rateText(RATES.mineshafts, 'шахт')} трупы дают ${fmtK(Math.max(0, hi.perHour))}/ч. Гемы: половину времени копаешь жилы туннелей, лучший сейчас ${GEM_RU[gems.g]} — ${fmtK(gems.hi)}/ч. Берём ${CORPSE_ROLLS} предмета с трупа (на вики число бросков не указано), Lapis в половине шахт, Umber и Tungsten — в четверти. Порошок Glacite и опыт HotM сверху.`,
+      return result(ctx, r, `Трупы: Lapis ≈${fmtK(lapis)}, Umber/Tungsten ≈${fmtK(metal.perHour)} за труп; ключ Umber ${keyText(keyU)}, Tungsten ${keyText(keyT)}${!openU || !openT ? ' (труп, который не окупает ключ, не открываем)' : ''}. При ${rateText(RATES.mineshafts, 'шахт')} трупы дают ${fmtK(Math.max(0, hi.perHour))}/ч. Гемы: половину времени копаешь жилы туннелей, лучший сейчас ${GEM_RU[gems.g]} — ${fmtK(gems.hi)}/ч. Берём ${CORPSE_ROLLS} предмета с трупа (на вики число бросков не указано), Lapis в половине шахт, Umber и Tungsten — в четверти. Glacite Powder и опыт HotM сверху.`,
         { top: [{ id: `FLAWLESS_${gems.g}_GEM`, name: `${GEM_RU[gems.g]} (жилы в шахте)`, perHour: gems.hi }, ...topOf(ctx, hi.rows, 4)],
           breakdown: breakdownOf(ctx, [{ loot: CORPSES.lapis.loot, k: CORPSES.lapis.chance * CORPSE_ROLLS }, { loot: METAL_CORPSE, k: metalShare * CORPSE_ROLLS }], RATES.mineshafts[1]),
           breakdownUnit: 'шахту' });
@@ -371,7 +371,7 @@ export const MINING_METHODS = [
     drops: ['SUSPICIOUS_SCRAP', 'OPAL_CRYSTAL', 'FROZEN_SCUTE', 'DWARVEN_OS_METALLIC_MINIS', 'GOBLIN_EGG_BLUE'],
   },
   {
-    id: 'crystal-nucleus', title: 'Раны Crystal Nucleus', tag: 'Добыча', mode: 'active',
+    id: 'crystal-nucleus', title: 'Раны Crystal Nucleus', tag: 'Mining', mode: 'active',
     desc: 'Собираешь 5 кристаллов в Crystal Hollows (Jade — Mines of Divan, Amber — Goblin Queen\'s Den, Amethyst — Jungle Temple, Sapphire — Lost Precursor City, Topaz — Bal) и ставишь их в Crystal Nucleus. Награда: 14–20 бросков по таблице (Divan Fragment, Pickonimbus 2000, Prehistoric Egg, Jaderald, Flawed гемы) плюс по одному Fine каждого гема и 800 опыта HotM.',
     req: m => [hollowsReq(m), { text: 'Питомец Mole (+1 бросок)', ok: hasAny(m, ['PET_MOLE']), soft: true },
       { text: 'Раны Nucleus уже делал', ok: Number(m?.mining?.nucleusRuns || 0) > 0, soft: true, have: `ранов: ${fmtN(m?.mining?.nucleusRuns || 0)}` }],
@@ -417,7 +417,7 @@ export const MINING_METHODS = [
     drops: ['DIVAN_FRAGMENT', 'PICKONIMBUS', 'PREHISTORIC_EGG', 'JADERALD', 'GEMSTONE_MIXTURE'],
   },
   {
-    id: 'scatha', title: 'Черви и Scatha', tag: 'Добыча', mode: 'active',
+    id: 'scatha', title: 'Черви и Scatha', tag: 'Mining', mode: 'active',
     desc: 'Копаешь Hard Stone в Crystal Hollows: с шансом 1 на 600 за блок вылезает червь (80% Stoneworm, 20% Scatha), потом 30 секунд перерыв. Scatha даёт Worm Membrane, Fine гемы и редкого питомца Scatha.',
     req: m => [hollowsReq(m)],
     compute: (ctx) => {
@@ -428,7 +428,7 @@ export const MINING_METHODS = [
     drops: ['WORM_MEMBRANE', 'SCATHA;2', 'SCATHA;3', 'SCATHA;4', 'DWARVEN_OS_BLOCK_BRAN'],
   },
   {
-    id: 'goblins', title: 'Яйца гоблинов в Goblin Holdout', tag: 'Добыча', mode: 'active',
+    id: 'goblins', title: 'Яйца гоблинов в Goblin Holdout', tag: 'Mining', mode: 'active',
     desc: 'Гоблины в Goblin Holdout (Crystal Hollows): обычные и цветные Goblin Egg, редкое синее. Яйца нужны для кристалла Amber и питомцев, продаются на Bazaar.',
     req: m => [hollowsReq(m)],
     compute: (ctx) => {
@@ -443,7 +443,7 @@ export const MINING_METHODS = [
 // ---------- разбор: шаги, риски, стартовый набор ----------
 export const MINING_DETAILS = {
   'mining-mithril': {
-    effort: 'semi', risk: 'low', xp: 'Опыт Mining и HotM, порошок Mithril, коммишны',
+    effort: 'semi', risk: 'low', xp: 'Опыт Mining и HotM, Powder Mithril, коммишны',
     steps: [
       'Открой Dwarven Mines (/warp mines) и возьми коммишны у Emissary или в меню Royal Pigeon.',
       'Копай Mithril в Royal Mines, Cliffside Veins или Rampart\'s Quarry: голубой Mithril самый прочный, серый — самый быстрый.',
@@ -451,13 +451,13 @@ export const MINING_DETAILS = {
       'Сжимай в Enchanted Mithril и Enchanted Titanium (или Refined в Forge) и продавай на Bazaar, если так выгоднее.',
     ],
     risks: [
-      'Денег мало: метод хорош как разгон HotM и порошка, а не как главный заработок.',
+      'Денег мало: метод хорош как разгон HotM и Powder, а не как главный заработок.',
       'Во время Mining Fiesta цены на Mithril падают, потому что копают все.',
     ],
     kit: [{ text: 'Кирка или дрель для Mithril (Pickonimbus 2000, Mithril/Titanium Drill)', own: DRILLS, buy: ['PICKONIMBUS', 'MITHRIL_DRILL_1'] }],
   },
   gemstones: {
-    effort: 'focus', risk: 'low', xp: 'Опыт Mining, порошок Gemstone (первые 2 500 гемов в день дают втрое больше)',
+    effort: 'focus', risk: 'low', xp: 'Опыт Mining, Powder Gemstone (первые 2 500 гемов в день дают втрое больше)',
     steps: [
       'Выбери гем: сверху «Разбора» лучший по текущим ценам. Ruby есть по всей Crystal Hollows, Jade — Mithril Deposits, Amber — Goblin Holdout, Sapphire — Precursor Remnants, Amethyst — Jungle, Topaz — Magma Fields.',
       'Возьми гемовую дрель: нужна Breaking Power 6–9 и как можно больше Mining Speed, Gemstone Fortune и Pristine (каждый пункт Pristine — +1% шанс сразу получить Flawed, это 80 Rough).',
@@ -471,7 +471,7 @@ export const MINING_DETAILS = {
     ],
   },
   'glacite-metals': {
-    effort: 'focus', risk: 'low', xp: 'Опыт Mining, порошок Glacite',
+    effort: 'focus', risk: 'low', xp: 'Опыт Mining, Powder Glacite',
     steps: [
       'Пройди квест Dulin «Beyond the Wall» на HotM 7, чтобы открыть Glacite Tunnels.',
       'Нужна Breaking Power 8+ и защита от холода: каждое очко Cold сверх твоей Cold Resistance режет Mining Speed на 0,5%, при 100 — смерть.',
@@ -484,12 +484,12 @@ export const MINING_DETAILS = {
     ],
   },
   'glacite-mineshaft': {
-    effort: 'focus', risk: 'mid', xp: 'Опыт HotM (труп Lapis 100, Umber и Tungsten по 1 000, Vanguard 5 000), порошок Glacite',
+    effort: 'focus', risk: 'mid', xp: 'Опыт HotM (труп Lapis 100, Umber и Tungsten по 1 000, Vanguard 5 000), Powder Glacite',
     steps: [
       'Копай в Glacite Tunnels: примерно раз на 2 000 блоков открывается вход в Mineshaft (перки Surveyor и Tunnel Vision чаще).',
       'Заранее купи или скрафти Umber Key и Tungsten Key, а для шахты Fairy — Skeleton Key.',
       'В шахте найди трупы: Lapis открывается без ключа, остальные ключом своего типа. Каждый игрок открывает труп один раз.',
-      'Копай гемы в самой шахте, выходи (+1 000 порошка Glacite за выход) и продавай Fine гемы и Suspicious Scrap на Bazaar.',
+      'Копай гемы в самой шахте, выходи (+1 000 Powder Glacite за выход) и продавай Fine гемы и Suspicious Scrap на Bazaar.',
     ],
     risks: [
       'Ключ тратится, а лут случайный: открывай Umber и Tungsten, только если ключ дешевле среднего лута (сайт это учитывает).',
@@ -521,7 +521,7 @@ export const MINING_DETAILS = {
     ],
   },
   scatha: {
-    effort: 'focus', risk: 'high', xp: 'Опыт Mining и Combat, порошок Gemstone',
+    effort: 'focus', risk: 'high', xp: 'Опыт Mining и Combat, Powder Gemstone',
     steps: [
       'Иди в Crystal Hollows и копай Hard Stone (лучше всего у Magma Fields) кирка с Pickobulus или дрелью.',
       'Каждый блок — шанс 1 на 600 вызвать червя, потом 30 секунд перерыв: копай без остановки.',

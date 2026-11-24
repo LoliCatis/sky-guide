@@ -16,8 +16,8 @@ const DAY = 24 * 3600_000;
 export const BOARDS = {
   networth: { label: 'Богатство', unit: 'монет', value: e => e.nw },
   level: { label: 'Уровень SkyBlock', value: e => e.level },
-  catacombs: { label: 'Катакомбы', value: e => (e.cataXp > 0 ? e.cataXp : null) },
-  slayer: { label: 'Слееры', unit: 'опыта', value: e => (e.slayerXp > 0 ? e.slayerXp : null) },
+  catacombs: { label: 'Catacombs', value: e => (e.cataXp > 0 ? e.cataXp : null) },
+  slayer: { label: 'Slayers', unit: 'опыта', value: e => (e.slayerXp > 0 ? e.slayerXp : null) },
   skills: { label: 'Навыки', value: e => (e.skillAvg > 0 ? e.skillAvg : null) },
 };
 
@@ -245,7 +245,7 @@ export function createActionLimiter({ max = 5, windowMs = 3600_000, clock = () =
 
 /**
  * GET  /api/leaderboard?board=networth&mode=all&find=Ник  — таблица (find — место этого игрока, если он есть)
- * POST /api/leaderboard/remove { player }                — убрать себя из рейтинга (открыто гостям, с лимитом)
+ * POST /api/leaderboard/remove { player }                — убрать себя из рейтинга (открыто Visitors, с лимитом)
  * POST /api/leaderboard/restore { player }               — вернуть (только владелец)
  */
 export function mountLeaderboardRoutes(app, { board, clientIp = req => req.ip, isAdmin = () => false, express }) {

@@ -217,14 +217,14 @@ test('topMovers: тонкий рынок с движением >100% — шум,
 
 test('названия рынка: книги и осколки Bazaar не показываются сырым ID', async () => {
   const { displayName, prettyId } = await import('../names.js');
-  assert.equal(displayName('ENCHANTMENT_LAPIDARY_1'), 'Книга: Lapidary I');
-  assert.equal(displayName('ENCHANTMENT_LIFE_STEAL_4'), 'Книга: Life Steal IV');
+  assert.equal(displayName('ENCHANTMENT_LAPIDARY_1'), 'Lapidary I');
+  assert.equal(displayName('ENCHANTMENT_LIFE_STEAL_4'), 'Life Steal IV');
   assert.equal(displayName('SHARD_SEA_EMPEROR'), 'Loch Emperor Shard', 'старое имя осколка → новое');
   assert.equal(displayName('SHARD_SNEAKY_TIKI'), 'Sneaky Tiki Shard');
   assert.equal(displayName('SHARD_SOUL_OF_THE_ALPHA'), 'Soul of the Alpha Shard');
-  assert.equal(displayName('ENCHANTED_DIAMOND'), 'Зачарованный алмаз');
-  assert.equal(displayName('ENCHANTMENT_ULTIMATE_BOBBIN_TIME_3'), "Книга: Bobbin' Time III", 'ультимейты из «Крафт и Forge»');
-  assert.equal(displayName('ENCHANTMENT_ULTIMATE_HABANERO_TACTICS_4'), 'Книга: Habanero Tactics IV');
+  assert.equal(displayName('ENCHANTED_DIAMOND'), 'Enchanted Diamond');
+  assert.equal(displayName('ENCHANTMENT_ULTIMATE_BOBBIN_TIME_3'), "Bobbin' Time III", 'ультимейты из «Крафт и Forge»');
+  assert.equal(displayName('ENCHANTMENT_ULTIMATE_HABANERO_TACTICS_4'), 'Habanero Tactics IV');
   assert.equal(prettyId('SHARD_SOMETHING_NEW'), 'Something New Shard');
   assert.equal(prettyId('ENCHANTMENT_ULTIMATE_WISE_5'), 'Ultimate Wise V');
   const ctx = ctxFrom();
@@ -255,12 +255,12 @@ test('разбор метода: требования с данными проф
 
 test('категории товаров для фильтров', () => {
   const c = mk.categoryOf;
-  assert.equal(c('ENCHANTED_NETHER_STALK'), 'Фермерство');
-  assert.equal(c('INK_SACK:3'), 'Фермерство', 'какао, а не чернила');
-  assert.equal(c('INK_SACK'), 'Рыбалка');
-  assert.equal(c('FLAWLESS_RUBY_GEM'), 'Добыча');
-  assert.equal(c('ARCHFIEND_DICE'), 'Бой и данжи', 'DICE — не лёд');
-  assert.equal(c('GRIFFIN_FEATHER'), 'Бой и данжи');
+  assert.equal(c('ENCHANTED_NETHER_STALK'), 'Farming');
+  assert.equal(c('INK_SACK:3'), 'Farming', 'какао, а не чернила');
+  assert.equal(c('INK_SACK'), 'Fishing');
+  assert.equal(c('FLAWLESS_RUBY_GEM'), 'Mining');
+  assert.equal(c('ARCHFIEND_DICE'), 'Combat', 'DICE — не лёд');
+  assert.equal(c('GRIFFIN_FEATHER'), 'Combat');
   assert.equal(c('ENCHANTMENT_ULTIMATE_CHIMERA_1'), 'Книги');
   assert.equal(c('SHARD_SEA_EMPEROR'), 'Осколки');
   assert.equal(c('KISMET_FEATHER'), 'Улучшения', 'перо Kismet — не фермерство');

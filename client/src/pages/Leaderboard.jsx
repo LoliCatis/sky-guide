@@ -1,4 +1,4 @@
-// Рейтинг игроков: самые богатые, уровень SkyBlock, Катакомбы, слееры, навыки.
+// Рейтинг игроков: самые богатые, уровень SkyBlock, Catacombs, слееры, навыки.
 // Hypixel не даёт общего списка игроков, поэтому в таблице только профили, которые посетители открывали на этом сайте.
 // Владелец сайта и его друзья в рейтинг не попадают (это решает сервер). Любой игрок может убрать себя сам.
 import { useEffect, useState } from 'react';
@@ -16,8 +16,8 @@ async function lb(path, opts) {
 const BOARDS = [
   { id: 'networth', label: 'Богатство', col: 'Стоимость' },
   { id: 'level', label: 'Уровень SkyBlock', col: 'Уровень' },
-  { id: 'catacombs', label: 'Катакомбы', col: 'Катакомбы' },
-  { id: 'slayer', label: 'Слееры', col: 'Опыт слееров' },
+  { id: 'catacombs', label: 'Catacombs', col: 'Catacombs' },
+  { id: 'slayer', label: 'Slayers', col: 'Опыт слееров' },
   { id: 'skills', label: 'Навыки', col: 'Средний навык' },
 ];
 const MODES = [['all', 'Все профили'], ['normal', 'Обычные'], ['ironman', 'Ironman'], ['other', 'Stranded и Bingo']];
@@ -38,7 +38,7 @@ function details(board, r) {
   const parts = [];
   if (board !== 'networth' && r.nw) parts.push(coins(r.nw));
   if (board !== 'level' && r.level) parts.push(`${Math.floor(r.level)} ур.`);
-  if (board !== 'catacombs' && r.cata) parts.push(`Катакомбы ${r.cata}`);
+  if (board !== 'catacombs' && r.cata) parts.push(`Catacombs ${r.cata}`);
   if (board === 'catacombs' && r.cls) parts.push(CLASS_RU[r.cls] || r.cls);
   if (board === 'slayer' && r.slayers) parts.push(Object.values(r.slayers).join(' / '));
   if (board !== 'skills' && r.skillAvg) parts.push(`навыки ${r.skillAvg.toLocaleString('ru-RU', { maximumFractionDigits: 1 })}`);

@@ -31,12 +31,12 @@ test('рыбалка: гайд по профилю OwnerCat (Fishing 36, Inferno
   assert.match(titles, /Thunder Armor/);       // лавовый микс есть, следующий сет — Thunder
   assert.match(titles, /Obfuscated 3|Moldfin/); // два вида не пойманы
   assert.match(titles, /Adept/);
-  const trophy = g.sections.find(s => s.title.startsWith('Трофейная рыба'));
+  const trophy = g.sections.find(s => s.title.startsWith('Trophy Fish'));
   assert.equal(trophy.rows.length, 18);
   const ranks = g.sections.find(s => s.title.startsWith('Награды Odger'));
   assert.equal(ranks.items[0].done, true);   // Novice: 16 видов ≥ 15
   assert.equal(ranks.items[1].done, false);  // Adept: серебра нет у 5 видов
-  const sea = g.sections.find(s => s.title.startsWith('Морские существа'));
+  const sea = g.sections.find(s => s.title.startsWith('Sea Creatures'));
   assert.equal(sea.rows.length, CREATURES.length);
   assert.ok(sea.rows.some(r => r[1] === 'Sea Walker' && /674/.test(r[4].text)));
 });

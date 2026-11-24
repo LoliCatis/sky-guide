@@ -31,7 +31,7 @@ const pct = (v, d = 1) => (v == null || isNaN(v) ? '—' : `${v.toFixed(d).repla
 const lc = s => String(s || '').toLowerCase();
 const RISK_CLS = { низкий: 'low', средний: 'mid', высокий: 'high', low: 'low', mid: 'mid', high: 'high' };
 
-/** Чипы категорий с количеством: «Все 40 · Фермерство 12 · Добыча 7…» */
+/** Чипы категорий с количеством: «Все 40 · Farming 12 · Добыча 7…» */
 function CatChips({ rows, value, onChange, field = 'category', allLabel = 'Все' }) {
   const counts = useMemo(() => {
     const m = new Map();
@@ -293,7 +293,7 @@ function Crafts({ openItem }) {
       <div className="mt-filters">
         <input className="search mt-search" placeholder="Поиск предмета…" value={q} onChange={e => setQ(e.target.value)} />
         <Pick label="Тип" value={kind} onChange={setKind} options={[['', 'Крафт и Forge'], ['craft', 'Только крафт'], ['forge', 'Только Forge']]} />
-        <Pick label="Где продавать" value={market} onChange={setMarket} options={[['', 'Везде'], ['Bazaar', 'Bazaar'], ['Аукцион', 'Аукцион']]} />
+        <Pick label="Где продавать" value={market} onChange={setMarket} options={[['', 'Везде'], ['Bazaar', 'Bazaar'], ['Auction House', 'Auction House']]} />
         <Pick label="Себестоимость" value={band} onChange={setBand} options={PRICE_BANDS} />
         <Toggle checked={hideLocked} onChange={setHideLocked}>Только открытые рецепты</Toggle>
         <Toggle checked={showOdd} onChange={setShowOdd}>Показать подозрительные</Toggle>
@@ -384,7 +384,7 @@ function Movers({ openItem }) {
         <>
           <div className="mt-filters">
             <input className="search mt-search" placeholder="Поиск товара…" value={q} onChange={e => setQ(e.target.value)} />
-            <Pick label="Рынок" value={market} onChange={setMarket} options={[['', 'Bazaar и аукцион'], ['Bazaar', 'Bazaar'], ['Аукцион', 'Аукцион']]} />
+            <Pick label="Рынок" value={market} onChange={setMarket} options={[['', 'Bazaar и аукцион'], ['Bazaar', 'Bazaar'], ['Auction House', 'Auction House']]} />
           </div>
           <CatChips rows={all} value={cat} onChange={setCat} />
         </>
@@ -722,7 +722,7 @@ export default function Money({ state: appState, sub }) {
   const st = appState;
   return (
     <div className="grid">
-      <Card className="span-12" title="Как заработать с твоим профилем" right={<Tabs value={tab} onChange={setTab} tabs={[{ id: 'methods', label: 'Методы' }, { id: 'crops', label: 'Культуры' }, { id: 'flips', label: 'Флипы Bazaar', market: true }, { id: 'crafts', label: 'Крафт и Forge' }, { id: 'snipes', label: 'Дешёвые лоты AH', market: true }, { id: 'movers', label: 'Движение цен' }, { id: 'bank', label: 'Банк' }, { id: 'bits', label: 'Bits' }].filter(t => !t.market || st?.member?.mode?.market !== false)} />}>
+      <Card className="span-12" title="Как заработать с твоим профилем" right={<Tabs value={tab} onChange={setTab} tabs={[{ id: 'methods', label: 'Методы' }, { id: 'crops', label: 'Культуры' }, { id: 'flips', label: 'Флипы Bazaar', market: true }, { id: 'crafts', label: 'Крафт и Forge' }, { id: 'snipes', label: 'Дешёвые лоты AH', market: true }, { id: 'movers', label: 'Движение цен' }, { id: 'bank', label: 'Bank' }, { id: 'bits', label: 'Bits' }].filter(t => !t.market || st?.member?.mode?.market !== false)} />}>
         {st?.member?.mode && !st.member.mode.market && <div className="mode-banner">⚠️ Профиль {st.member.mode.label}: {st.member.mode.note}. Флипы скрыты, а доход посчитан по ценам рынка, поэтому реальный ниже.</div>}
         {tab === 'methods' && <MoneyMethods openItem={openItem} />}
         {tab === 'crops' && <Crops />}

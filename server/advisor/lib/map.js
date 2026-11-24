@@ -52,7 +52,7 @@ export function buildMap(ctx) {
   const m = ctx.m;
   const B = [];
 
-  // ===== Данжи =====
+  // ===== Dungeons =====
   const d = m.dungeons;
   if (d) {
     const cata = d.catacombs.level;
@@ -70,10 +70,10 @@ export function buildMap(ctx) {
     for (const lvl of [30, 40, 50]) {
       nodes.push({ id: `dungeon:cata${lvl}`, title: `Catacombs ${lvl}`, status: cata >= lvl ? 'done' : 'available', detail: `сейчас ${cata}`, stepId: 'dungeon-cata' });
     }
-    B.push(branch('dungeons', 'Данжи', markCurrent(nodes), `Catacombs ${cata}, класс ${d.classes?.[d.selectedClass]?.name || '—'}`));
+    B.push(branch('dungeons', 'Dungeons', markCurrent(nodes), `Catacombs ${cata}, класс ${d.classes?.[d.selectedClass]?.name || '—'}`));
   }
 
-  // ===== Слееры =====
+  // ===== Slayers =====
   const sl = m.slayers || {};
   const slNodes = Object.entries(sl).map(([k, s]) => ({
     id: `slayer:${k}`, title: `${s.name} (${s.ru})`,
@@ -81,7 +81,7 @@ export function buildMap(ctx) {
     progress: s.level >= s.maxLevel ? 1 : (s.level + (s.progress || 0)) / s.maxLevel,
     detail: `уровень ${s.level}/${s.maxLevel}`, stepId: `slayer-${k}`,
   }));
-  if (slNodes.length) B.push(branch('slayers', 'Слееры', slNodes, slNodes.map(n => n.detail.replace('уровень ', '')).join(' · ')));
+  if (slNodes.length) B.push(branch('slayers', 'Slayers', slNodes, slNodes.map(n => n.detail.replace('уровень ', '')).join(' · ')));
 
   // ===== Kuudra =====
   const c = m.crimson;
@@ -124,8 +124,8 @@ export function buildMap(ctx) {
   }
   if (gearNodes.length) B.push(branch('gear', 'Снаряжение', gearNodes, `${gearNodes.filter(n => n.status === 'done').length} из ${gearNodes.length} веток на максимуме`));
 
-  // ===== Скиллы =====
-  // Фермерство и Приручение упираются в кап 50, который поднимается до 60 (Anita / сдача питомцев)
+  // ===== Skills =====
+  // Farming и Taming упираются в кап 50, который поднимается до 60 (Anita / сдача питомцев)
   const RAISABLE = { farming: 60, taming: 60 };
   const skNodes = Object.entries(m.skills || {}).filter(([k, s]) => !s.apiMissing && k !== 'social' && k !== 'runecrafting').map(([k, s]) => {
     const abs = Math.max(RAISABLE[k] || 0, s.maxLevel);
@@ -137,7 +137,7 @@ export function buildMap(ctx) {
       stepId: capped && k === 'taming' ? 'pets-taming-cap' : `skill-${k}`,
     };
   });
-  B.push(branch('skills', 'Скиллы', skNodes, `средний ${(m.skillAverage || 0).toFixed(1)}`));
+  B.push(branch('skills', 'Skills', skNodes, `средний ${(m.skillAverage || 0).toFixed(1)}`));
 
   // ===== Питомцы =====
   const best = bestPets(ctx);
@@ -164,15 +164,15 @@ export function buildMap(ctx) {
   markCurrent(minNodes);
   B.push(branch('minions', 'Миньоны', minNodes, `${unique} ${plural(unique, 'уникальный крафт', 'уникальных крафта', 'уникальных крафтов')}`));
 
-  // ===== Добыча / Лесорубство =====
-  if (m.mining) B.push(branch('mining', 'Добыча (HotM)', levelNodes('hotm', 'HotM', m.mining.hotm.level, 10, m.mining.hotm.progress, 'hotm'), `HotM ${m.mining.hotm.level}`));
+  // ===== Добыча / Foraging =====
+  if (m.mining) B.push(branch('mining', 'Mining (HotM)', levelNodes('hotm', 'HotM', m.mining.hotm.level, 10, m.mining.hotm.progress, 'hotm'), `HotM ${m.mining.hotm.level}`));
   if (m.hotfXp != null) {
     const t = ctx.data.hotf;
     let lvl = 0;
     for (let i = 0; i < t.length; i++) if (m.hotfXp >= t[i]) lvl = i + 1;
     const nextNeed = t[lvl];
     const prog = nextNeed ? (m.hotfXp - (t[lvl - 1] || 0)) / (nextNeed - (t[lvl - 1] || 0)) : 1;
-    B.push(branch('foraging', 'Лесорубство (HotF)', levelNodes('hotf', 'HotF', lvl, t.length, prog, 'hotf'), `HotF ${lvl}`));
+    B.push(branch('foraging', 'Foraging (HotF)', levelNodes('hotf', 'HotF', lvl, t.length, prog, 'hotf'), `HotF ${lvl}`));
   }
 
   // ===== Музей =====

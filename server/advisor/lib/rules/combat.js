@@ -1,4 +1,4 @@
-// Данжи, слееры, Crimson Isle и Kuudra.
+// Dungeons, слееры, Crimson Isle и Kuudra.
 import LADDERS from '../../data/ladders.json' with { type: 'json' };
 import { fmtCoins, fmtNum, plural } from '../util.js';
 import { dojoState } from '../../../guides/crimson-data.js';
@@ -16,9 +16,9 @@ export const KUUDRA_TIERS = [
 const SLAYER_COST = [2000, 7500, 20000, 50000, 100000];
 const SLAYER_ORDER = ['zombie', 'spider', 'wolf', 'enderman', 'blaze', 'vampire'];
 const SLAYER_WHERE = {
-  zombie: 'Хаб → Graveyard или Crypts',
+  zombie: 'Hub → Graveyard или Crypts',
   spider: "Spider's Den → Arachne's Burrow",
-  wolf: 'Хаб → Ruins или Howling Cave в Парке',
+  wolf: 'Hub → Ruins или Howling Cave в Парке',
   enderman: 'The End → Dragon\'s Nest / Void Sepulture',
   blaze: 'Crimson Isle → Smoldering Tomb и Stronghold',
   vampire: 'Rift → Stillgore Château',
@@ -48,11 +48,11 @@ export function dungeonRules(ctx, add) {
 
   if (f7 > 0 && notDone.length) {
     add({
-      id: 'dungeon-master', cat: 'Данжи', priority: 86, effort: 'часы',
+      id: 'dungeon-master', cat: 'Dungeons', priority: 86, effort: 'часы',
       title: unlocked.some(doneM) ? `Пройди M${notDone[0]}: следующий открытый этаж Master Mode` : `Начни Master Mode с M${notDone[0]}`,
       why: `Catacombs ${cata}, F7 пройден ${f7} ${plural(f7, 'раз', 'раза', 'раз')}. Master Mode даёт намного больше опыта Catacombs, чем F7, и ценный лут: Master Stars, Recombobulator 3000, дорогие книги.`,
       how: [
-        `Хаб данжей → Party Finder (или вход в Catacombs) → выбери Master Mode, этаж M${notDone[0]}`,
+        `Dungeon Hub → Party Finder (или вход в Catacombs) → выбери Master Mode, этаж M${notDone[0]}`,
         `Начни с M${notDone[0]}: мобы и боссы сильнее, но механики те же, что на F${notDone[0]}`,
         'Ищи группу в Party Finder; на первых заходах помогает Kismet Feather для перекрутки сундука',
       ],
@@ -67,7 +67,7 @@ export function dungeonRules(ctx, add) {
     const target = next ? next[1] : Math.min(50, cata + 1);
     const left = Math.max(0, (d.catacombs.xpForNext || 0) - (d.catacombs.xpCurrent || 0));
     add({
-      id: 'dungeon-cata', cat: 'Данжи', priority: next ? 72 : 55, effort: 'долго',
+      id: 'dungeon-cata', cat: 'Dungeons', priority: next ? 72 : 55, effort: 'долго',
       title: `Качай Catacombs до ${target}${next ? `: откроет M${next[0]}` : ''}`,
       why: `Сейчас ${cata} (${Math.round((d.catacombs.progress || 0) * 100)}% до ${cata + 1}, осталось ${fmtNum(left)} опыта). Каждый уровень Catacombs усиливает всё данж-снаряжение${next ? `, а ${next[1]} открывает новый Master-этаж` : ''}.`,
       how: [
@@ -83,7 +83,7 @@ export function dungeonRules(ctx, add) {
   const weak = Object.entries(d.classes || {}).filter(([, c]) => c.level < cata - 8);
   if (weak.length) {
     add({
-      id: 'dungeon-classes', cat: 'Данжи', priority: 34, effort: 'долго',
+      id: 'dungeon-classes', cat: 'Dungeons', priority: 34, effort: 'долго',
       title: `Подтяни отстающие классы: ${weak.map(([, c]) => `${c.name} ${c.level}`).join(', ')}`,
       why: `Средний уровень классов ${d.classAverage.toFixed(1)}. Он нужен для достижений и SkyBlock XP, а в группе иногда не хватает именно этого класса.`,
       how: ['Играй отстающим классом на лёгких этажах (F5–F7 или M1)', 'В Party Finder ищи группы, где нужен этот класс'],
@@ -111,14 +111,14 @@ export function slayerRules(ctx, add) {
     if (sl.level === 0) {
       const blaze = key === 'blaze';
       add({
-        id: `slayer-${key}`, cat: 'Слееры', priority: blaze ? 82 : 68, effort: 'часы',
+        id: `slayer-${key}`, cat: 'Slayers', priority: blaze ? 82 : 68, effort: 'часы',
         title: `Начни ${sl.name} (${sl.ru}): сейчас уровень 0`,
         why: blaze
           ? `Блейз-слеер открывает кинжалы для Crimson Isle, Kuudra-крафты и постоянные статы.${Object.values(ctx.m.dungeons?.masterFloors || {}).some(n => Number(n) > 0) ? ' Это главная дыра в твоём профиле после Master Mode.' : ''}`
           : 'Вампир-слеер (Rift) даёт постоянные статы и предметы Rift. Пять уровней качаются за пару вечеров и добавляют SkyBlock XP.',
         how: blaze
           ? [
-            'Возьми квест у Maddox the Slayer (батфон или Хаб) → Inferno Demonlord T1',
+            'Возьми квест у Maddox the Slayer (батфон или Hub) → Inferno Demonlord T1',
             `Бой проходит в ${SLAYER_WHERE.blaze}`,
             'Броня Kuudra (Crimson/Aurora) и любое сильное оружие закрывают T1–T2; со 2 уровня скрафти Firedust или Twilight Dagger (нужен Molten Powder: крафт из 128 Derelict Ashe, которые падают с босса, и Amalgamated Crimsonite)',
             'Против щитов босса переключай Attunement кинжала (ПКМ), чтобы цвет совпадал со щитом',
@@ -136,7 +136,7 @@ export function slayerRules(ctx, add) {
     }
 
     add({
-      id: `slayer-${key}`, cat: 'Слееры', priority: 38 + (sl.maxLevel - sl.level) * 3 + (unlocks.length ? 10 : 0), effort: bosses > 60 ? 'долго' : 'часы',
+      id: `slayer-${key}`, cat: 'Slayers', priority: 38 + (sl.maxLevel - sl.level) * 3 + (unlocks.length ? 10 : 0), effort: bosses > 60 ? 'долго' : 'часы',
       title: `${sl.name} (${sl.ru}) ${sl.level} → ${sl.level + 1}`,
       why: `Осталось ${fmtNum(left)} опыта слеера: примерно ${bosses} ${plural(bosses, 'босс', 'босса', 'боссов')} T${tier}${key === 'vampire' ? '' : ` (квесты ~${fmtCoins(questCost)})`}.${unlocks.length ? ` Откроет: ${unlocks.join(', ')}.` : ' Новый уровень даёт постоянные статы.'}`,
       how: [

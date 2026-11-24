@@ -1,17 +1,17 @@
-// Быстрые победы, скиллы, добыча, лесорубство (Galatea), сад, Rift.
+// Быстрые победы, скиллы, добыча, Foraging (Galatea), Garden, Rift.
 import { hotmPowderRemaining } from '../hotm.js';
 import { fmtCoins, fmtNum, plural } from '../util.js';
 
 const SKILL_HOWTO = {
-  combat: ['Слееры T4–T5 и Master Mode дают больше всего опыта боя', 'Мини-боссы Crimson Isle и Kuudra', 'Зелье опыта боя и питомец с бонусом к Combat XP'],
+  combat: ['Slayers T4–T5 и Master Mode дают больше всего опыта боя', 'Мини-боссы Crimson Isle и Kuudra', 'Зелье опыта боя и питомец с бонусом к Combat XP'],
   foraging: ['Galatea: рубка новых пород деревьев одновременно качает Foraging и Heart of the Forest', 'Топор с Efficiency и питомец Monkey', 'Foraging-зелье и Booster Cookie (+25% опыта скиллов)'],
-  fishing: ['Лавовая рыбалка в Crimson Isle (Magma Lord/Thunder) — лучший опыт на твоём уровне', 'Морские существа во время Spooky Festival и Fishing Festival', 'Trophy Fishing параллельно даёт трофеи'],
+  fishing: ['Лавовая рыбалка в Crimson Isle (Magma Lord/Thunder) — лучший опыт на твоём уровне', 'Sea Creatures во время Spooky Festival и Fishing Festival', 'Trophy Fishing параллельно даёт трофеи'],
   enchanting: ['Experimentation Table: Superpairs и Chronomatron каждый день', 'Зачарование на столе с максимальным Bookshelf Power'],
   alchemy: ['Варка зелий с усилителями (Enchanted Sugar Cane, Enchanted Blaze Rod)', 'Ингредиенты дешевле купить на Bazaar, чем добывать'],
   taming: ['Опыт Taming идёт с любого опыта скиллов через активного питомца', 'Сначала подними кап до 60 (шаг в «Питомцах»)'],
   carpentry: ['Крафт на верстаке: самый дешёвый путь — массовый крафт из Bazaar-материалов'],
   mining: ['Commissions в Dwarven Mines и Glacite Tunnels', 'Gemstone mining в Crystal Hollows'],
-  farming: ['Сад: культура с максимальной Farming Fortune', 'Контесты Jacob за медали и опыт'],
+  farming: ['Garden: культура с максимальной Farming Fortune', 'Контесты Jacob за медали и опыт'],
   hunting: ['Охота и ловушки на животных (Galatea, Backwater Bayou)'],
 };
 // Приоритет скилла в общей прогрессии (на этапе позднего мидгейма)
@@ -28,7 +28,7 @@ export function quickRules(ctx, add) {
       id: 'fairy-exchange', cat: 'Быстрые победы', priority: 96, effort: 'минуты',
       title: `Обменяй ${unspent} ${plural(unspent, 'фею', 'феи', 'фей')} у Tia the Fairy`,
       why: `Каждые 5 фей — постоянные бонусы к здоровью, защите, силе и скорости. Доступно обменов: ${ex}.`,
-      how: ['Хаб → Tia the Fairy у Fairy Pond (Wilderness)', 'Нажми на неё — обмен произойдёт автоматически'],
+      how: ['Hub → Tia the Fairy у Fairy Pond (Wilderness)', 'Нажми на неё — обмен произойдёт автоматически'],
       payoff: `${ex} ${plural(ex, 'обмен', 'обмена', 'обменов')} на статы`,
     });
   }
@@ -63,12 +63,12 @@ export function skillRules(ctx, add) {
     const gap = s.maxLevel - s.level;
     const w = SKILL_WEIGHT[key] ?? 0.8;
     const left = Math.max(0, (s.xpForNext || 0) - (s.xpCurrent || 0));
-    // Скилл, сильно отстающий от среднего, — самый дешёвый прогресс: первые уровни быстрые и стоят только времени
+    // Skill, сильно отстающий от среднего, — самый дешёвый прогресс: первые уровни быстрые и стоят только времени
     const lag = Math.max(0, (m.skillAverage || 0) - s.level);
     add({
-      id: `skill-${key}`, cat: 'Скиллы', priority: Math.round(Math.min(74, (24 + gap * 0.8) * w + lag * 1.4)), effort: gap > 10 ? 'долго' : 'часы',
+      id: `skill-${key}`, cat: 'Skills', priority: Math.round(Math.min(74, (24 + gap * 0.8) * w + lag * 1.4)), effort: gap > 10 ? 'долго' : 'часы',
       title: `${s.name} ${s.level} → ${s.maxLevel}`,
-      why: `Осталось ${gap} ${plural(gap, 'уровень', 'уровня', 'уровней')}, до ${s.level + 1} — ${fmtNum(left)} опыта. Каждый уровень даёт статы и SkyBlock XP; средний скилл сейчас ${(m.skillAverage || 0).toFixed(1)}.${lag >= 10 ? ' Этот скилл сильно отстаёт от остальных: первые уровни идут быстро и стоят только времени, а не монет.' : ''}`,
+      why: `Осталось ${gap} ${plural(gap, 'уровень', 'уровня', 'уровней')}, до ${s.level + 1} — ${fmtNum(left)} опыта. Каждый уровень даёт статы и SkyBlock XP; Skill Average сейчас ${(m.skillAverage || 0).toFixed(1)}.${lag >= 10 ? ' Этот скилл сильно отстаёт от остальных: первые уровни идут быстро и стоят только времени, а не монет.' : ''}`,
       how: SKILL_HOWTO[key] || [],
       link: 'skills',
     });
@@ -78,7 +78,7 @@ export function skillRules(ctx, add) {
   const cap = m.farmingCap || 50;
   if (f && !f.apiMissing && cap < 60 && f.level >= cap - 2) {
     add({
-      id: 'skill-farming-cap', cat: 'Скиллы', priority: f.level >= cap ? 58 : 45, effort: 'часы',
+      id: 'skill-farming-cap', cat: 'Skills', priority: f.level >= cap ? 58 : 45, effort: 'часы',
       title: `Подними кап Farming: ${cap} → 60`,
       why: `Farming ${f.level} упирается в кап ${cap}. Каждый уровень выше 50 даёт ещё Farming Fortune, статы и SkyBlock XP.`,
       how: ['NPC Anita (рядом с Jacob) → Farming Level Cap, оплата медалями Jacob\'s Farming Contest', 'Медали дают за места в Jacob\'s Contest: участвуй в контестах по своим культурам'],
@@ -103,7 +103,7 @@ export function foragingRules(ctx, add) {
   const max = ctx.data.hotf.length;
   if (lvl < max) {
     add({
-      id: 'hotf', cat: 'Лесорубство и Galatea', priority: lvl < 5 ? 64 : 46, effort: 'долго',
+      id: 'hotf', cat: 'Foraging и Galatea', priority: lvl < 5 ? 64 : 46, effort: 'долго',
       title: `Heart of the Forest ${lvl} → ${max}`,
       why: `HotF — дерево перков для Galatea: скорость и удача рубки, новые способности. Сейчас уровень ${lvl}${f ? `, Foraging ${f.level}` : ''}. Прокачка идёт параллельно со скиллом.`,
       how: ['Galatea → задания (commissions) и рубка новых пород', 'Вкладывай очки HotF в скорость и Foraging Fortune в первую очередь'],
@@ -118,9 +118,9 @@ export function miningRules(ctx, add) {
   if (!mi) return;
   if (mi.hotm.level < 10) {
     add({
-      id: 'hotm', cat: 'Добыча', priority: 44, effort: 'долго',
+      id: 'hotm', cat: 'Mining', priority: 44, effort: 'долго',
       title: `Heart of the Mountain ${mi.hotm.level} → 10`,
-      why: 'HotM открывает перки скорости и удачи добычи и Peak of the Mountain — основа дохода с гемов и Glacite.',
+      why: 'HotM открывает перки скорости и Mining Fortune и Peak of the Mountain — основа дохода с гемов и Glacite.',
       how: ['Commissions в Dwarven Mines и Glacite Tunnels — основной опыт HotM'],
       link: 'mining',
     });
@@ -137,7 +137,7 @@ export function miningRules(ctx, add) {
       .filter(([, k]) => spendable[k] > 0)
       .map(([n, k]) => `${n} ${fmtNum(spendable[k])}${remaining && avail[k] > spendable[k] ? ` (на руках ${fmtNum(avail[k])}, но перкам до максимума нужно только ${fmtNum(remaining[k])})` : ''}`);
     add({
-      id: 'hotm-powder', cat: 'Добыча', priority: 42, effort: 'минуты',
+      id: 'hotm-powder', cat: 'Mining', priority: 42, effort: 'минуты',
       title: `Вложи powder в перки HotM: ~${fmtNum(total)}`,
       why: `Можно вложить: ${parts.join('; ')}. Пока powder лежит неистраченным, он ничего не даёт.`,
       how: ['Меню HotM → докачай перки Mining Speed / Mining Fortune, затем перки под твой способ добычи'],
@@ -160,19 +160,19 @@ export function gardenRules(ctx, add) {
   const low = Object.entries(byCrop).filter(([, v]) => v < 9).map(([c, v]) => [CROP_RU[c] || c, v]);
   if (low.length) {
     add({
-      id: 'garden-crops', cat: 'Сад (Garden)', priority: 48, effort: 'минуты',
+      id: 'garden-crops', cat: 'Garden', priority: 48, effort: 'минуты',
       title: `Улучши Crop Upgrades: ${low.length} ${plural(low.length, 'культура', 'культуры', 'культур')} не на максимуме`,
-      why: `Каждый уровень +5 Farming Fortune для своей культуры. Меди: ${fmtNum(g.copper || 0)}.`,
-      how: ['Сад → Desk → Crop Upgrades', ...low.map(([c, v]) => `${c}: ${v}/9`)],
+      why: `Каждый уровень +5 Farming Fortune для своей культуры. Copper: ${fmtNum(g.copper || 0)}.`,
+      how: ['Garden → Desk → Crop Upgrades', ...low.map(([c, v]) => `${c}: ${v}/9`)],
       link: 'garden',
     });
   }
   if (g.unlockedPlots != null && g.unlockedPlots < GARDEN_PLOTS) {
     add({
-      id: 'garden-plots', cat: 'Сад (Garden)', priority: 30, effort: 'монеты',
-      title: `Открой участки Сада: ${g.unlockedPlots}/${GARDEN_PLOTS}`,
-      why: 'Больше участков — больше места под культуры и вредителей (Pests), а значит больше дохода с Сада.',
-      how: ['Сад → Desk → Configure Plots; оплата Compost'],
+      id: 'garden-plots', cat: 'Garden', priority: 30, effort: 'монеты',
+      title: `Открой участки Garden: ${g.unlockedPlots}/${GARDEN_PLOTS}`,
+      why: 'Больше участков — больше места под культуры и Pests, а значит больше дохода с Garden.',
+      how: ['Garden → Desk → Configure Plots; оплата Compost'],
       items: ['COMPOST'],
     });
   }
@@ -186,7 +186,7 @@ export function riftRules(ctx, add) {
       id: 'rift-souls', cat: 'Rift', priority: left > 20 ? 38 : 26, effort: 'часы',
       title: `Собери Enigma Souls: ${r.enigmaSouls}/52`,
       why: `Осталось ${left}. Enigma Souls увеличивают время в Rift и открывают апгрейды за Motes; они же нужны для полного прохождения Rift.`,
-      how: ['Вход в Rift — через Wizard Tower в Хабе', 'Включи маршрут Enigma Souls в моде (NEU/Skytils) или пользуйся картой на вики'],
+      how: ['Вход в Rift — через Wizard Tower в Hub', 'Включи маршрут Enigma Souls в моде (NEU/Skytils) или пользуйся картой на вики'],
       link: 'rift',
     });
   }

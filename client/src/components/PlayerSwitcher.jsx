@@ -103,7 +103,7 @@ export default function PlayerSwitcher({ state, view }) {
         <Avatar who={state?.player?.uuid || (me.guest && !view ? null : curPlayer)} />
         <div>
           <div className="who-name">{curPlayer || '…'}{m && <span className="profile-chip">{m.profileName}</span>}<span className="who-caret">▾</span></div>
-          <div className="muted small">{m ? <>{m.rank?.id && m.rank.id !== 'NONE' && <span className={`rank-chip rank-${m.rank.id.toLowerCase()}`}>{m.rank.label}</span>}{m.mode && m.mode.id !== 'normal' && <span className="mode-chip" title={m.mode.note}>{m.mode.label}</span>}{`SkyBlock ${Math.floor(m.sbLevel)} уровень · ${m.coopMembers > 1 ? `кооп из ${m.coopMembers}` : 'соло'}`}{m.cookie === false && <span className="nocookie" title="Booster Cookie не активна: Bazaar и аукцион только в Хабе, нет +25% опыта скиллов"> · без Cookie</span>}</> : state?.view?.failed ? 'Профиль не открылся' : view ? 'Загружаю профиль…' : ' '}</div>
+          <div className="muted small">{m ? <>{m.rank?.id && m.rank.id !== 'NONE' && <span className={`rank-chip rank-${m.rank.id.toLowerCase()}`}>{m.rank.label}</span>}{m.mode && m.mode.id !== 'normal' && <span className="mode-chip" title={m.mode.note}>{m.mode.label}</span>}{`SkyBlock ${Math.floor(m.sbLevel)} уровень · ${m.coopMembers > 1 ? `кооп из ${m.coopMembers}` : 'соло'}`}{m.cookie === false && <span className="nocookie" title="Booster Cookie не активна: Bazaar и аукцион только в Hub, нет +25% опыта скиллов"> · без Cookie</span>}</> : state?.view?.failed ? 'Профиль не открылся' : view ? 'Загружаю профиль…' : ' '}</div>
         </div>
       </button>
       {mates.length > 0 && (

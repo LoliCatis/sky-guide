@@ -3,7 +3,7 @@
  "ladders": [
   {
    "id": "dungeon-archer-weapon",
-   "cat": "Данжи",
+   "cat": "Dungeons",
    "kind": "weapon",
    "classes": [
     "archer"
@@ -46,7 +46,7 @@
   },
   {
    "id": "dungeon-mage-weapon",
-   "cat": "Данжи",
+   "cat": "Dungeons",
    "kind": "weapon",
    "classes": [
     "mage",
@@ -84,7 +84,7 @@
   },
   {
    "id": "dungeon-armor",
-   "cat": "Данжи",
+   "cat": "Dungeons",
    "kind": "armor",
    "titleRu": "Броня для данжей",
    "tiers": [
@@ -118,7 +118,7 @@
   },
   {
    "id": "ender-slayer-weapon",
-   "cat": "Слееры",
+   "cat": "Slayers",
    "kind": "weapon",
    "titleRu": "Оружие против Voidgloom Seraph",
    "tiers": [
@@ -166,7 +166,7 @@
   },
   {
    "id": "ender-slayer-armor",
-   "cat": "Слееры",
+   "cat": "Slayers",
    "kind": "armor",
    "titleRu": "Броня против эндерменов",
    "tiers": [
@@ -179,7 +179,7 @@
   },
   {
    "id": "zombie-slayer-weapon",
-   "cat": "Слееры",
+   "cat": "Slayers",
    "kind": "weapon",
    "titleRu": "Оружие против Revenant Horror",
    "tiers": [
@@ -220,7 +220,7 @@
   },
   {
    "id": "blaze-slayer-weapon",
-   "cat": "Слееры",
+   "cat": "Slayers",
    "kind": "weapon",
    "titleRu": "Кинжалы против Inferno Demonlord",
    "tiers": [
@@ -304,7 +304,7 @@
   },
   {
    "id": "mining-drill",
-   "cat": "Добыча",
+   "cat": "Mining",
    "kind": "tool",
    "titleRu": "Бур (Drill)",
    "tiers": [
@@ -359,7 +359,7 @@
   },
   {
    "id": "mining-armor",
-   "cat": "Добыча",
+   "cat": "Mining",
    "kind": "armor",
    "titleRu": "Броня для добычи",
    "tiers": [
@@ -385,14 +385,14 @@
   },
   {
    "id": "farming-armor",
-   "cat": "Сад (Garden)",
+   "cat": "Garden",
    "kind": "armor",
    "titleRu": "Фермерская броня",
    "tiers": [
     {
      "set": "MELON",
      "name": "Melon Armor",
-     "note": "первый сет из Сада"
+     "note": "первый сет из Garden"
     },
     {
      "set": "CROPIE",
@@ -413,7 +413,7 @@
   },
   {
    "id": "fishing-armor",
-   "cat": "Рыбалка",
+   "cat": "Fishing",
    "kind": "armor",
    "titleRu": "Рыболовная броня",
    "tiers": [
@@ -437,7 +437,7 @@
   },
   {
    "id": "fishing-rod",
-   "cat": "Рыбалка",
+   "cat": "Fishing",
    "kind": "tool",
    "titleRu": "Удочка",
    "tiers": [

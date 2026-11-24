@@ -1,4 +1,4 @@
-// «Как получить — пошагово»: каждый способ (рынок, NPC, крафт, кузница, Kat, дроп) — отдельная
+// «Как получить — пошагово»: каждый способ (рынок, NPC, крафт, Forge, Kat, дроп) — отдельная
 // карточка с шагами: куда идти (остров, телепорт, координаты), что нужно открыть (с проверкой по профилю),
 // сколько стоит по живым ценам, дерево ингредиентов с источником каждого и ссылка на вики.
 import { useState } from 'react';
@@ -9,7 +9,7 @@ const KIND = {
   market: { ico: '🏦', cls: 'ob-market' }, npc: { ico: '🧑‍🌾', cls: 'ob-npc' }, craft: { ico: '🛠️', cls: 'ob-craft' },
   forge: { ico: '⚒️', cls: 'ob-forge' }, kat: { ico: '🐾', cls: 'ob-kat' }, drop: { ico: '⚔️', cls: 'ob-drop' }, rift: { ico: '🌀', cls: 'ob-rift' }, trade: { ico: '🔁', cls: 'ob-trade' },
 };
-const VIA = { bazaar: 'Bazaar', ah: 'аукцион', npc: 'NPC', craft: 'крафт', forge: 'кузница', drop: 'дроп', coins: '', currency: 'валюта', rift: 'Рифт', none: '?' };
+const VIA = { bazaar: 'Bazaar', ah: 'аукцион', npc: 'NPC', craft: 'крафт', forge: 'Forge', drop: 'дроп', coins: '', currency: 'валюта', rift: 'Rift', none: '?' };
 const SLOTS = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3'];
 
 function Req({ req }) {

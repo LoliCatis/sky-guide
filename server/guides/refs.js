@@ -64,7 +64,7 @@ function entryOf(items) {
     }
     if (it.id.includes(';')) continue; // книги, руны, тиры — у них своя запись без «;» или они в ячейках по id
     if (/^FACTION_RABBIT_|^SKYBLOCK_|^(CHEST|DESK|BUCKET|BARRIER|BOAT|CAKE|STICK|TNT)$|_COLLECTION$/.test(it.id)) continue;
-    // Трофейная рыба: «Skeleton Fish BRONZE» → «Skeleton Fish» (бронза), «Obfuscated-3» → и «Obfuscated 3»
+    // Trophy Fish: «Skeleton Fish BRONZE» → «Skeleton Fish» (бронза), «Obfuscated-3» → и «Obfuscated 3»
     const trophy = /^(.+) (BRONZE|SILVER|GOLD|DIAMOND)$/.exec(name);
     if (trophy) {
       if (trophy[2] === 'BRONZE') { set(trophy[1], `i:${it.id}`, 1); if (trophy[1].includes('-')) set(trophy[1].replace(/-/g, ' '), `i:${it.id}`, 1); }
@@ -82,7 +82,7 @@ function entryOf(items) {
   // Питомцы из одного слова (Wolf, Tarantula, Enderman…) в тексте почти всегда значат моба или слеер — их ссылки дают только ячейки
   for (const [name, p] of petBest) if (!STOP.has(name) && /\s/.test(name)) set(name, `i:${p.id}`, 1.3);
   for (const [key, g] of Object.entries(GLOSSARY)) for (const n of g.names) set(n, `t:${key}`, 0);
-  // Морские существа из гайда рыбалки: у них есть уровень и место, а в NEU — дроп
+  // Sea Creatures из гайда рыбалки: у них есть уровень и место, а в NEU — дроп
   for (const c of CREATURES) set(c.name, `c:${c.name}`, 0.9);
   return lex;
 }
@@ -139,7 +139,7 @@ function shortObtain(id, ctx) {
     return `Крафт: ${craft.inputs.slice(0, 4).map(part).join(' + ')}${req ? `. Нужно: ${req}` : ''}`;
   }
   const forge = idx.forge.get(id)?.[0];
-  if (forge) return `Кузница (The Forge): ${forge.inputs.slice(0, 4).map(part).join(' + ')}`;
+  if (forge) return `Forge: ${forge.inputs.slice(0, 4).map(part).join(' + ')}`;
   const drops = idx.drops.get(id);
   if (drops?.length) {
     const names = [...new Set(drops.map(d => d.name.replace(/\s*\((Monster|Sea Creature|Boss|Miniboss|Creature)\)$/, '')))];
@@ -193,7 +193,7 @@ function creatureData(name, ctx) {
   const where = c.where;
   return {
     kind: 'mob', title: name,
-    text: `Морское существо: клюёт вместо рыбы. Где: ${where}.${c.lvl ? ` Открывается на Fishing ${c.lvl}.` : ''}${c.cap ? ` Бестиарий: ${c.cap.toLocaleString('ru-RU')} убийств до максимума.` : ''}`,
+    text: `Sea Creature: клюёт вместо рыбы. Где: ${where}.${c.lvl ? ` Открывается на Fishing ${c.lvl}.` : ''}${c.cap ? ` Bestiary: ${c.cap.toLocaleString('ru-RU')} убийств до максимума.` : ''}`,
     how: [c.zone === 'lava' || c.zone === 'hollows' ? 'Возьми удочку для лавы и рыбачь в указанном месте.' : 'Рыбачь в указанном месте; Sea Creature Chance повышает шанс.', 'Когда клюнет — убей существо: опыт и дроп идут только за убийство.'],
     items: mob ? dropsOf(mob).slice(0, 8) : [],
   };

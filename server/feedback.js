@@ -188,7 +188,7 @@ export function createFeedbackLimiter({ clock = () => Date.now() } = {}) {
   };
 }
 
-/** Маршруты: отправка — всем (и гостям), список и действия — только владельцу */
+/** Маршруты: отправка — всем (и Visitors), список и действия — только владельцу */
 export function mountFeedbackRoutes(app, { express, feedback, clientIp = req => req.ip, requireAdmin }) {
   const limit = createFeedbackLimiter();
   // Скриншот в base64 весит на треть больше файла

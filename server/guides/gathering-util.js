@@ -1,4 +1,4 @@
-// Общие помощники гайдов по добыче, Саду, Foraging и миньонам.
+// Общие помощники гайдов по добыче, Garden, Foraging и миньонам.
 import { getItemRu } from '../items-ru/index.js';
 
 export const M = 1_000_000;
@@ -50,8 +50,8 @@ export function ladderPos(ctx, ladder) {
   return { best, have: best >= 0 ? ladder[best] : null, next: best + 1 < ladder.length ? ladder[best + 1] : null };
 }
 
-// В базе предметов скилл называется «Лесорубство»; в гайдах пишем Foraging, как в игре.
-const fixRu = s => String(s || '').replace(/«Лесорубство»/g, 'Foraging').replace(/Лесорубство/g, 'Foraging');
+// В базе предметов скилл называется «Foraging»; в гайдах пишем Foraging, как в игре.
+const fixRu = s => String(s || '').replace(/«Foraging»/g, 'Foraging').replace(/Foraging/g, 'Foraging');
 
 /** Как получить предмет: текст из русской базы NEU + требования + оценка стоимости по рынку. */
 export function howToGet(ctx, id) {

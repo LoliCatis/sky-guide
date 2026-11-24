@@ -38,7 +38,7 @@ export function catalog() {
     const neu = (it.whereToGet || []).map(w => w.textRu).filter(t => t && !/WIKI/i.test(t));
     list.push({
       id: it.id, attr: attrOf(it.id), shard: it.nameEn.replace(/\s+Shard$/i, ''), name: lm?.[1] || it.nameEn,
-      rarity: it.rarity, category: m[1], code: m[2], effect: effect.join(' ').trim().replace(/(островах|острове) лесорубства/g, '$1 Foraging'),
+      rarity: it.rarity, category: m[1], code: m[2], effect: effect.join(' ').trim().replace(/(островах|острове) Foraging/g, '$1 Foraging'),
       source: wikiByAttr.get(it.id) || (neu.length ? neu.slice(0, 3).join(' · ') : null),
     });
   }
@@ -130,9 +130,9 @@ function build(m, ctx) {
     note: 'Сколько раз ты ловил осколки каждым способом — из статистики профиля.',
     columns: ['Способ', 'Чем', 'Как', 'У тебя'],
     rows: [
-      [cell('Бой', { item: 'VENATOR_GENESIS' }), 'Huntaxe + Black Hole', 'Бей моба Huntaxe (он не добивает), ниже 10% здоровья ставь Black Hole. Huntaxe берёт до 25% статов вставленного оружия.', fmt(hunts.combat)],
+      [cell('Combat', { item: 'VENATOR_GENESIS' }), 'Huntaxe + Black Hole', 'Бей моба Huntaxe (он не добивает), ниже 10% здоровья ставь Black Hole. Huntaxe берёт до 25% статов вставленного оружия.', fmt(hunts.combat)],
       [cell('Вода', { item: 'BASIC_FISHING_NET' }), 'Fishing Net', 'Лови сетью водных существ. Часть ловится сразу, у части есть здоровье — урон зависит от Pull.', fmt(hunts.fishing)],
-      [cell('Лес', { item: 'ABYSMAL_LASSO' }), 'Lasso', 'Брось лассо, смотри на моба, пока не кончится выносливость, жми ПКМ на REEL. У некоторых несколько полосок.', fmt(hunts.forest)],
+      [cell('Foraging', { item: 'ABYSMAL_LASSO' }), 'Lasso', 'Брось лассо, смотри на моба, пока не кончится выносливость, жми ПКМ на REEL. У некоторых несколько полосок.', fmt(hunts.forest)],
       [cell('Ловушка', { item: 'RETIA_BASICA' }), 'Huntrap', 'Поставь там, где водятся мобы с осколками: через ~24 часа в ней будет осколок.', fmt(hunts.trap)],
       [cell('Соль', { item: 'LUSHLILAC' }), 'Lushlilac и др.', 'Съешь соль (ЛКМ) и убивай мобов как обычно: маленький шанс получить их осколок. Время соли не идёт оффлайн.', fmt(hunts.salt)],
     ],

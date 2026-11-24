@@ -103,7 +103,7 @@ export function dropIncome(ctx, drops, killsPerHour, mode = 'offer') {
   for (const x of merged.values()) {
     if (SOULBOUND.has(x.id)) continue;
     let sv = sellValue(ctx, x.id, mode);
-    let ah = sv?.market === 'Аукцион';
+    let ah = sv?.market === 'Auction House';
     if (ah && !(sv.sold24h >= 2)) sv = null;
     // NPC скупает без ограничений: если у NPC дороже (или рынка нет) — продаём ему
     const npc = ctx.npc?.get(x.id) || 0;
@@ -189,7 +189,7 @@ export const CRIMSON_METHODS = [
   },
   {
     id: 'crimson-vanquisher', title: 'Охота на Vanquisher', tag: 'Crimson Isle', mode: 'active',
-    desc: 'Vanquisher иногда появляется, когда убиваешь мобов или морских существ на Crimson Isle (шанс 1 из 640). С него падают 3 Nether Star: на них покупают ключи Kuudra у эмиссара и крафтят Vanquished-аксессуары. Обычно совмещают с фармом мобов острова.',
+    desc: 'Vanquisher иногда появляется, когда убиваешь мобов или Sea Creatures на Crimson Isle (шанс 1 из 640). С него падают 3 Nether Star: на них покупают ключи Kuudra у эмиссара и крафтят Vanquished-аксессуары. Обычно совмещают с фармом мобов острова.',
     req: m => [need('Combat', skill(m, 'combat'), 24),
       { text: 'Оружие по площади (Hyperion, Terminator, Midas Staff)', ok: hasAnyLocal(m, AOE_WEAPONS), soft: true, buy: ['JUJU_SHORTBOW', 'MIDAS_STAFF'] }],
     compute: (ctx) => {

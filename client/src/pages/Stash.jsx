@@ -9,18 +9,8 @@ import { useApp } from '../App.jsx';
 
 const HOW_RU = { bazaar: 'на базаре', npc: 'торговцу', none: '—' };
 
-// Виды мешков по-русски (в игре и в NEU — английские названия, они остаются в подсказке)
-const SACK_RU = {
-  Agronomy: 'Агрономия', 'Enchanted Agronomy': 'Агрономия: зачарованное', Combat: 'Бой', 'Enchanted Combat': 'Бой: зачарованное',
-  'Crystal Hollows': 'Кристальные пещеры', Dragon: 'Драконы', Dungeon: 'Данжи', Dwarven: 'Гномьи шахты', Events: 'События',
-  Fishing: 'Рыбалка', 'Enchanted Fishing': 'Рыбалка: зачарованное', Flower: 'Цветы', Foraging: 'Лес', 'Enchanted Foraging': 'Лес: зачарованное',
-  Garden: 'Сад', Gemstone: 'Самоцветы', Husbandry: 'Животноводство', 'Enchanted Husbandry': 'Животноводство: зачарованное',
-  'Lava Fishing': 'Лавовая рыбалка', Mining: 'Добыча', 'Enchanted Mining': 'Добыча: зачарованное', Mutations: 'Мутации', Nether: 'Незер',
-  Rune: 'Руны', Slayer: 'Слееры', Spooky: 'Хэллоуин', 'Bronze Trophy Fishing': 'Трофейная рыба: бронза', 'Silver Trophy Fishing': 'Трофейная рыба: серебро',
-  Winter: 'Зима', Witch: 'Ведьма', 'Bronze Trophy Frog': 'Трофейные лягушки: бронза', 'Silver Trophy Frog': 'Трофейные лягушки: серебро',
-  Bait: 'Наживка', Vinyl: 'Пластинки',
-};
-const sackRu = n => SACK_RU[n] || n;
+// Виды мешков — как в игре («Enchanted Mining», «Lava Fishing»): игроки просили не переводить игровые названия
+const sackRu = n => n;
 
 // Колонки таблицы мешков: ключ → значение для сортировки; text — по алфавиту (сначала А→Я)
 const COLS = [
@@ -46,7 +36,7 @@ export default function Stash({ state, sub }) {
   const tiles = [
     { id: 'sacks', icon: 'LARGE_ENCHANTED_MINING_SACK', title: 'Мешки', value: sd ? coins(sd.total) : '…',
       sub: sd ? (sd.kinds ? `${num(sd.kinds)} ${plural(sd.kinds, 'позиция', 'позиции', 'позиций')} · что продать, каких мешков нет` : 'мешки пусты') : 'считаю…' },
-    { id: 'essence', icon: 'ESSENCE_WITHER', title: 'Эссенции и перки', value: ed ? coins(ed.total) : '…',
+    { id: 'essence', icon: 'ESSENCE_WITHER', title: 'Essence и перки', value: ed ? coins(ed.total) : '…',
       sub: ed ? `${essCount} ${plural(essCount, 'вид', 'вида', 'видов')} · ${buyable ? `можно купить ${num(buyable)} ${plural(buyable, 'уровень', 'уровня', 'уровней')} перков` : 'перки, звёзды, продажа'}` : 'считаю…' },
   ];
   return (
@@ -178,20 +168,20 @@ function Essence({ res }) {
   const { openItem } = useApp();
   const { data: d, error } = res;
   const [open, setOpen] = useState(null);
-  if (error && !d) return <Empty>Эссенции не загрузились: {error}</Empty>;
+  if (error && !d) return <Empty>Essence не загрузилась: {error}</Empty>;
   if (!d) return <div className="span-12 muted small"><div className="spinner" />Считаю эссенции…</div>;
-  if (d.status === 'error') return <Empty>Эссенции не загрузились: {d.error}</Empty>;
+  if (d.status === 'error') return <Empty>Essence не загрузилась: {d.error}</Empty>;
   const perksDone = d.types.reduce((s, t) => s + t.perkDone, 0), perksAll = d.types.reduce((s, t) => s + t.perks.length, 0);
   const buyable = d.types.reduce((s, t) => s + t.buyable, 0);
   return (
     <RefsProvider refs={d.refs}>
       <div className="span-12 stats-row">
-        <Stat label="Эссенции стоят" value={coins(d.total)} sub="по мгновенной продаже на базаре" accent="#22d3ee" icon={<ItemIcon id="ESSENCE_WITHER" size={28} />} />
+        <Stat label="Essence стоит" value={coins(d.total)} sub="по мгновенной продаже на базаре" accent="#22d3ee" icon={<ItemIcon id="ESSENCE_WITHER" size={28} />} />
         <Stat label="Перки прокачаны" value={`${perksDone} / ${perksAll}`} sub="до максимального уровня" accent="#c084fc" icon={<ItemIcon id="ESSENCE_UNDEAD" size={28} />} />
         <Stat label="Можно купить сейчас" value={num(buyable)} sub={`${plural(buyable, 'уровень', 'уровня', 'уровней')} перков на то, что есть`} accent="#4ade80" icon={<ItemIcon id="ESSENCE_CRIMSON" size={28} />} />
       </div>
       <Card className="span-12" title="Что это и зачем">
-        <p className="small">Эссенция — валюта для улучшений: <b>звёзды</b> на предметах (✪, +2% к статам за звезду, данжевым в Catacombs +10%) и <b>перки</b>. Перк — постоянный бонус: покупаешь уровень за эссенцию у NPC её магазина, и он действует навсегда (уровни берутся по порядку). У каждой эссенции свой магазин — где он, написано на карточке. Подробный разбор каждой эссенции — в гайде <a className="link" href="#/guides/essence">Эссенции и перки</a>.</p>
+        <p className="small">Essence — валюта для улучшений: <b>звёзды</b> на предметах (✪, +2% к статам за звезду, данжевым в Catacombs +10%) и <b>перки</b>. Перк — постоянный бонус: покупаешь уровень за эссенцию у NPC её магазина, и он действует навсегда (уровни берутся по порядку). У каждой эссенции свой магазин — где он, написано на карточке. Подробный разбор каждой эссенции — в гайде <a className="link" href="#/guides/essence">Essence и перки</a>.</p>
       </Card>
       {d.types.map(t => {
         const isOpen = open === t.type;

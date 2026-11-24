@@ -1,4 +1,4 @@
-// Банк: сколько процентов придёт, когда, потолки счетов и окупится ли улучшение счёта.
+// Bank: сколько процентов придёт, когда, потолки счетов и окупится ли улучшение счёта.
 import { BANK_TIERS, SB_EPOCH, SB_SEASON } from './wealth-data.js';
 
 const KNOWN = BANK_TIERS.filter(t => t.brackets);
@@ -50,7 +50,7 @@ export function bankAnalysis(member, now = Date.now()) {
   // Для Luxurious/Palatial ступени процентов не сверены: считаем как у Premier (потолок процентов у них не ниже)
   const calcTier = tier.brackets ? tier : KNOWN[KNOWN.length - 1];
   const expected = balance == null ? null : interestFor(balance, calcTier);
-  // Личный банк кооп-участника: те же ступени, но всё в 5 раз меньше (баланс и проценты)
+  // Личный Bank кооп-участника: те же ступени, но всё в 5 раз меньше (баланс и проценты)
   const personalExpected = personal > 0 ? Math.round(interestFor(personal * 5, calcTier) / 5) : 0;
   const capBalance = balanceForMax(calcTier);
   const cap = maxInterest(calcTier);

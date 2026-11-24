@@ -9,7 +9,7 @@ export function build(m, ctx) {
   sections.push({
     kind: 'text', title: 'Что такое эссенции',
     text: [
-      'Эссенция — валюта для улучшений. Она не занимает места в инвентаре: лежит на счёте профиля, у каждого вида — свой (максимум 2 млрд каждого).',
+      'Essence — валюта для улучшений. Она не занимает места в инвентаре: лежит на счёте профиля, у каждого вида — свой (максимум 2 млрд каждого).',
       'Главное применение — звёзды на предметах (✪). Каждая звезда даёт +2% к статам предмета, а данжевым предметам внутри Catacombs — +10% за звезду. Обычно звёзд 5; броня Kuudra и оружие Crimson Isle за Crimson Essence получают их до 10, а Infernal — до 15.',
       'Второе применение — магазины эссенций (Essence Shop): перки, которые покупаются один раз и действуют навсегда. Самые полезные — Forbidden-перки за Wither Essence: статы везде, не только в данже.',
       'На Bazaar эссенции покупаются только с Catacombs 20. Исключение — Forest Essence: её можно купить сразу.',
@@ -20,7 +20,7 @@ export function build(m, ctx) {
   sections.push({
     kind: 'table', title: 'Твои эссенции',
     note: 'Цена — мгновенная продажа на Bazaar. «Перки» — сколько перков магазина прокачано до конца.',
-    columns: ['Эссенция', 'Есть', 'Стоит', 'Перки', 'Осталось на перки', 'Можно купить сейчас'],
+    columns: ['Essence', 'Есть', 'Стоит', 'Перки', 'Осталось на перки', 'Можно купить сейчас'],
     rows: e.types.map(t => [
       cell(`${t.ru} Essence`, { item: t.id }),
       cell(fmt(t.amount), { tone: t.amount ? undefined : 'muted' }),
@@ -100,7 +100,7 @@ export function build(m, ctx) {
   return {
     summary: owned.length
       ? `${owned.length} ${plural(owned.length, 'вид', 'вида', 'видов')} эссенции на ${short(e.total)}, перков прокачано ${e.types.reduce((s, t) => s + t.perkDone, 0)} из ${e.types.reduce((s, t) => s + t.perks.length, 0)}`
-      : 'Эссенций пока нет: первые дадут данжи и Crystal Hollows',
+      : 'Essence пока нет: первые дадут данжи и Crystal Hollows',
     status: allDone ? 'done' : owned.length ? 'progress' : 'start',
     level: { label: 'Перки', value: e.types.reduce((s, t) => s + t.perkDone, 0), max: e.types.reduce((s, t) => s + t.perks.length, 0) },
     next: topNext(next),
@@ -108,4 +108,4 @@ export function build(m, ctx) {
   };
 }
 
-export default { id: 'essence', title: 'Эссенции и перки', icon: 'ESSENCE_WITHER', group: 'other', build };
+export default { id: 'essence', title: 'Essence и перки', icon: 'ESSENCE_WITHER', group: 'other', build };

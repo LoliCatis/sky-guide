@@ -1,9 +1,9 @@
-// Гайд по фермерству и Саду (Garden): уровень Сада, Crop Upgrades, участки, Composter, гости, Jacob's Contest,
-// инструменты по культурам, броня и снаряжение, вредители, питомцы, заработок.
+// Гайд по Farming и Garden: уровень Garden, Crop Upgrades, участки, Composter, Visitors, Jacob's Contest,
+// инструменты по культурам, броня и снаряжение, Pests, питомцы, заработок.
 import { fmt, short, plural, hasItem, bestPet, ladderPos, howText, constants, cell, tone, topNext } from './gathering-util.js';
 import { gardenLevel, GARDEN_EXP_FALLBACK } from '../parse/extras-view.js';
 
-// Культура: id в API Сада и коллекциях, ключ вех (crop_milestones в NEU), лестница инструментов
+// Культура: id в API Garden и коллекциях, ключ вех (crop_milestones в NEU), лестница инструментов
 const CROPS = [
   { id: 'WHEAT', ru: 'Пшеница', ms: 'WHEAT', tools: ['THEORETICAL_HOE_WHEAT_1', 'THEORETICAL_HOE_WHEAT_2', 'THEORETICAL_HOE_WHEAT_3'] },
   { id: 'CARROT_ITEM', ru: 'Морковь', ms: 'CARROT', tools: ['THEORETICAL_HOE_CARROT_1', 'THEORETICAL_HOE_CARROT_2', 'THEORETICAL_HOE_CARROT_3'] },
@@ -29,7 +29,7 @@ const VACUUMS = ['SKYMART_VACUUM', 'SKYMART_TURBO_VACUUM', 'SKYMART_HYPER_VACUUM
 const PETS = [
   ['ELEPHANT', 'Farming Fortune от защиты и скорости: основной питомец для большинства культур'],
   ['MOOSHROOM_COW', 'Farming Fortune от силы и грибы при фарме: лучший для грибов и с высоким Strength'],
-  ['HEDGEHOG', 'Больше урона по вредителям и Farming Fortune за тиры бестиария Pests'],
+  ['HEDGEHOG', 'Больше урона по Pests и Farming Fortune за тиры бестиария Pests'],
   ['SLUG', 'Bonus Pest Chance и Fortune на участке со Sprayonator'],
   ['RABBIT', 'Farming Wisdom и ускорение фермерских миньонов'],
 ];
@@ -46,7 +46,7 @@ const prettyNpc = s => String(s || '').split('_').map(w => w[0]?.toUpperCase() +
 const pieces = (ctx, base) => ['HELMET', 'CHESTPLATE', 'LEGGINGS', 'BOOTS'].filter(s => hasItem(ctx, `${base}_${s}`)).length;
 
 export default {
-  id: 'farming', title: 'Фермерство и Сад', icon: 'THEORETICAL_HOE_WARTS_3', group: 'farming',
+  id: 'farming', title: 'Farming и Garden', icon: 'THEORETICAL_HOE_WARTS_3', group: 'farming',
   build(m, ctx) {
     const c = constants(ctx).garden || {};
     const g = m.garden || {};
@@ -86,7 +86,7 @@ export default {
       const cheap = [...notMax].sort((a, b) => a.nextCopper - b.nextCopper).slice(0, 5);
       next.push({
         title: `Crop Upgrades: ${notMax.length} ${plural(notMax.length, 'культура', 'культуры', 'культур')} не на максимуме`, priority: 72,
-        why: `Каждый уровень даёт +5 Farming Fortune своей культуре. Меди ${fmt(copper)}, на всё нужно ${fmt(copperAll)}. Дешевле всего: ${cheap.map(r => `${r.ru} ${r.upg}/${maxUpg} (${fmt(r.nextCopper)} меди)`).join(', ')}.`,
+        why: `Каждый уровень даёт +5 Farming Fortune своей культуре. Copper ${fmt(copper)}, на всё нужно ${fmt(copperAll)}. Дешевле всего: ${cheap.map(r => `${r.ru} ${r.upg}/${maxUpg} (${fmt(r.nextCopper)} Copper)`).join(', ')}.`,
       });
     }
 
@@ -104,8 +104,8 @@ export default {
         }
       }
       next.push({
-        title: `Открой участок Сада: ${plotsHave}/${totalPlots}`, priority: 46,
-        why: `Больше участков — больше места под культуры и больше вредителей.${nextCost ? ` Следующий стоит ${nextCost.amount}× ${ctx.name(nextCost.item)}${ctx.price(nextCost.item) ? ` (~${short(ctx.price(nextCost.item) * nextCost.amount)} монет)` : ''}.` : ''} Desk → Configure Plots.`,
+        title: `Открой участок Garden: ${plotsHave}/${totalPlots}`, priority: 46,
+        why: `Больше участков — больше места под культуры и больше Pests.${nextCost ? ` Следующий стоит ${nextCost.amount}× ${ctx.name(nextCost.item)}${ctx.price(nextCost.item) ? ` (~${short(ctx.price(nextCost.item) * nextCost.amount)} монет)` : ''}.` : ''} Desk → Configure Plots.`,
       });
     }
 
@@ -122,18 +122,18 @@ export default {
       const sp = compRows.find(r => r.k === 'speed'), md = compRows.find(r => r.k === 'multi_drop');
       next.push({
         title: `Прокачай Composter: Speed ${sp.lvl}/${sp.max}, Multi Drop ${md.lvl}/${md.max}`, priority: sp.lvl < 10 ? 58 : 36,
-        why: `Composter сам делает Compost из органики и топлива: им платишь за участки, а лишнее продаёшь на Bazaar${ctx.price('COMPOST') ? ` (Compost ~${short(ctx.price('COMPOST'))})` : ''}. ${sp.next ? `Следующий Speed: ${fmt(sp.next.copper)} меди + ${Object.entries(sp.next.items || {}).map(([i, n]) => `${n}× ${ctx.name(i.toUpperCase())}`).join(', ')}.` : ''}`,
+        why: `Composter сам делает Compost из органики и топлива: им платишь за участки, а лишнее продаёшь на Bazaar${ctx.price('COMPOST') ? ` (Compost ~${short(ctx.price('COMPOST'))})` : ''}. ${sp.next ? `Следующий Speed: ${fmt(sp.next.copper)} Copper + ${Object.entries(sp.next.items || {}).map(([i, n]) => `${n}× ${ctx.name(i.toUpperCase())}`).join(', ')}.` : ''}`,
       });
     }
 
-    // ---- гости ----
+    // ---- Visitors ----
     const visitors = (g.activeVisitors || []).map(v => ({ npc: v.npc, wants: v.items || [] }));
     const totalVisitors = Object.keys(c.visitors || {}).length || null;
     if (visitors.length) {
       const priced = visitors.map(v => ({ ...v, cost: v.wants.reduce((s, w) => s + ctx.price(w.id) * w.amount, 0) }));
       next.push({
-        title: `Обслужи гостей в Саду: ${visitors.length} ждут`, priority: 60,
-        why: `Гости дают медь, опыт Сада и Farming XP, иногда редкие дропы. Сейчас: ${priced.slice(0, 5).map(v => `${prettyNpc(v.npc)} — ${v.wants.map(w => `${fmt(w.amount)}× ${ctx.name(w.id)}`).join(', ')}${v.cost ? ` (~${short(v.cost)})` : ''}`).join('; ')}.`,
+        title: `Обслужи Visitors в Garden: ${visitors.length} ждут`, priority: 60,
+        why: `Visitors дают Copper, опыт Garden и Farming XP, иногда редкие дропы. Сейчас: ${priced.slice(0, 5).map(v => `${prettyNpc(v.npc)} — ${v.wants.map(w => `${fmt(w.amount)}× ${ctx.name(w.id)}`).join(', ')}${v.cost ? ` (~${short(v.cost)})` : ''}`).join('; ')}.`,
       });
     }
 
@@ -149,30 +149,30 @@ export default {
       next.push({ title: `Фермерская броня: следующий сет ${ctx.name(`${nb}_CHESTPLATE`).replace(/ Chestplate$/, '')}`, priority: topIdx < 3 ? 56 : 42, why: `${topIdx >= 0 ? `Сейчас лучший сет — ${ctx.name(`${ARMOR[topIdx]}_CHESTPLATE`).replace(/ Chestplate$/, '')}. ` : ''}${howText(ctx, `${nb}_CHESTPLATE`)}.` });
     }
     const peony = PEONY.filter(id => hasItem(ctx, id)).length;
-    if (peony < 4) next.push({ title: `Снаряжение Peony: ${peony}/4`, priority: 40, why: 'Дёшево и сразу: по +5 Farming Fortune за предмет. Покупается у SkyMart в Саду за медь (50–500 меди).' });
+    if (peony < 4) next.push({ title: `Снаряжение Peony: ${peony}/4`, priority: 40, why: 'Дёшево и сразу: по +5 Farming Fortune за предмет. Покупается у SkyMart в Garden за Copper (50–500 Copper).' });
     const vac = ladderPos(ctx, VACUUMS);
-    if (vac.best < 3) next.push({ title: `Пылесос для вредителей: ${vac.next ? ctx.name(vac.next) : '—'}`, priority: 38, why: `Вредители (Pests) появляются при фарме и режут рост культур на участке. Пылесос засасывает их и даёт Pest-дропы. ${vac.next ? howText(ctx, vac.next) : ''}` });
+    if (vac.best < 3) next.push({ title: `Пылесос для Pests: ${vac.next ? ctx.name(vac.next) : '—'}`, priority: 38, why: `Pests появляются при фарме и режут рост культур на участке. Пылесос засасывает их и даёт Pest-дропы. ${vac.next ? howText(ctx, vac.next) : ''}` });
     const pets = PETS.map(([t, why]) => ({ t, why, pet: bestPet(ctx, t) }));
     const hedge = pets.find(p => p.t === 'HEDGEHOG');
-    if (hedge && !hedge.pet) next.push({ title: 'Питомец Hedgehog для вредителей', priority: 30, why: hedge.why + '.' });
+    if (hedge && !hedge.pet) next.push({ title: 'Питомец Hedgehog для Pests', priority: 30, why: hedge.why + '.' });
 
     // ================= Секции =================
     sections.push({
-      kind: 'steps', title: 'Как развивать Сад',
+      kind: 'steps', title: 'Как развивать Garden',
       items: [
-        { title: 'Гости каждый день', text: 'Visitors приходят сами (до 5 в очереди). Это главный источник меди и опыта Сада; редкие гости дают ценные дропы.', current: visitors.length > 0 },
-        { title: 'Crop Upgrades и участки', text: `Медь → Crop Upgrades (+5 Fortune за уровень, максимум ${maxUpg}). Compost → новые участки.`, done: !notMax.length && plotsHave >= totalPlots },
+        { title: 'Visitors каждый день', text: 'Visitors приходят сами (до 5 в очереди). Это главный источник Copper и опыта Garden; редкие Visitors дают ценные дропы.', current: visitors.length > 0 },
+        { title: 'Crop Upgrades и участки', text: `Copper → Crop Upgrades (+5 Fortune за уровень, максимум ${maxUpg}). Compost → новые участки.`, done: !notMax.length && plotsHave >= totalPlots },
         { title: 'Composter', text: 'Прокачай Speed и Multi Drop: пассивный Compost на участки и на продажу.', done: !compLow.length },
-        { title: 'Инструменты Mk. III', text: 'Для каждой культуры свой инструмент: Mk. I у SkyMart за медь, Mk. II и III — крафт за Jacob’s Ticket и сжатые культуры.', done: !noTool.length && !lowTool.length },
-        { title: 'Вредители', text: 'Pests: пылесос, Sprayonator и Hedgehog. Pest-дропы продаются, а за Pests Pesthunter Phillip продаёт снаряжение Pesthunter’s.' },
+        { title: 'Инструменты Mk. III', text: 'Для каждой культуры свой инструмент: Mk. I у SkyMart за Copper, Mk. II и III — крафт за Jacob’s Ticket и сжатые культуры.', done: !noTool.length && !lowTool.length },
+        { title: 'Pests', text: 'Pests: пылесос, Sprayonator и Hedgehog. Pest-дропы продаются, а за Pests Pesthunter Phillip продаёт снаряжение Pesthunter’s.' },
         { title: 'Jacob’s Contest', text: 'Проходит каждый час (3 игровых дня). Медали тратятся у Anita на кап Farming и постоянный Fortune; Jacob’s Ticket — на инструменты.' },
       ],
     });
 
     sections.push({
       kind: 'table', title: 'Культуры',
-      note: `Медь: ${fmt(copper)}. Вехи (milestones) растут от собранного в Саду, Crop Upgrades покупаются за медь в Desk.`,
-      columns: ['Культура', 'Crop Upgrade', 'Медь до максимума', 'Веха', 'Инструмент', 'Рекорд Jacob'],
+      note: `Copper: ${fmt(copper)}. Вехи (milestones) растут от собранного в Garden, Crop Upgrades покупаются за Copper в Desk.`,
+      columns: ['Культура', 'Crop Upgrade', 'Copper до максимума', 'Веха', 'Инструмент', 'Рекорд Jacob'],
       rows: cropRows.map(r => [
         cell(r.ru, { item: r.tools[0] }),
         cell(`${r.upg}/${maxUpg}`, { tone: r.upg >= maxUpg ? 'good' : r.upg >= 7 ? 'warn' : 'bad' }),
@@ -185,7 +185,7 @@ export default {
 
     if (visitors.length) {
       sections.push({
-        kind: 'table', title: 'Гости сейчас',
+        kind: 'table', title: 'Visitors сейчас',
         note: `Обслужено всего: ${fmt(g.visitorsServed || 0)}, уникальных ${fmt(g.uniqueVisitors || 0)}${totalVisitors ? ` из ${totalVisitors}` : ''}. Цена — сколько стоит купить просьбу на Bazaar.`,
         columns: ['Гость', 'Просит', 'Цена'],
         rows: visitors.map(v => {
@@ -201,7 +201,7 @@ export default {
       rows: compRows.map(r => [
         { speed: 'Speed', multi_drop: 'Multi Drop', fuel_cap: 'Fuel Cap', organic_matter_cap: 'Organic Matter Cap', cost_reduction: 'Cost Reduction' }[r.k],
         cell(`${r.lvl}/${r.max}`, { tone: r.lvl >= r.max ? 'good' : r.lvl ? 'warn' : 'bad' }),
-        r.next ? `${fmt(r.next.copper)} меди + ${Object.entries(r.next.items || {}).map(([i, n]) => `${n}× ${ctx.name(i.toUpperCase())}`).join(', ')}` : r.lvl >= r.max ? 'максимум' : '—',
+        r.next ? `${fmt(r.next.copper)} Copper + ${Object.entries(r.next.items || {}).map(([i, n]) => `${n}× ${ctx.name(i.toUpperCase())}`).join(', ')}` : r.lvl >= r.max ? 'максимум' : '—',
       ]),
     });
 
@@ -210,14 +210,14 @@ export default {
       columns: ['Что', 'Есть', 'Как получить следующее'],
       rows: [
         ...armor.map(({ b, n }) => [cell(ctx.name(`${b}_CHESTPLATE`).replace(/ Chestplate$/, ''), { item: `${b}_CHESTPLATE` }), cell(`${n}/4`, { tone: n === 4 ? 'good' : n ? 'warn' : 'muted' }), n === 4 ? '—' : howText(ctx, `${b}_CHESTPLATE`)]),
-        [cell('Peony (ожерелье, плащ, пояс, браслет)', { item: 'LOTUS_BELT' }), cell(`${peony}/4`, { tone: peony === 4 ? 'good' : 'warn' }), '+5 Farming Fortune каждый, SkyMart за медь'],
+        [cell('Peony (ожерелье, плащ, пояс, браслет)', { item: 'LOTUS_BELT' }), cell(`${peony}/4`, { tone: peony === 4 ? 'good' : 'warn' }), '+5 Farming Fortune каждый, SkyMart за Copper'],
         [cell('Pesthunter’s (снаряжение)', { item: 'PESTHUNTERS_GLOVES' }), `${PESTHUNTER.filter(id => hasItem(ctx, id)).length}/4`, 'Bonus Pest Chance, Pesthunter Phillip за Pests (40–100 шт.)'],
         [cell('Пылесос', { item: vac.have || VACUUMS[0] }), vac.have ? ctx.name(vac.have) : 'нет', vac.next ? howText(ctx, vac.next) : 'максимум'],
       ],
     });
 
     sections.push({
-      kind: 'table', title: 'Питомцы для фермерства',
+      kind: 'table', title: 'Питомцы для Farming',
       columns: ['Питомец', 'Есть', 'Зачем'],
       rows: pets.map(p => [cell(ctx.name(`${p.t};4`).replace(/^\[Lvl \{LVL\}\] /, ''), { item: `${p.t};4` }), cell(p.pet ? `${p.pet.tier[0] + p.pet.tier.slice(1).toLowerCase()}${p.pet.level ? `, ур. ${p.pet.level}` : ''}` : 'нет', { tone: p.pet ? 'good' : 'muted' }), p.why]),
     });
@@ -231,24 +231,24 @@ export default {
       ],
     });
 
-    const methods = (ctx.analysis?.methods || []).filter(x => x.tag === 'Фермерство');
+    const methods = (ctx.analysis?.methods || []).filter(x => x.tag === 'Farming');
     sections.push({
-      kind: 'table', title: 'Заработок фермерством',
+      kind: 'table', title: 'Заработок Farming',
       note: 'Доход по живым ценам, если модуль цен уже посчитал. Подробнее — страница «Заработок», вкладка «Культуры».',
       columns: ['Способ', 'Монет в час', 'Как'],
       rows: [
         ...methods.map(x => [x.title, x.coinsPerHour ? short(x.coinsPerHour) : '—', x.detail || x.desc || '']),
         ...(!methods.length ? [['Фарм лучшей культуры', 'по ценам', 'Культура и форма продажи считаются на странице «Заработок»']] : []),
-        ['Вредители', 'по ценам', 'Pest-дропы и Pests для Pesthunter Phillip'],
+        ['Pests', 'по ценам', 'Pest-дропы и Pests для Pesthunter Phillip'],
         ['Compost', 'пассивно', 'Composter с прокачанными Speed и Multi Drop, продажа на Bazaar'],
       ],
     });
 
     const status = gl.level >= gl.max && !notMax.length && plotsHave >= totalPlots && capPerk >= 10 ? 'done' : skill?.level ? 'progress' : 'start';
     return {
-      summary: [skill ? `Farming ${skill.level}` : null, `Сад ${gl.level}/${gl.max}`, `Crop Upgrades ${cropRows.reduce((a, r) => a + r.upg, 0)}/${cropRows.length * maxUpg} (на максимуме ${cropRows.length - notMax.length} из ${cropRows.length})`, `участки ${plotsHave}/${totalPlots}`].filter(Boolean).join(' · '),
+      summary: [skill ? `Farming ${skill.level}` : null, `Garden ${gl.level}/${gl.max}`, `Crop Upgrades ${cropRows.reduce((a, r) => a + r.upg, 0)}/${cropRows.length * maxUpg} (на максимуме ${cropRows.length - notMax.length} из ${cropRows.length})`, `участки ${plotsHave}/${totalPlots}`].filter(Boolean).join(' · '),
       status,
-      level: { label: 'Уровень Сада', value: gl.level, max: gl.max },
+      level: { label: 'Уровень Garden', value: gl.level, max: gl.max },
       next: topNext(next),
       sections,
     };

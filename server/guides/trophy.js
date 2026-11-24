@@ -1,4 +1,4 @@
-// Гайд «Трофейная рыба»: механика (условия, шансы, тиры, гарантия), твой Trophy Fish Chance,
+// Гайд «Trophy Fish»: механика (условия, шансы, тиры, гарантия), твой Trophy Fish Chance,
 // счётчик по тирам и личный план до алмаза у всех 18 видов — от самого быстрого шага к самому долгому.
 import { TROPHY_FISH, TIERS, TIER_RU, TROPHY_RANKS, armorIds, trophyTierCounts } from './fishing-data.js';
 import { TROPHY_INFO, TIER_ROLL, CHARM_PER_LVL, PERK_PER_LVL, PITY, TFC_CAP, SPOTS, TFC_SOURCES, ASSUME } from './trophy-data.js';
@@ -144,7 +144,7 @@ export function trophyPlan(fish, tfcInfo, opts = {}) {
 
 // ---------- сам гайд ----------
 export default {
-  id: 'trophy', title: 'Трофейная рыба', icon: 'GOLDEN_FISH_DIAMOND', group: 'fishing',
+  id: 'trophy', title: 'Trophy Fish', icon: 'GOLDEN_FISH_DIAMOND', group: 'fishing',
   build(m, ctx) {
     const f = m.fishing || {};
     const tf = f.trophyFish || {};
@@ -241,14 +241,14 @@ export default {
     sections.push({
       kind: 'text', title: 'Как выбирается рыба и тир',
       text: [
-        'Каждый улов в лаве Crimson Isle сначала проверяет трофеи: все виды, условия которых ты выполняешь, бросаются по очереди от самого редкого к частому. Если трофей не выпал, дальше идут морские существа и обычный улов.',
+        'Каждый улов в лаве Crimson Isle сначала проверяет трофеи: все виды, условия которых ты выполняешь, бросаются по очереди от самого редкого к частому. Если трофей не выпал, дальше идут Sea Creatures и обычный улов.',
         `Потом тир: сначала бросок на алмаз (${pct(TIER_ROLL.diamond)}), затем на золото (${pct(TIER_ROLL.gold)}), затем на серебро (${pct(TIER_ROLL.silver)}), иначе бронза. Итого: алмаз ${pct(o0.exact.diamond)}, золото ${pct(o0.exact.gold, 2)}, серебро ${pct(o0.exact.silver, 2)}, бронза ${pct(o0.exact.bronze, 2)}.`,
         `Charm на удочке добавляет 2% за уровень к броскам алмаза, золота и серебра: с Charm V серебро или выше ${pct(o5.atLeast.silver, 2)} вместо ${pct(o0.atLeast.silver, 2)}.${tfc.charm ? ` У тебя Charm ${tfc.charm}.` : ' На твоей лавовой удочке Charm не видно.'}`,
         `Перки Essence Shop множат броски своего тира на +2% за уровень (до +20% на X): Midas Lure у Marigold в Royal Mines (Gold Essence) — золото, Radiant Fisher у Gemma в Crystal Nucleus (Diamond Essence) — алмаз. У тебя Midas Lure ${tfc.midas || 0}/10, Radiant Fisher ${tfc.radiant || 0}/10${tfc.midas || tfc.radiant ? ': это уже учтено в плане' : ''}.`,
         `Гарантия (pity): 100-й улов вида всегда золото, 600-й — алмаз, если этого тира у тебя ещё нет. Счётчик — все уловы этого вида за всё время, поэтому у частых видов алмаз гарантирован уже скоро${fish.find(x => x.key === 'blobfish' && !x.tiers.diamond) ? ` (Blobfish: ${fmtNum(fish.find(x => x.key === 'blobfish').total)} из 600)` : ''}.`,
         'Золотой трофей даёт 15 Bits, алмазный — 30 (с твоим множителем Bits). Все 4 тира одного вида дают опыт SkyBlock.',
-        'Два надетых предмета Hunter Armor включают Peace Treaty: морские существа перестают клевать и бить тебя. Удобно для чистой охоты на трофеи, но без существ нет опыта Fishing.',
-        'Odger разделывает всю трофейную рыбу из инвентаря сразу. Перед разделкой убери Obfuscated, которые нужны как наживка.',
+        'Два надетых предмета Hunter Armor включают Peace Treaty: Sea Creatures перестают клевать и бить тебя. Удобно для чистой охоты на трофеи, но без существ нет опыта Fishing.',
+        'Odger разделывает всю Trophy Fish из инвентаря сразу. Перед разделкой убери Obfuscated, которые нужны как наживка.',
       ],
     });
 

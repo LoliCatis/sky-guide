@@ -14,7 +14,7 @@ export function direction(x0, z0, x, z) {
   return DIRS[Math.round(ang / 45) % 8];
 }
 
-/** Ориентиры острова: варпы (+ точка появления в Хабе) и NPC из базы NEU. */
+/** Ориентиры острова: варпы (+ точка появления в Hub) и NPC из базы NEU. */
 function landmarks(island, { warps, items }) {
   const out = (warps || []).filter(w => w.mode === island).map(w => ({ kind: 'warp', name: `/warp ${w.warp}`, x: w.x, y: w.y, z: w.z }));
   if (items) {
@@ -91,7 +91,7 @@ export function analyzeFairy(m, { marks = {}, constants, items } = {}) {
       return { id, n: i + 1, island, x: p.x, y: p.y, z: p.z, hint: placeHint(p, lm), status: all || marks[id] ? 'found' : 'unknown', marked: !!marks[id] };
     });
     const found = souls.filter(s => s.status === 'found').length;
-    islands.push({ id: island, name: ISLANDS[island]?.name || island, ru: ISLANDS[island]?.ru || '', tip: ISLANDS[island]?.tip || '', total: souls.length, found, souls });
+    islands.push({ id: island, name: ISLANDS[island]?.name || island, ru: '', tip: ISLANDS[island]?.tip || '', total: souls.length, found, souls });
   }
   const listed = islands.reduce((a, i) => a + i.total, 0);
   const marked = islands.reduce((a, i) => a + i.souls.filter(s => s.marked).length, 0);

@@ -8,6 +8,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { enTerms } from './terms.js';
 
 const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'data', 'lore-dict');
 
@@ -44,7 +45,7 @@ export function loadDict() {
       const { key, romans } = toKey(k);
       let val = v;
       romans.forEach((r, i) => { val = val.replace(new RegExp(`(?<![\\w-])${r}(?![\\w-])`), `{R${i}}`); });
-      DICT.set(key, val);
+      DICT.set(key, enTerms(val));
     }
   }
   return DICT;

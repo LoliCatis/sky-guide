@@ -40,7 +40,7 @@ export function accessoryRules(ctx, add) {
       add({
         id: 'mp-cheap', cat: 'Аксессуары и Magical Power', priority: 88, effort: 'минуты, нужны монеты',
         title: `Докупи ${cheap.length} ${plural(cheap.length, 'самый выгодный аксессуар', 'самых выгодных аксессуара', 'самых выгодных аксессуаров')}: +${gain} MP за ~${fmtCoins(cost)}`,
-        why: `Сейчас ${fmtNum(mp)} MP${nextMs ? `, до ${nextMs} не хватает ${nextMs - mp}` : ''}. Magical Power усиливает все статы через Power в сумке аксессуаров — это самый дешёвый рост урона на твоём этапе.`,
+        why: `Сейчас ${fmtNum(mp)} MP${nextMs ? `, до ${nextMs} не хватает ${nextMs - mp}` : ''}. Magical Power усиливает все статы через Power в Accessory Bag — это самый дешёвый рост урона на твоём этапе.`,
         how: cheap.map(line),
         items: cheap.map(r => r.id),
         cost: cost || undefined,
@@ -93,15 +93,15 @@ export function accessoryRules(ctx, add) {
       id: 'mp-tuning', cat: 'Быстрые победы', priority: 78, effort: 'минуты',
       title: `Распредели Tuning Points: использовано ${spent} из ~${points}`,
       why: 'Каждые 10 MP дают 1 очко настройки (Tuning) — бесплатные статы. Нераспределённые очки ничего не дают.',
-      how: ['Сумка аксессуаров → Accessory Bag Thaumaturgy → Stats Tuning', 'Для данжей и боя обычно вкладывают в Crit Damage и Strength'],
+      how: ['Accessory Bag → Accessory Bag Thaumaturgy → Stats Tuning', 'Для данжей и боя обычно вкладывают в Crit Damage и Strength'],
     });
   }
   if (!m.selectedPower && mp >= 100) {
     add({
       id: 'mp-power', cat: 'Быстрые победы', priority: 77, effort: 'минуты',
-      title: 'Выбери Power в сумке аксессуаров',
+      title: 'Выбери Power в Accessory Bag',
       why: 'Power превращает Magical Power в статы. Без выбранной силы большая часть пользы от аксессуаров теряется.',
-      how: ['Сумка аксессуаров → Accessory Bag Thaumaturgy → выбери Power', 'Сильные Power открываются Power Stone (через Maxwell)'],
+      how: ['Accessory Bag → Accessory Bag Thaumaturgy → выбери Power', 'Сильные Power открываются Power Stone (через Maxwell)'],
     });
   }
 }
@@ -279,7 +279,7 @@ export function moneyRules(ctx, add) {
   }
   const isGear = id => gearIds.has(id) || gearPrefixes.some(p => id.startsWith(p));
   const sellable = (ctx.gear?.topItems || [])
-    .filter(i => /Рюкзак|Эндер|Хранилище/.test(i.where || '') && i.value > 5_000_000 && !isGear(i.id || ''))
+    .filter(i => /Backpack|Рюкзак|Ender Chest|Эндер|Vault|Хранилище/.test(i.where || '') && i.value > 5_000_000 && !isGear(i.id || ''))
     .slice(0, 8);
   if (sellable.length) {
     add({

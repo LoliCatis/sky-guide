@@ -17,9 +17,9 @@ export function collectionsResource() {
   return snapshot;
 }
 
-export const CATEGORY_RU = { FARMING: 'Фермерство', MINING: 'Добыча', COMBAT: 'Бой', FORAGING: 'Foraging', FISHING: 'Рыбалка', RIFT: 'Рифт' };
+export const CATEGORY_RU = { FARMING: 'Farming', MINING: 'Mining', COMBAT: 'Combat', FORAGING: 'Foraging', FISHING: 'Fishing', RIFT: 'Rift' };
 export const CATEGORY_ICON = { FARMING: 'GOLD_HOE', MINING: 'STONE_PICKAXE', COMBAT: 'STONE_SWORD', FORAGING: 'JUNGLE_SAPLING', FISHING: 'FISHING_ROD', RIFT: 'RIFT_PRISM' };
-const SKILL_RU = { Farming: 'Фермерство', Mining: 'Добыча', Combat: 'Бой', Foraging: 'Foraging', Fishing: 'Рыбалка', Alchemy: 'Алхимия', Hunting: 'Hunting', Enchanting: 'Зачарование' };
+const SKILL_RU = { Farming: 'Farming', Mining: 'Mining', Combat: 'Combat', Foraging: 'Foraging', Fishing: 'Fishing', Alchemy: 'Alchemy', Hunting: 'Hunting', Enchanting: 'Enchanting' };
 
 // ID коллекции → предмет для иконки и ссылки (коллекции с «:» в NEU пишутся через «-»)
 const ICON_FIX = { MUSHROOM_COLLECTION: 'RED_MUSHROOM', GEMSTONE_COLLECTION: 'ROUGH_RUBY_GEM', MYCEL: 'MYCEL', SULPHUR_ORE: 'SULPHUR_ORE' };

@@ -1,4 +1,4 @@
-// Методы заработка вне рыбалки, боя и майнинга: Рифт, Сад (вредители, Composter, Jacob), обмен валют
+// Методы заработка вне рыбалки, боя и майнинга: Рифт, Garden (Pests, Composter, Jacob), обмен валют
 // (Bits, Copper, North Star, Pelt, медали), Kat, NPC-флипы, миньоны, Foraging и осколки, ивенты.
 // Подключается в methods.js одной строкой (...MISC_METHODS), тексты разбора — MISC_DETAILS в method-details.js.
 //
@@ -6,7 +6,7 @@
 // метка «Rift-Transferable», рецепты Рифта; SkyHanni-REPO constants/Garden.json — органика и топливо Composter;
 // server/calendar — когда идут ивенты. Сверено с вики fandom 23.11.2026 (страницы Composter, Compost/Organic Matter Table,
 // Machine Fuel, Pest, Cropie, Squash, Fermento, Helianthus, Agatha's Coupon, Starlyn Contest): правила Composter
-// (4 000 органики и 2 000 топлива на 1 Compost раз в 10 минут), органика и топливо, вредители, шансы редких культур, купоны.
+// (4 000 органики и 2 000 топлива на 1 Compost раз в 10 минут), органика и топливо, Pests, шансы редких культур, купоны.
 import { sellValue, buyPrice, npcFlips, DEMAND_SHARE } from '../flips.js';
 import { nameOf } from '../util.js';
 import { nowAndNext } from '../../calendar/index.js';
@@ -49,7 +49,7 @@ const owns = (m, prefix) => { for (const id of ownedSet(m)) if (id.startsWith(pr
 export function sellable(ctx, id) {
   const v = sellValue(ctx, id, 'offer');
   if (!v?.net) return null;
-  if (v.market === 'Аукцион') {
+  if (v.market === 'Auction House') {
     if ((v.sold24h || 0) < 2) return null;
     return { ...v, perDay: v.sold24h * DEMAND_SHARE.auction };
   }
@@ -223,7 +223,7 @@ export function katFlips(ctx, { limit = 5 } = {}) {
       if (r?.type !== 'katgrade' || !r.input || !r.output || !r.time) continue;
       const inB = ctx.bin.get(r.input);
       const outS = sellable(ctx, r.output);
-      if (!inB?.price || !outS || outS.market !== 'Аукцион') continue;
+      if (!inB?.price || !outS || outS.market !== 'Auction House') continue;
       let cost = inB.price + Number(r.coins || 0);
       let ok = true;
       for (const s of r.items || []) {
@@ -269,7 +269,7 @@ export function minionIncome(ctx, m) {
   return { slots, rows, best: rows[0] || null };
 }
 
-// ---------- вредители Сада (вики «Pest», сверено 23.11.2026) ----------
+// ---------- Pests Garden (вики «Pest», сверено 23.11.2026) ----------
 // crop: [ID сжатой культуры, базовое число, +1 за столько Farming Fortune]; rare: [ID, штук, шанс] — шанс ниже 5% растёт с FF: × (1 + FF/600).
 export const PESTS = [
   { name: 'Fly', lvl: 5, crop: ['ENCHANTED_WHEAT', 1, 35], rare: [['BEADY_EYES', 1, 0.015], ['ENCHANTED_HAY_BALE', 3, 0.005]] },
@@ -286,9 +286,9 @@ export const PESTS = [
   { name: 'Firefly', lvl: 11, crop: ['ENCHANTED_MOONFLOWER', 2, 17.5], rare: [['FIRE_IN_A_BOTTLE', 1, 0.01], ['COMPACTED_MOONFLOWER', 6, 0.005]] },
   { name: 'Praying Mantis', lvl: 12, crop: ['ENCHANTED_WILD_ROSE', 2, 17.5], rare: [['MANTID_CLAW', 1, 0.01], ['COMPACTED_WILD_ROSE', 6, 0.005]] },
 ];
-/** С каждого вредителя один из шести предметов, по 10% на каждый (вики). */
+/** С каждого Pest один из шести предметов, по 10% на каждый (вики). */
 const PEST_COMMON = ['COMPOST', 'HONEY_JAR', 'DUNG', 'PLANT_MATTER', 'TASTY_CHEESE', 'JELLY'];
-/** Вредителей в час [осторожно, с уменьшенной паузой]: базовая пауза 5 минут, снаряжение Pesthunter сокращает её. */
+/** Pests в час [осторожно, с уменьшенной паузой]: базовая пауза 5 минут, снаряжение Pesthunter сокращает её. */
 export const PESTS_PER_HOUR = [12, 20];
 
 /** Грубый Farming Fortune по профилю, если игрок не указал своё (та же логика, что estimateFarmingFortune в methods.js). */
@@ -300,7 +300,7 @@ function roughFarmingFortune(m) {
   return Math.round(ff);
 }
 
-/** Средняя ценность одного вредителя при уровне Сада lvl и Farming Fortune ff. */
+/** Средняя ценность одного Pest при уровне Garden lvl и Farming Fortune ff. */
 export function pestValue(ctx, lvl, ff) {
   const unit = id => { const s = sellable(ctx, id); const npc = Number(ctx.npc?.get(id) || 0); return Math.max(s?.net || 0, npc); };
   const list = PESTS.filter(p => p.lvl <= Math.max(5, lvl));
@@ -326,7 +326,7 @@ export function pestValue(ctx, lvl, ff) {
 // ---------- каталог ----------
 export const MISC_METHODS = [
   {
-    id: 'rift-crafts', title: 'Сбор в Рифте на продажу', tag: 'Рифт', mode: 'active',
+    id: 'rift-crafts', title: 'Сбор в Рифте на продажу', tag: 'Rift', mode: 'active',
     desc: 'Почти всё из Рифта нельзя вынести, но часть товаров с меткой Rift-Transferable продаётся за монеты: Caducous Feeder, Berberis Fuel Injector, Exportable Carrots, Agaricus Chumcap. Считаем, сколько монет приносит одна единица сырья.',
     req: m => [{ text: 'Рифт открыт', ok: riftOpen(m), have: riftOpen(m) ? `Motes: ${fmtN(m?.rift?.motes)}` : 'в Рифте ещё не был' }],
     compute: ctx => {
@@ -343,9 +343,9 @@ export const MISC_METHODS = [
     drops: ['CADUCOUS_FEEDER', 'BERBERIS_FUEL_INJECTOR', 'EXPORTABLE_CARROTS', 'AGARICUS_CHUM_CAP', 'FAMILY_DOUBLOON'],
   },
   {
-    id: 'pests', title: 'Охота на вредителей в Саду', tag: 'Фермерство', mode: 'active',
-    desc: 'Пока фармишь, на участках появляются вредители (pests). С каждого — 1 000 монет, сжатые культуры, часто Compost, Dung, Honey Jar, Plant Matter, Tasty Cheese или Jelly, а иногда Atmospheric Filter, Pesterminator, Chirping Stereo. Это доход сверху к урожаю.',
-    req: m => { const l = gardenLevel(Number(m?.garden?.experience || 0)); return [{ text: 'Сад 5+ (вредители появляются)', ok: l >= 5, have: `у тебя ${l}`, soft: !m?.garden?.experience }, need('Farming', skill(m, 'farming'), 30, { soft: true })]; },
+    id: 'pests', title: 'Охота на Pests в Garden', tag: 'Farming', mode: 'active',
+    desc: 'Пока фармишь, на участках появляются Pests (pests). С каждого — 1 000 монет, сжатые культуры, часто Compost, Dung, Honey Jar, Plant Matter, Tasty Cheese или Jelly, а иногда Atmospheric Filter, Pesterminator, Chirping Stereo. Это доход сверху к урожаю.',
+    req: m => { const l = gardenLevel(Number(m?.garden?.experience || 0)); return [{ text: 'Garden 5+ (Pests появляются)', ok: l >= 5, have: `у тебя ${l}`, soft: !m?.garden?.experience }, need('Farming', skill(m, 'farming'), 30, { soft: true })]; },
     compute: (ctx, m, o = {}) => {
       const lvl = gardenLevel(Number(m?.garden?.experience || 0)) || 12;
       const ff = Number(o.farmingFortune ?? roughFarmingFortune(m));
@@ -354,23 +354,23 @@ export const MISC_METHODS = [
       const range = PESTS_PER_HOUR.map(n => n * r.perPest);
       return {
         coinsPerHour: range[1], range,
-        sourceText: 'правила и дропы вредителей с вики, цены живые; доход сверху к урожаю',
-        detail: `Вредитель появляется с шансом 0,2% за сломанную культуру, но не чаще раза в 5 минут; снаряжение Pesthunter, Pest Vest и мэр Finnegan сокращают паузу (до 2 мин 15 с без мэра). Считаем ${PESTS_PER_HOUR[0]}–${PESTS_PER_HOUR[1]} вредителей в час. Один вредитель в среднем приносит ${fmtC(r.perPest)}: 1 000 монет, культуры ${fmtC(r.crops)} (их больше с Farming Fortune ${fmtN(ff)}${o.farmingFortune == null ? ', грубая оценка' : ''}), ${fmtC(r.common)} с частых дропов (10% на один из шести) и ${fmtC(r.rare)} с редких. Дороже всего из редкого: ${r.top.map(x => `${x.name} (${fmtC(x.unit)})`).join(', ') || 'нет цен'}. Вредителей ${r.count} видов, каждый появляется с равным шансом.`,
+        sourceText: 'правила и дропы Pests с вики, цены живые; доход сверху к урожаю',
+        detail: `Pest появляется с шансом 0,2% за сломанную культуру, но не чаще раза в 5 минут; снаряжение Pesthunter, Pest Vest и мэр Finnegan сокращают паузу (до 2 мин 15 с без мэра). Считаем ${PESTS_PER_HOUR[0]}–${PESTS_PER_HOUR[1]} Pests в час. Один Pest в среднем приносит ${fmtC(r.perPest)}: 1 000 монет, культуры ${fmtC(r.crops)} (их больше с Farming Fortune ${fmtN(ff)}${o.farmingFortune == null ? ', грубая оценка' : ''}), ${fmtC(r.common)} с частых дропов (10% на один из шести) и ${fmtC(r.rare)} с редких. Дороже всего из редкого: ${r.top.map(x => `${x.name} (${fmtC(x.unit)})`).join(', ') || 'нет цен'}. Pests ${r.count} видов, каждый появляется с равным шансом.`,
         top: r.top.slice(0, 3).map(x => ({ id: x.id, name: x.name, perHour: x.perPest * PESTS_PER_HOUR[1] })),
       };
     },
     drops: ['OVERCLOCKER_3000', 'ATMOSPHERIC_FILTER', 'PESTERMINATOR;1', 'BURROWING_SPORES', 'DUNG'],
   },
   {
-    id: 'composter', title: 'Composter в Саду', tag: 'Фермерство', mode: 'passive',
+    id: 'composter', title: 'Composter в Garden', tag: 'Farming', mode: 'passive',
     desc: 'Композер сам превращает органику и топливо в Compost. Выгодно, если Compost на Bazaar дороже сырья: считаем по самому дешёвому источнику органики и топлива и по твоим улучшениям композера.',
-    req: m => [{ text: 'Сад открыт', ok: gardenOpen(m) }],
+    req: m => [{ text: 'Garden открыт', ok: gardenOpen(m) }],
     compute: (ctx, m) => {
       const up = m?.garden?.composter || {};
       const p = composterProfit(ctx, up);
       if (!p) return null;
       if (p.profit <= 0) {
-        return { coinsPerHour: null, sourceText: 'сейчас в минус по живым ценам', detail: `Сейчас невыгодно: 1 Compost стоит ${fmtC(p.value)}, а сырьё на него ${fmtC(p.cost)} (органика: ${p.om.name}, топливо: ${p.fuel.name}). Composter стоит держать ради Compost для участков Сада, а продавать — когда разница станет плюсовой.` };
+        return { coinsPerHour: null, sourceText: 'сейчас в минус по живым ценам', detail: `Сейчас невыгодно: 1 Compost стоит ${fmtC(p.value)}, а сырьё на него ${fmtC(p.cost)} (органика: ${p.om.name}, топливо: ${p.fuel.name}). Composter стоит держать ради Compost для участков Garden, а продавать — когда разница станет плюсовой.` };
       }
       return {
         coinsPerHour: p.perDay / DAYS,
@@ -381,7 +381,7 @@ export const MISC_METHODS = [
     drops: ['COMPOST', 'BIOFUEL', 'VOLTA', 'OIL_BARREL'],
   },
   {
-    id: 'jacob', title: "Jacob's Contest и медали", tag: 'Фермерство', mode: 'daily',
+    id: 'jacob', title: "Jacob's Contest и медали", tag: 'Farming', mode: 'daily',
     desc: 'Конкурс фермеров идёт каждый реальный час: три культуры, 20 минут. За место — медали и Jacob\'s Ticket, которые меняются у Anita на Prismapump, книги Delicate V, Basket of Seeds и т.п. Сами награды можно продать.',
     req: m => [need('Farming', skill(m, 'farming'), 10, { soft: true })],
     compute: ctx => {
@@ -416,7 +416,7 @@ export const MISC_METHODS = [
   },
   {
     id: 'kat-flip', marketOnly: true, title: 'Прокачка питомцев у Kat', tag: 'Питомцы', mode: 'passive',
-    desc: 'Kat в Хабе повышает редкость питомца за монеты и время. Покупаешь питомца на аукционе, отдаёшь Kat, продаёшь более редкого. Kat держит одного питомца за раз.',
+    desc: 'Kat в Hub повышает редкость питомца за монеты и время. Покупаешь питомца на аукционе, отдаёшь Kat, продаёшь более редкого. Kat держит одного питомца за раз.',
     req: () => [],
     compute: ctx => {
       const list = katFlips(ctx, { limit: 5 });
@@ -524,8 +524,8 @@ export const MISC_METHODS = [
     drops: ['PURPLE_CANDY', 'GREEN_CANDY', 'WEREWOLF_SKIN', 'ECTOPLASM'],
   },
   {
-    id: 'chocolate', title: 'Шоколадная фабрика', tag: 'Ивенты', mode: 'passive',
-    desc: 'Фабрика копит шоколад сама. Монетами напрямую он не продаётся, но фабричные аксессуары и часть наград можно продать. Главное — не давать фабрике простаивать и забирать кроликов во время Hoppity.',
+    id: 'chocolate', title: 'Chocolate Factory', tag: 'Ивенты', mode: 'passive',
+    desc: 'Фабрика копит Chocolate сама. Монетами напрямую он не продаётся, но фабричные аксессуары и часть наград можно продать. Главное — не давать фабрике простаивать и забирать кроликов во время Hoppity.',
     req: m => [{ text: 'Фабрика открыта', ok: !!m?.extras?.chocolate || !!m?.chocolate, soft: true }],
     compute: ctx => {
       const line = priceLine(ctx, ['NIBBLE_CHOCOLATE_STICK', 'SMOOTH_CHOCOLATE_BAR', 'RICH_CHOCOLATE_CHUNK', 'GANACHE_CHOCOLATE_SLAB', 'PRESTIGE_CHOCOLATE_REALM', 'REFINED_DARK_CACAO_TRUFFLE', 'DYE_CHOCOLATE'], 5);
@@ -535,7 +535,7 @@ export const MISC_METHODS = [
   },
   {
     id: 'dark-auction', marketOnly: true, title: 'Тёмный аукцион', tag: 'Торговля', mode: 'active',
-    desc: 'Раз в реальный час Sirius продаёт в Хабе редкие вещи: Midas Sword, Hegemony Artifact, книги и др. Иногда их можно взять дешевле аукциона, но нужен большой капитал и дисциплина.',
+    desc: 'Раз в реальный час Sirius продаёт в Hub редкие вещи: Midas Sword, Hegemony Artifact, книги и др. Иногда их можно взять дешевле аукциона, но нужен большой капитал и дисциплина.',
     req: m => [{ text: 'Капитал от 50 млн', ok: Number(m?.purse || 0) + Number(m?.bank || 0) >= 50 * M, soft: true, have: `у тебя ${fmtC(Number(m?.purse || 0) + Number(m?.bank || 0))}` }],
     compute: ctx => {
       const line = priceLine(ctx, ['MIDAS_SWORD', 'HEGEMONY_ARTIFACT', 'MIDAS_STAFF', 'SHENS_REGALIA', 'ENCHANTMENT_SHARPNESS_6', 'ENCHANTMENT_GIANT_KILLER_6'], 5);
@@ -571,25 +571,25 @@ export const MISC_DETAILS = {
     ],
   },
   pests: {
-    effort: 'semi', risk: 'low', xp: 'Опыт Farming и Сада',
+    effort: 'semi', risk: 'low', xp: 'Опыт Farming и Garden',
     steps: [
       'Возьми пылесос из SkyMart (Skymart Vacuum, лучше — Infini-Vacuum).',
-      'Фарми как обычно. Когда появится вредитель, игра подскажет участок: дойди и засоси его.',
-      'Ставь Pest Trap и пользуйся Sprayonator, чтобы вредители появлялись чаще на нужной культуре.',
+      'Фарми как обычно. Когда появится Pest, игра подскажет участок: дойди и засоси его.',
+      'Ставь Pest Trap и пользуйся Sprayonator, чтобы Pests появлялись чаще на нужной культуре.',
       'Редкие дропы (Overclocker 3000, Atmospheric Filter, книги) продавай на аукционе, сжатые культуры — на Bazaar.',
     ],
     risks: [
-      'С 4 вредителей на участке Farming Fortune падает (до −75% при 8), поэтому убивай их сразу.',
+      'С 4 Pests на участке Farming Fortune падает (до −75% при 8), поэтому убивай их сразу.',
       'Редкие дропы — это удача: шанс с вики, растёт с Farming Fortune.',
     ],
-    kit: [{ text: 'Пылесос для вредителей', own: ['SKYMART_VACUUM', 'SKYMART_TURBO_VACUUM', 'SKYMART_HYPER_VACUUM', 'INFINI_VACUUM*'] }],
+    kit: [{ text: 'Пылесос для Pests', own: ['SKYMART_VACUUM', 'SKYMART_TURBO_VACUUM', 'SKYMART_HYPER_VACUUM', 'INFINI_VACUUM*'] }],
   },
   composter: {
     effort: 'afk', risk: 'low', xp: 'Почти без опыта',
     steps: [
-      'Открой Composter в Саду и вложи органику: сайт показывает, из чего она сейчас дешевле всего.',
+      'Открой Composter в Garden и вложи органику: сайт показывает, из чего она сейчас дешевле всего.',
       'Залей топливо (Biofuel, Volta или Oil Barrel — что дешевле на 1 единицу).',
-      'Забирай Compost и продавай ордером на Bazaar или трать на новые участки Сада.',
+      'Забирай Compost и продавай ордером на Bazaar или трать на новые участки Garden.',
       'Качай улучшения композера за Copper: скорость и шанс второго Compost окупаются быстрее всего.',
     ],
     risks: [
@@ -612,7 +612,7 @@ export const MISC_DETAILS = {
     steps: [
       'Возьми товар из списка: его покупают на Bazaar дешевле, чем платит NPC.',
       'Поставь ордер на покупку на 0,1 выше лучшего.',
-      'Когда ордер исполнится, продай NPC (любой торговец в Хабе или /trades).',
+      'Когда ордер исполнится, продай NPC (любой торговец в Hub или /trades).',
       'Повторяй, пока разница держится.',
     ],
     risks: [
@@ -625,7 +625,7 @@ export const MISC_DETAILS = {
     effort: 'afk', risk: 'mid', xp: 'Опыта нет, только монеты',
     steps: [
       'Купи на аукционе питомца из списка (обычно 1 уровня, самый дешёвый лот).',
-      'Отдай его Kat в Хабе и заплати за повышение редкости.',
+      'Отдай его Kat в Hub и заплати за повышение редкости.',
       'Ускорь ожидание через Kat Flower или Kat Bouquet, если они дешевле, чем потеря времени.',
       'Забери питомца и выставь на аукцион чуть ниже самого дешёвого лота той же редкости.',
     ],
@@ -639,7 +639,7 @@ export const MISC_DETAILS = {
     effort: 'daily', risk: 'low', xp: 'Опыта нет, только монеты',
     steps: [
       'Держи Booster Cookie активным: без него Bits не копятся.',
-      'Открой Community Shop (Elizabeth в Хабе) и посмотри, сколько Bits накопилось.',
+      'Открой Community Shop (Elizabeth в Hub) и посмотри, сколько Bits накопилось.',
       'Купи товар, который сайт показывает самым выгодным за 1 Bit (вкладка Bits).',
       'Продай его на аукционе или Bazaar.',
     ],
@@ -678,8 +678,8 @@ export const MISC_DETAILS = {
   jerry: {
     effort: 'focus', risk: 'low', xp: 'Опыт Combat и Fishing',
     steps: [
-      'Когда мастерская открыта, иди к Jerry через портал в Хабе.',
-      'Лови зимних морских существ и открывай подарки ради North Star.',
+      'Когда мастерская открыта, иди к Jerry через портал в Hub.',
+      'Лови зимних Sea Creatures и открывай подарки ради North Star.',
       'В Season of Jerry защищай мастерскую: награды по урону.',
       'Меняй North Star на то, что сайт показывает самым дорогим, и продавай вместе с подарками.',
     ],
@@ -697,16 +697,16 @@ export const MISC_DETAILS = {
   chocolate: {
     effort: 'afk', risk: 'low', xp: 'Прогресс фабрики',
     steps: [
-      'Заходи в фабрику и качай сотрудников на шоколад.',
+      'Заходи в фабрику и качай сотрудников на Chocolate.',
       'Во время Hoppity собирай яйца ради новых кроликов.',
       'Ненужные фабричные аксессуары продавай на аукционе.',
     ],
-    risks: ['Шоколад нельзя продать за монеты напрямую.', 'Стоимость наград фабрики с вики не сверена.'],
+    risks: ['Chocolate нельзя продать за монеты напрямую.', 'Стоимость наград фабрики с вики не сверена.'],
   },
   'dark-auction': {
     effort: 'focus', risk: 'high', xp: 'Опыта нет',
     steps: [
-      'Будь в Хабе к началу Тёмного аукциона (раз в час) с 400 000+ монет в кошельке, иначе Sirius не пустит.',
+      'Будь в Hub к началу Тёмного аукциона (раз в час) с 400 000+ монет в кошельке, иначе Sirius не пустит.',
       'Сравни лот с ценой на аукционе на сайте и реши потолок ставки заранее.',
       'Купи, только если цена заметно ниже аукциона, и перепродай.',
     ],
@@ -734,7 +734,7 @@ export const MISC_PATCHES = [
       if (!v.length && !line) return null;
       return {
         coinsPerHour: null, sourceText: 'стоимость наград по живым ценам',
-        detail: `${v.length ? `1 Copper сейчас стоит до ${fmtC(v[0].perUnit)}: ${valueLine(v, 'Copper', 2)}. ` : ''}${line ? `Редкие награды гостей: ${line}. ` : ''}Принимай заказ, если товары для него дешевле, чем награда плюс Copper по этой цене.`.trim(),
+        detail: `${v.length ? `1 Copper сейчас стоит до ${fmtC(v[0].perUnit)}: ${valueLine(v, 'Copper', 2)}. ` : ''}${line ? `Редкие награды Visitors: ${line}. ` : ''}Принимай заказ, если товары для него дешевле, чем награда плюс Copper по этой цене.`.trim(),
       };
     },
   },
@@ -744,7 +744,7 @@ export const MISC_PATCHES = [
 // Вторая волна (по каталогу заработка /mnt/project-files/money/catalog.md, группы 🌀, Q2 и Q3)
 // =====================================================================================
 
-// Уровень Сада по опыту (NEU constants/garden.json garden_exp — прибавки на уровень)
+// Уровень Garden по опыту (NEU constants/garden.json garden_exp — прибавки на уровень)
 const GARDEN_EXP = [0, 70, 70, 140, 240, 600, 1500, 2000, 2500, 3000, 10000, 10000, 10000, 10000, 10000];
 export function gardenLevel(xp) {
   let lvl = 0, sum = 0;
@@ -783,7 +783,7 @@ export function petLevelFlips(ctx, { limit = 5 } = {}) {
     if (!/;[0-5]$/.test(key) || !b?.max || !b.price || b.max <= b.price) continue;
     const s = ctx.sold ? sellable(ctx, key) : null;
     if (!s) continue; // нужен живой спрос на этого питомца
-    const profit = s.market === 'Аукцион' ? (b.max * (s.net / s.gross)) - b.price : 0;
+    const profit = s.market === 'Auction House' ? (b.max * (s.net / s.gross)) - b.price : 0;
     if (profit <= 0 || profit > b.price * 3) continue;
     out.push({ id: key, name: nameOf(ctx, key), buy: b.price, sell: b.max, profit, sold24h: s.sold24h });
   }
@@ -852,9 +852,9 @@ export function rareCropIncome(ctx, m) {
 
 MISC_METHODS.push(
   {
-    id: 'crop-rare-drops', title: 'Редкие дропы культур (Cropie, Squash, Fermento)', tag: 'Фермерство', mode: 'active',
+    id: 'crop-rare-drops', title: 'Редкие дропы культур (Cropie, Squash, Fermento)', tag: 'Farming', mode: 'active',
     desc: 'Во время фарма иногда падают Cropie, Squash, Fermento и Helianthus, если на тебе хотя бы 2 части нужной фермерской брони. Их скупают для брони следующего тира. Это доход сверху к урожаю.',
-    req: m => [{ text: 'Сад открыт', ok: gardenOpen(m) },
+    req: m => [{ text: 'Garden открыт', ok: gardenOpen(m) },
       { text: 'Фермерская броня: 2+ части Tater, Cropie, Squash, Fermento или Helianthus', ok: ['MELON', 'CROPIE', 'SQUASH', 'FERMENTO', 'HELIANTHUS'].some(set => setPieces(m, set) >= 2), soft: true, buy: ['MELON_CHESTPLATE', 'CROPIE_CHESTPLATE'] }],
     compute: (ctx, m) => {
       const rows = rareCropIncome(ctx, m);
@@ -875,9 +875,9 @@ MISC_METHODS.push(
     drops: ['CROPIE', 'SQUASH', 'FERMENTO', 'HELIANTHUS'],
   },
   {
-    id: 'greenhouse', title: 'Greenhouse: мутации и Garden Chips', tag: 'Фермерство', mode: 'active',
-    desc: 'В Greenhouse Сада растут мутации культур (Glasscorn, Devourer, Timestalk и др.). Часть продаётся на Bazaar, часть нужна для Garden Chips и брони. Здесь — что из этого сейчас дороже всего.',
-    req: m => { const l = gardenLevel(Number(m?.garden?.experience || 0)); return [{ text: 'Сад 7+ (Greenhouse)', ok: l >= 7, have: `у тебя ${l}`, soft: !m?.garden?.experience }]; },
+    id: 'greenhouse', title: 'Greenhouse: мутации и Garden Chips', tag: 'Farming', mode: 'active',
+    desc: 'В Greenhouse Garden растут мутации культур (Glasscorn, Devourer, Timestalk и др.). Часть продаётся на Bazaar, часть нужна для Garden Chips и брони. Здесь — что из этого сейчас дороже всего.',
+    req: m => { const l = gardenLevel(Number(m?.garden?.experience || 0)); return [{ text: 'Garden 7+ (Greenhouse)', ok: l >= 7, have: `у тебя ${l}`, soft: !m?.garden?.experience }]; },
     compute: ctx => {
       const mut = priceLine(ctx, MUTATIONS, 6);
       const chips = priceLine(ctx, CHIPS, 4);
@@ -887,8 +887,8 @@ MISC_METHODS.push(
     drops: ['GLASSCORN', 'DEVOURER', 'TIMESTALK', 'RAREFINDER_GARDEN_CHIP'],
   },
   {
-    id: 'mushroom-desert', title: 'Мицелий, красный песок и грибы', tag: 'Фермерство', mode: 'active',
-    desc: 'Мицелий и красный песок копают в Mushroom Desert и на участках Сада, гигантские грибы — там же. Сжатые кубы идут в рецепты Сада.',
+    id: 'mushroom-desert', title: 'Мицелий, красный песок и грибы', tag: 'Farming', mode: 'active',
+    desc: 'Мицелий и красный песок копают в Mushroom Desert и на участках Garden, гигантские грибы — там же. Сжатые кубы идут в рецепты Garden.',
     req: () => [],
     compute: ctx => {
       const my = perRaw(ctx, [['MYCEL', 1], ['ENCHANTED_MYCELIUM', 160], ['ENCHANTED_MYCELIUM_CUBE', 25600]]);
@@ -985,7 +985,7 @@ MISC_METHODS.push(
   },
   {
     id: 'traveling-zoo', marketOnly: true, title: 'Бродячий зоопарк', tag: 'Ивенты', mode: 'active',
-    desc: 'Дважды в год Oringo в Хабе продаёт питомцев (лев, тигр, кит, слон, жираф, обезьяна) за монеты и брёвна или рыбу. Иногда их выгодно перепродать.',
+    desc: 'Дважды в год Oringo в Hub продаёт питомцев (лев, тигр, кит, слон, жираф, обезьяна) за монеты и брёвна или рыбу. Иногда их выгодно перепродать.',
     req: (m, o) => [eventReq(o, ['zoo-summer', 'zoo-winter'], 'Идёт Бродячий зоопарк')],
     compute: ctx => {
       const list = npcToMarket(ctx, { limit: 3, npc: 'ORINGO_NPC' });
@@ -1064,14 +1064,14 @@ Object.assign(MISC_DETAILS, {
     risks: ['Части разных сетов не складываются: 2 Cropie + 2 Squash не дают бонус 4/4.', 'Цена падает, когда выходят патчи на фермерскую броню.'],
   },
   greenhouse: {
-    effort: 'semi', risk: 'mid', xp: 'Опыт Сада',
-    steps: ['Открой Greenhouse на участке Сада (с 7 уровня Сада).', 'Сажай культуры рядом так, чтобы выросла нужная мутация: условия видно через Plant Diagnostics Tool.', 'Продавай дорогие мутации на Bazaar, остальное — на Garden Chips или себе.'],
+    effort: 'semi', risk: 'mid', xp: 'Опыт Garden',
+    steps: ['Открой Greenhouse на участке Garden (с 7 уровня Garden).', 'Сажай культуры рядом так, чтобы выросла нужная мутация: условия видно через Plant Diagnostics Tool.', 'Продавай дорогие мутации на Bazaar, остальное — на Garden Chips или себе.'],
     risks: ['Мутации растут не сразу и не всегда.', 'Рынок у редких мутаций маленький.'],
   },
   'mushroom-desert': {
     effort: 'semi', risk: 'low', xp: 'Опыт Farming',
-    steps: ['Иди в Mushroom Desert или поставь мицелий и красный песок на участке Сада.', 'Копай лопатой с Efficiency, сжимай в Enchanted-формы.', 'Продавай в той форме, где цена за блок выше.'],
-    risks: ['Доход маленький: способ для коллекции и рецептов Сада.'],
+    steps: ['Иди в Mushroom Desert или поставь мицелий и красный песок на участке Garden.', 'Копай лопатой с Efficiency, сжимай в Enchanted-формы.', 'Продавай в той форме, где цена за блок выше.'],
+    risks: ['Доход маленький: способ для коллекции и рецептов Garden.'],
   },
   'galatea-gather': {
     effort: 'semi', risk: 'low', xp: 'Опыт Foraging и HotF',
@@ -1111,8 +1111,8 @@ Object.assign(MISC_DETAILS, {
   'traveling-zoo': ev('Бродячий зоопарк, 2 раза в год', 'Купи у Oringo питомца, который сайт показывает выгодным, и выставь на аукцион.'),
   'year-witch': ev('Year of the Witch, раз в несколько лет SkyBlock', 'Ингредиенты продавай на Bazaar или вари зелья у Agnes, если так выгоднее.'),
   'great-spook': ev('Хэллоуин в SkyBlock', 'Руны и предметы продавай на аукционе.'),
-  'new-year': { effort: 'daily', risk: 'low', xp: 'Опыта нет', steps: ['В Новый год SkyBlock забери торт у Baker в Хабе.', 'Храни торты в New Year Cake Bag или продай коллекционерам.'], risks: ['Свежие торты стоят мало: дорожают с годами.'] },
+  'new-year': { effort: 'daily', risk: 'low', xp: 'Опыта нет', steps: ['В Новый год SkyBlock забери торт у Baker в Hub.', 'Храни торты в New Year Cake Bag или продай коллекционерам.'], risks: ['Свежие торты стоят мало: дорожают с годами.'] },
   cult: { effort: 'daily', risk: 'low', xp: 'Опыта нет', steps: ['Будь в Dwarven Mines, когда начинается встреча культа.', 'Подойди к культистам и забери награду.'], risks: ['Встреча всего 5 минут реального времени.'] },
   carnival: ev('мэр Foxy и его Carnival', 'Трать очки на улучшения ивентов или продавай Carnival Ticket.'),
-  'hoppity-rabbits': ev("Hoppity's Hunt весной SkyBlock", 'Кроликов фракций, которые тебе не нужны, продавай на аукционе.'),
+  'hoppity-rabbits': ev("Hoppity's Hunt весной SkyBlock", 'Rabbits фракций, которые тебе не нужны, продавай на аукционе.'),
 });

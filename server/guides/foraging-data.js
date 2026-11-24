@@ -31,14 +31,14 @@ export const PETS = [
   { type: 'FROG', why: 'Foraging Fortune на 20 с после каждого прыжка, Sweep, шанс выловить водные осколки на островах Foraging', how: 'Agatha (Moonglade Marsh) за 20× Agatha\'s Coupon, редкость у Kat за Frog Treat' },
   { type: 'JADE_DRAGON', why: 'эндгейм: сила и скорость всем топорам, +15 Fortune и +4 Sweep за каждую цифру коллекции Mangrove, Fortune от Sweep', how: '500 млн + Shiniest + по 64 Figstone, Mangcore и Helixis у NPC Jade Dragon' },
   { type: 'OCELOT', why: 'Foraging Wisdom (быстрее растёт скилл) и ускорение миньонов-лесорубов', how: 'крафт: 256× Jungle Log + Enchanted Egg, редкость у Kat' },
-  { type: 'MONKEY', why: 'Foraging Fortune везде; Sweep и скорость — только в The Park (на Galatea слабее Sloth)', how: 'Oringo (Хаб): брёвна джунглей + монеты' },
+  { type: 'MONKEY', why: 'Foraging Fortune везде; Sweep и скорость — только в The Park (на Galatea слабее Sloth)', how: 'Oringo (Hub): брёвна джунглей + монеты' },
 ];
 
 // Источники Fortune/Sweep помимо топора и брони (подсказки в таблице «Откуда брать»)
 export const BOOSTS = [
   { what: 'Wood Singularity', item: 'WOOD_SINGULARITY', fortune: '+25', sweep: '', how: 'с патча 0.23.4 ставится на топор (раньше — на деревянный меч), один раз' },
-  { what: 'Перековка Moonglade (топор)', item: 'MOONGLADE_JEWEL', fortune: 'да', sweep: '', how: 'камень Moonglade Jewel у Agatha за 50× Agatha\'s Coupon; ещё даёт Foraging Wisdom' },
-  { what: 'Перековка Groovy (броня)', item: 'MANGROVE_GEM', fortune: 'да', sweep: '', how: 'камень Mangrove Gem: крафт из 144× Enchanted Mangrove Log' },
+  { what: 'Reforge Moonglade (топор)', item: 'MOONGLADE_JEWEL', fortune: 'да', sweep: '', how: 'камень Moonglade Jewel у Agatha за 50× Agatha\'s Coupon; ещё даёт Foraging Wisdom' },
+  { what: 'Reforge Groovy (броня)', item: 'MANGROVE_GEM', fortune: 'да', sweep: '', how: 'камень Mangrove Gem: крафт из 144× Enchanted Mangrove Log' },
   { what: 'Бустер Foraging Fortune', item: 'FORAGING_FORTUNE_BOOSTER', fortune: 'да', sweep: '', how: 'Sawyer (Moonglade Marsh) за 50 тыс.; на топор, броню или снаряжение' },
   { what: 'Бустер Sweep', item: 'SWEEP_BOOSTER', fortune: '', sweep: 'да', how: 'дроп из Tree Gifts (Mangrove 1%, Fig 0,5%) или Bazaar' },
   { what: 'Бустер Foraging Wisdom', item: 'FORAGING_WISDOM_BOOSTER', fortune: '', sweep: '', how: 'дроп из Tree Gifts; ускоряет опыт скилла' },

@@ -3,10 +3,10 @@
 import { analyzeMuseum } from '../../../museum/analyze.js';
 import { fmtCoins, fmtNum, plural } from '../util.js';
 
-const IN_USE = new Set(['Инвентарь', 'Надето', 'Экипировка', 'Гардероб']);
+const IN_USE = new Set(['Инвентарь', 'Надето', 'Экипировка', 'Wardrobe']);
 
 const HOW_DONATE = [
-  'Хаб → Museum (рядом с Bazaar и Community Center), Madame Eleanor Q. Goldsworth III открывает меню музея.',
+  'Hub → Museum (рядом с Bazaar и Community Center), Madame Eleanor Q. Goldsworth III открывает меню музея.',
   'Открой меню музея и кликни по предмету в своём инвентаре → Confirm Donation. Сет брони кладётся целиком: все части должны быть в инвентаре.',
   'Предмет станет Co-op Soulbound (продать его уже нельзя), но его можно в любой момент забрать обратно кликом в музее: XP останется.',
 ];
@@ -48,7 +48,7 @@ export function museumRules(ctx, add) {
       id: 'museum-milestone', cat: 'Музей', priority: plan.coins <= Math.max(1_000_000, (ctx.liquid || 0) * 0.02) ? 52 : 38, effort: 'монеты',
       title: `Веха музея ${plan.target}: не хватает ${mu.milestone.toNext} XP — дешевле всего за ${fmtCoins(plan.coins)}`,
       why: `Вехи идут каждые 100 SkyBlock XP музея и дают +1% к множителю Bits, +2% к процентам банка и свои награды${mu.milestone.rewardsNext?.length ? ` (следующая: ${mu.milestone.rewardsNext.join(', ')})` : ''}. Сейчас у тебя ${fmtNum(mu.xp)} XP музея, веха ${mu.milestone.n} из ${mu.milestone.max}.`,
-      how: [...buy.slice(0, 8).map(s => `Купить: ${nm(s.id)} — ~${fmtCoins(s.cost)} (+${s.gain} XP)`), 'Потом пожертвуй их в музее (Хаб → Museum).'],
+      how: [...buy.slice(0, 8).map(s => `Купить: ${nm(s.id)} — ~${fmtCoins(s.cost)} (+${s.gain} XP)`), 'Потом пожертвуй их в музее (Hub → Museum).'],
       items: buy.slice(0, 8).map(s => s.items?.length > 1 ? s.items.find(i => /CHESTPLATE/.test(i)) || s.items[0] : s.id),
       cost: plan.coins,
       link: 'museum',
@@ -76,7 +76,7 @@ export function museumRules(ctx, add) {
       id: 'museum-appraisal', cat: 'Музей', priority: 18, effort: 'монеты',
       title: 'Можно оценить музей: Museum Appraisal Service открыт',
       why: 'Открывается на вехе 3. Разовая услуга (10 млн): Madame Goldsworth оценивает стоимость музея, и она появляется в профиле и в рейтингах. На прогресс не влияет — только если хочешь видеть оценку.',
-      how: ['Хаб → Museum → Madame Eleanor Q. Goldsworth III → Museum Appraisal.'],
+      how: ['Hub → Museum → Madame Eleanor Q. Goldsworth III → Museum Appraisal.'],
       cost: 10_000_000,
       link: 'museum',
     });

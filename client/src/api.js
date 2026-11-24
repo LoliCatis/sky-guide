@@ -298,9 +298,10 @@ export const RARITY_COLOR = {
   COMMON: '#ffffff', UNCOMMON: '#55ff55', RARE: '#5555ff', EPIC: '#aa00aa', LEGENDARY: '#ffaa00',
   MYTHIC: '#ff55ff', DIVINE: '#55ffff', SPECIAL: '#ff5555', 'VERY SPECIAL': '#ff5555', ULTIMATE: '#aa0000',
 };
+// Редкость — как в игре, на английском (имя RARITY_RU оставлено, чтобы не трогать все страницы)
 export const RARITY_RU = {
-  COMMON: 'Обычный', UNCOMMON: 'Необычный', RARE: 'Редкий', EPIC: 'Эпический', LEGENDARY: 'Легендарный',
-  MYTHIC: 'Мифический', DIVINE: 'Божественный', SPECIAL: 'Особый', 'VERY SPECIAL': 'Очень особый',
+  COMMON: 'Common', UNCOMMON: 'Uncommon', RARE: 'Rare', EPIC: 'Epic', LEGENDARY: 'Legendary',
+  MYTHIC: 'Mythic', DIVINE: 'Divine', SPECIAL: 'Special', 'VERY SPECIAL': 'Very Special', ULTIMATE: 'Ultimate',
 };
 
 // Недавно открытые предметы (для пустого поиска и вики)

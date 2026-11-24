@@ -45,7 +45,7 @@ export function build(key, m, ctx) {
     const [o, t] = PREREQ[key];
     next.push({ priority: 85, title: `Сначала открой босса: пройди ${SLAYER_INFO[o].title} T${t}`, why: info.unlock });
   } else if (lvl === 0 && top === 0) {
-    next.push({ priority: 88, title: `Начни ${info.title}: квест T1 у ${vamp ? 'NPC в Stillgore Château' : 'Maddox the Slayer (Хаб или Maddox Batphone)'}`,
+    next.push({ priority: 88, title: `Начни ${info.title}: квест T1 у ${vamp ? 'NPC в Stillgore Château' : 'Maddox the Slayer (Hub или Maddox Batphone)'}`,
       why: `Квест стоит ${num(costs[0])} ${cur}, первый уровень — ${num(left)} опыта (${Math.ceil(left / bossXp[0])} ${plural(Math.ceil(left / bossXp[0]), 'босс', 'босса', 'боссов')} T1). Где: ${info.where}.${nextUnlocks.length ? ` Уровень 1 откроет: ${nextUnlocks.map(ctxName).join(', ')}.` : ''}` });
   }
   if (left > 0 && (unlocked || lvl > 0) && !(lvl === 0 && top === 0)) {
@@ -101,7 +101,7 @@ export function build(key, m, ctx) {
     level: { label: `${info.ru}-слеер`, value: lvl, max: maxLvl },
     next: sortNext(next),
     sections: [
-      { kind: 'text', title: 'Где и как', text: [`Где: ${info.where}.`, `Открытие: ${info.unlock}.`, vamp ? 'Квесты оплачиваются Motes (валюта Рифта).' : 'Квест берётся у Maddox the Slayer в Хабе или по Maddox Batphone (открывается Wolf Slayer 3).'] },
+      { kind: 'text', title: 'Где и как', text: [`Где: ${info.where}.`, `Открытие: ${info.unlock}.`, vamp ? 'Квесты оплачиваются Motes (валюта Рифта).' : 'Квест берётся у Maddox the Slayer в Hub или по Maddox Batphone (открывается Wolf Slayer 3).'] },
       { kind: 'table', title: 'Тиры босса', note: 'HP и механики — по вики; опыт и цена квеста — по данным NEU.', columns: ['Тир', 'HP', 'Механика', 'Квест', 'Опыт', 'Твои убийства'], rows: tierRows, current: farm - 1 },
       { kind: 'steps', title: 'Снаряжение', items: info.gear.map(g => ({ title: g })) },
       { kind: 'table', title: 'Что открывают уровни', note: 'Опыт — сколько всего нужно набрать для уровня.', columns: ['Уровень', 'Опыт', 'Открывает'], rows: levelRows, current: Math.min(lvl, maxLvl - 1) },

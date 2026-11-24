@@ -21,32 +21,32 @@ export function buildDigest(member, analysis = {}, opt = {}) {
   const name = opt.itemName || (id => id);
   L.push(`# Профиль игрока (данные на ${fmtTime(opt.now ?? Date.now(), opt.tz)})`);
   const coop = (m.coopMembers || 1) > 1;
-  L.push(`Профиль ${m.profileName || '?'} (${m.gameMode || 'normal'}, ${coop ? `кооп из ${m.coopMembers}` : 'соло'}). SkyBlock ${Math.floor(m.sbLevel || 0)}. Монеты: кошелёк ${fmtCoins(m.purse)}, банк ${fmtCoins(m.bank)}${coop ? ' (общий банк кооп-острова)' : ''}${m.personalBank ? `, личный банк ${fmtCoins(m.personalBank)}` : ''}${analysis.gear?.networth?.total ? `, networth ${fmtCoins(analysis.gear.networth.total)}` : ''}. Booster Cookie: ${m.cookie ? 'да' : 'нет'}. Fairy Souls ${m.fairySouls?.collected ?? '?'}/289.`);
+  L.push(`Профиль ${m.profileName || '?'} (${m.gameMode || 'normal'}, ${coop ? `кооп из ${m.coopMembers}` : 'соло'}). SkyBlock ${Math.floor(m.sbLevel || 0)}. Монеты: кошелёк ${fmtCoins(m.purse)}, Bank ${fmtCoins(m.bank)}${coop ? ' (общий Bank кооп-острова)' : ''}${m.personalBank ? `, личный Bank ${fmtCoins(m.personalBank)}` : ''}${analysis.gear?.networth?.total ? `, networth ${fmtCoins(analysis.gear.networth.total)}` : ''}. Booster Cookie: ${m.cookie ? 'да' : 'нет'}. Fairy Souls ${m.fairySouls?.collected ?? '?'}/289.`);
   if (coop) {
     const share = (m.coopRoster || []).find(c => c.uuid === m.uuid)?.share;
-    // Без этой строки модель пишет «в банке 75М — купи всё», хотя банк делят все участники острова
-    L.push(`Кооп: банк, сад, миньоны на острове и тиры коллекций общие для всех ${m.coopMembers} участников. Скиллы, слееры, данжи, снаряжение, аксессуары, питомцы, кошелёк и музей у каждого свои.${share != null ? ` Личный вклад игрока в коллекции острова: ${Math.round(share * 100)}%.` : ''} Советуя траты из общего банка, напоминай, что это деньги всего коопа.`);
+    // Без этой строки модель пишет «в банке 75М — купи всё», хотя Bank делят все участники острова
+    L.push(`Кооп: Bank, Garden, миньоны на острове и тиры коллекций общие для всех ${m.coopMembers} участников. Skills, слееры, данжи, снаряжение, аксессуары, питомцы, кошелёк и музей у каждого свои.${share != null ? ` Личный вклад игрока в коллекции острова: ${Math.round(share * 100)}%.` : ''} Советуя траты из общего банка, напоминай, что это деньги всего коопа.`);
   }
 
   const sk = Object.entries(m.skills || {}).filter(([, s]) => !s.apiMissing).map(([, s]) => `${s.name || '?'} ${lv(s)}`);
-  if (sk.length) L.push(`Скиллы: ${sk.join(', ')}. Средний ${m.skillAverage ?? '?'}.${m.tamingCap ? ` Кап Taming ${m.tamingCap}.` : ''}`);
+  if (sk.length) L.push(`Skills: ${sk.join(', ')}. Средний ${m.skillAverage ?? '?'}.${m.tamingCap ? ` Кап Taming ${m.tamingCap}.` : ''}`);
 
   const sl = Object.entries(m.slayers || {}).map(([, s]) => `${s.name || '?'} ${s.level}/${s.maxLevel}`);
-  if (sl.length) L.push(`Слееры: ${sl.join(', ')}.`);
+  if (sl.length) L.push(`Slayers: ${sl.join(', ')}.`);
 
   const d = m.dungeons;
   if (d) {
     const fl = Object.entries(d.floors || {}).filter(([, n]) => n).map(([f, n]) => `F${f}×${n}`).join(' ');
     const mf = Object.entries(d.masterFloors || {}).filter(([, n]) => n).map(([f, n]) => `M${f}×${n}`).join(' ') || 'нет';
     const cls = Object.entries(d.classes || {}).map(([, c]) => `${c.name || '?'} ${c.level}`).join(', ');
-    L.push(`Данжи: Catacombs ${lv(d.catacombs)}, класс ${d.selectedClass || '?'}; классы: ${cls}. Этажи: ${fl || 'нет'}. Master Mode: ${mf}. Секреты ${d.secrets ?? '?'}.`);
+    L.push(`Dungeons: Catacombs ${lv(d.catacombs)}, класс ${d.selectedClass || '?'}; классы: ${cls}. Этажи: ${fl || 'нет'}. Master Mode: ${mf}. Секреты ${d.secrets ?? '?'}.`);
   }
   const c = m.crimson;
   if (c) {
     const k = Object.entries(c.kuudra || {}).map(([t, n]) => `${t} ${n}`).join(', ');
     L.push(`Crimson Isle: фракция ${c.faction || '?'}, репутация ${Math.max(c.barbarianRep || 0, c.mageRep || 0)}. Kuudra: ${k}.`);
   }
-  if (m.mining) L.push(`Добыча: HotM ${m.mining.hotm?.level ?? '?'}, порошок mithril ${fmtCoins(m.mining.powder?.mithril)}, gemstone ${fmtCoins(m.mining.powder?.gemstone)}, glacite ${fmtCoins(m.mining.powder?.glacite)}.`);
+  if (m.mining) L.push(`Mining: HotM ${m.mining.hotm?.level ?? '?'}, Powder mithril ${fmtCoins(m.mining.powder?.mithril)}, gemstone ${fmtCoins(m.mining.powder?.gemstone)}, glacite ${fmtCoins(m.mining.powder?.glacite)}.`);
   if (m.garden) L.push(`Garden: copper ${fmtCoins(m.garden.copper)}, участков ${m.garden.unlockedPlots ?? '?'}/24.`);
   L.push(`Magical Power ${m.magicalPower ?? '?'}${m.selectedPower ? `, сила ${m.selectedPower}` : ''}. Rift: Enigma Souls ${m.rift?.enigmaSouls ?? '?'}/52, motes ${fmtCoins(m.rift?.motes)}.`);
 
@@ -58,7 +58,7 @@ export function buildDigest(member, analysis = {}, opt = {}) {
   // Сеты в гардеробе: без них модель советует «купи Necron's Armor», когда смешанный Wither уже лежит в слоте
   try {
     const sets = armorLoadouts(m).filter(lo => !lo.equipped).slice(0, 6).map(lo => `${lo.label}: ${lo.items.filter(Boolean).map(short).join(', ')}`);
-    if (sets.length) L.push(`Гардероб: ${sets.join('; ')}.`);
+    if (sets.length) L.push(`Wardrobe: ${sets.join('; ')}.`);
     const dl = dungeonLoadout(m);
     if (dl) {
       const cls = String(m.dungeons?.selectedClass || '').toLowerCase();

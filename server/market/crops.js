@@ -1,4 +1,4 @@
-// Доход от фарма культур в Саду с учётом Farming Fortune и лучшего способа продажи
+// Доход от фарма культур в Garden с учётом Farming Fortune и лучшего способа продажи
 import { DEFAULT_BAZAAR_TAX, extractRecipes, marketId, nameOf } from './util.js';
 import { sellValue } from './flips.js';
 
@@ -99,7 +99,7 @@ export function rawValue(ctx, id, { sellMode = 'instant', unitsPerHour = 0 } = {
  * @param {import('./flips.js').MarketCtx} ctx
  * @param {number | Record<string, number>} fortune общий Farming Fortune или по культурам (ключ — id или key из CROP_DATA)
  * @param {{ bps?: number, sellMode?: 'instant'|'offer', uptime?: number }} [opts]
- *   bps — блоков в секунду (максимум 20), uptime — доля времени реально в фарме (повороты, вредители)
+ *   bps — блоков в секунду (максимум 20), uptime — доля времени реально в фарме (повороты, Pests)
  */
 export function cropProfits(ctx, fortune = 1500, opts = {}) {
   const { bps = 19.5, sellMode = 'instant', uptime = 0.9 } = typeof opts === 'number' ? { bps: opts } : opts;

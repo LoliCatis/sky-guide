@@ -37,15 +37,15 @@ export const AFTER = {
   },
   fishing: {
     goals: [
-      'Добей бестиарий морских существ: каждый уровень даёт Sea Creature Chance к своему виду.',
+      'Добей бестиарий Sea Creatures: каждый уровень даёт Sea Creature Chance к своему виду.',
       'Фарми Lord Jawbus и Thunder ради Magma Lord Fragment и Radioactive Vial.',
-      'Master Trophy Fisher: алмазный тир у всех 18 видов трофейной рыбы.',
+      'Master Trophy Fisher: алмазный тир у всех 18 видов Trophy Fish.',
     ],
     related: ['trophy', 'rift'],
   },
   trophy: {
     goals: [
-      'Лишнюю трофейную рыбу разделывай у Odger на Magmafish: это коллекция и деньги.',
+      'Лишнюю Trophy Fish разделывай у Odger на Magmafish: это коллекция и деньги.',
       'Добивай Trophy Fishing ради бестиария и Odger\'s Diamond Tooth.',
     ],
     related: ['fishing'],
@@ -61,8 +61,8 @@ export const AFTER = {
   farming: {
     goals: [
       'Jacob\'s Contest на золото и выше: медали и уникальные награды.',
-      'Вехи культур (milestones) в Саду и фарм самой выгодной культуры ради денег.',
-      'Гости Сада каждый день: медь и редкие дропы.',
+      'Вехи культур (milestones) в Garden и фарм самой выгодной культуры ради денег.',
+      'Visitors Garden каждый день: Copper и редкие дропы.',
     ],
     related: ['minions', 'foraging'],
   },

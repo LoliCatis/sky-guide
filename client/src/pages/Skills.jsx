@@ -31,7 +31,7 @@ export default function Skills({ state, sub }) {
   const d = m.dungeons;
   return (
     <div className="grid">
-      <Card title="Скиллы" className="span-7" right={<PlanLink steps={steps} cat="Скиллы" />}>
+      <Card title="Skills" className="span-7" right={<PlanLink steps={steps} cat="Skills" />}>
         <div className="skill-grid">
           {Object.entries(m.skills).map(([k, s]) => (
             <div key={k} className={`skill-card ${s.level >= s.maxLevel ? 'maxed' : ''}`}>
@@ -45,10 +45,10 @@ export default function Skills({ state, sub }) {
             </div>
           ))}
         </div>
-        <div className="muted small" style={{ marginTop: 10 }}>Кап Фермерства: {m.farmingCap}/60 (медали Jacob у Anita) · Кап Приручения: {m.tamingCap}/60 (сдано типов питомцев: {m.tamingSacrificed})</div>
+        <div className="muted small" style={{ marginTop: 10 }}>Кап Farming: {m.farmingCap}/60 (медали Jacob у Anita) · Кап Taming: {m.tamingCap}/60 (сдано типов питомцев: {m.tamingSacrificed})</div>
       </Card>
 
-      <Card title="Слееры" className="span-5" right={<PlanLink steps={steps} cat="Слееры" />}>
+      <Card title="Slayers" className="span-5" right={<PlanLink steps={steps} cat="Slayers" />}>
         {Object.entries(m.slayers).map(([k, s]) => (
           <div key={k} className="slayer-row">
             <img src={`/api/texture/${SLAYER_ICON[k]}`} alt="" />
@@ -61,11 +61,11 @@ export default function Skills({ state, sub }) {
         ))}
       </Card>
 
-      <Card title="Данжи — Catacombs" className="span-7" right={<PlanLink steps={steps} cat="Данжи" />}>
+      <Card title="Dungeons — Catacombs" className="span-7" right={<PlanLink steps={steps} cat="Dungeons" />}>
         <div className="stats-row">
           <Stat label="Catacombs" value={d.catacombs.level} sub={`${Math.round(d.catacombs.progress * 100)}% до следующего`} accent="#ff5e5e" icon={<img src="/api/texture/bone" alt="" />} />
-          <Stat label="Средний класс" value={d.classAverage.toFixed(1).replace('.', ',')} sub={`выбран: ${d.classes[d.selectedClass]?.name || '—'}`} accent="#f59e0b" icon={<img src="/api/texture/bow" alt="" />} />
-          <Stat label="Секреты" value={num(d.secrets)} accent="#a78bfa" icon={<img src="/api/texture/map" alt="" />} />
+          <Stat label="Class Average" value={d.classAverage.toFixed(1).replace('.', ',')} sub={`выбран: ${d.classes[d.selectedClass]?.name || '—'}`} accent="#f59e0b" icon={<img src="/api/texture/bow" alt="" />} />
+          <Stat label="Secrets" value={num(d.secrets)} accent="#a78bfa" icon={<img src="/api/texture/map" alt="" />} />
         </div>
         <div className="classes">
           {Object.entries(d.classes).map(([k, c]) => (
@@ -86,23 +86,23 @@ export default function Skills({ state, sub }) {
         </div>
       </Card>
 
-      <Card title="Добыча и Crimson Isle" className="span-5" right={<PlanLink steps={steps} cat="Добыча" />}>
+      <Card title="Mining и Crimson Isle" className="span-5" right={<PlanLink steps={steps} cat="Mining" />}>
         <div className="kv">
           <span>Heart of the Mountain</span><b>{m.mining.hotm.level}/10</b>
           <span>Mithril Powder</span><b>{num(m.mining.powder.mithril)}</b>
           <span>Gemstone Powder</span><b>{num(m.mining.powder.gemstone)}</b>
           <span>Glacite Powder</span><b>{num(m.mining.powder.glacite)}</b>
           <span>Crystal Nucleus</span><b>{num(m.mining.nucleusRuns)} {plural(m.mining.nucleusRuns || 0, 'раз', 'раза', 'раз')}</b>
-          <span>Фракция</span><b>{m.crimson.faction === 'barbarians' ? 'Варвары' : m.crimson.faction === 'mages' ? 'Маги' : '—'} ({num(Math.max(m.crimson.barbarianRep, m.crimson.mageRep))} реп.)</b>
+          <span>Faction</span><b>{m.crimson.faction === 'barbarians' ? 'Barbarians' : m.crimson.faction === 'mages' ? 'Mages' : '—'} ({num(Math.max(m.crimson.barbarianRep, m.crimson.mageRep))} реп.)</b>
           <span>Kuudra</span><b className="kuudra-tiers">{['basic', 'hot', 'burning', 'fiery', 'infernal'].map(t => <span key={t} className={`kt kt-${t} ${m.crimson.kuudra[t] ? '' : 'zero'}`} title={`Kuudra ${t[0].toUpperCase() + t.slice(1)}: ${m.crimson.kuudra[t]} ${plural(m.crimson.kuudra[t] || 0, 'заход', 'захода', 'заходов')}`}>{t[0].toUpperCase() + t.slice(1)} <i>{m.crimson.kuudra[t]}</i></span>)}</b>
           <span>Dojo</span><b>{(() => { const pts = Object.entries(m.crimson.dojo || {}).filter(([k]) => k.startsWith('dojo_points_')).map(([, v]) => v || 0); return pts.length ? <>{num(pts.reduce((a, b) => a + b, 0))} очк. · S {pts.filter(v => v >= 1000).length}/7 <a href="#/guides/crimson" className="link small">гайд →</a></> : <a href="#/guides/crimson" className="link small">не пройдено · гайд →</a>; })()}</b>
-          <span>Сад: медь</span><b>{num(m.garden.copper)}</b>
+          <span>Garden: Copper</span><b>{num(m.garden.copper)}</b>
           <span>Rift: Enigma Souls</span><b>{m.rift.enigmaSouls}/52</b>
-          <span>Феи</span><b>{m.fairySouls.collected}{m.fairySouls.total ? ` / ${m.fairySouls.total}` : ''} {m.fairySouls.unspent ? <Badge color="#f59e0b">{m.fairySouls.unspent} не сдано</Badge> : null}</b>
+          <span>Fairy Souls</span><b>{m.fairySouls.collected}{m.fairySouls.total ? ` / ${m.fairySouls.total}` : ''} {m.fairySouls.unspent ? <Badge color="#f59e0b">{m.fairySouls.unspent} не сдано</Badge> : null}</b>
         </div>
         {m.fishing?.trophyTiers && (
           <div className="trophy-wide">
-            <div className="progress-labels"><span>Трофейная рыба по тирам</span><a href="#/guides/trophy" className="link small">план до алмаза →</a></div>
+            <div className="progress-labels"><span>Trophy Fish по тирам</span><a href="#/guides/trophy" className="link small">план до алмаза →</a></div>
             <TrophyTiers counts={m.fishing.trophyTiers} compact />
           </div>
         )}

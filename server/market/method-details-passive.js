@@ -42,7 +42,7 @@ export const PASSIVE_DETAILS = {
     effort: 'daily', risk: 'mid', xp: 'Опыта нет',
     steps: [
       'Дождись, когда мэром станет Diaz (дата смены мэра — в разделе «События»).',
-      'Подойди к Richard в Trade Center в Хабе и открой аукцион Stonks.',
+      'Подойди к Richard в Trade Center в Hub и открой аукцион Stonks.',
       'Ставка от 2 млн: каждый участник получает хотя бы один Stock of Stonks, больше ставка — больше акций.',
       'Посчитай цену одной акции по своей ставке и сравни с ценой Stock of Stonks на Bazaar с учётом налога.',
       'Акции продай на Bazaar или обменяй у Liz: Freshly-minted Coins за 1, Golden Fragment за 3, Avaricious Chalice за 50.',

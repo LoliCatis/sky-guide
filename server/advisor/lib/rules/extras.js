@@ -35,8 +35,8 @@ export function chocolateRules(ctx, add) {
   if (!top.length) return;
   add({
     id: 'chocolate-next', cat: 'Быстрые победы', priority: top[0].prio >= 88 ? 70 : 42, effort: 'минуты',
-    title: `Шоколадная фабрика: ${top[0].title}`,
-    why: 'Шоколад копится сам: в Chocolate Shop он меняется на полезные предметы и открывает кроликов, а кролики усиливают фабрику.',
+    title: `Chocolate Factory: ${top[0].title}`,
+    why: 'Chocolate копится сам: в Chocolate Shop он меняется на полезные предметы и открывает кроликов, а кролики усиливают фабрику.',
     how: top.map(t => `${t.title}. ${t.text}`),
     link: 'skills',
   });

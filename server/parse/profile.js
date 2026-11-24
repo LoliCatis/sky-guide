@@ -102,7 +102,7 @@ async function parseMuseum(extra) {
   };
 }
 
-// Гардероб теперь лежит в members[uuid].loadout (система наборов), а не в inventory.wardrobe_contents.
+// Wardrobe теперь лежит в members[uuid].loadout (система наборов), а не в inventory.wardrobe_contents.
 // loadout.armor[N] = { id, HELMET, CHESTPLATE, LEGGINGS, BOOTS: { type, data } }, loadout.equipment[N] = { EQUIPMENT_SLOT_1..4 }
 async function loadoutSets(lo, kind) {
   const parts = kind === 'armor' ? ['HELMET', 'CHESTPLATE', 'LEGGINGS', 'BOOTS'] : ['EQUIPMENT_SLOT_1', 'EQUIPMENT_SLOT_2', 'EQUIPMENT_SLOT_3', 'EQUIPMENT_SLOT_4'];
@@ -166,7 +166,7 @@ async function inventories(m) {
   return r;
 }
 
-// Дополнительные сырые данные для гайдов по добыче, Foraging (Galatea) и Саду.
+// Дополнительные сырые данные для гайдов по добыче, Foraging (Galatea) и Garden.
 // HotM/HotF (опыт, узлы, токены, кристаллы, Glacite) уже разобраны в mining / hotfXp / hotfNodes — здесь только остальное.
 const num = v => (Number.isFinite(Number(v)) ? Number(v) : 0);
 // foraging_core.whispers = { forest: { total, available?, spent? }, desert: {…} } (поля внутри могут меняться)
@@ -410,7 +410,7 @@ export async function parseMember(profile, uuid, extra = {}) {
     purse: g(m, 'currencies.coin_purse', 0),
     bank: g(profile, 'banking.balance', null),
     personalBank: g(m, 'profile.bank_account', 0),
-    // Для блока «Банк»: улучшения счёта лежат в leveling.completed_tasks (BANK_UPGRADE_GOLD…), начисления процентов — в transactions
+    // Для блока «Bank»: улучшения счёта лежат в leveling.completed_tasks (BANK_UPGRADE_GOLD…), начисления процентов — в transactions
     bankUpgrades: (g(m, 'leveling.completed_tasks', []) || []).filter(t => typeof t === 'string' && t.startsWith('BANK_UPGRADE_')),
     personalBankUpgrade: g(m, 'profile.personal_bank_upgrade', 0),
     bankTransactions: (g(profile, 'banking.transactions', []) || []).slice(-60).map(t => ({

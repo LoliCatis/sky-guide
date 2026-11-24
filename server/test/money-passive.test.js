@@ -76,10 +76,10 @@ test('проценты банка падают по ступеням', () => {
 });
 
 test('перки мэра меняют доход методов по id и по тегу', () => {
-  assert.equal(mayorBoost({ id: 'slayer-zombie', tag: 'Слееры' }, ['Pathfinder', 'SLASHED Pricing']).factor, 1.16);
+  assert.equal(mayorBoost({ id: 'slayer-zombie', tag: 'Slayers' }, ['Pathfinder', 'SLASHED Pricing']).factor, 1.16);
   assert.equal(mayorBoost({ id: 'x', tag: 'Миньоны' }, ['TURBO MINIONS!!!']).factor, 2);
-  assert.equal(mayorBoost({ id: 'farming', tag: 'Фермерство' }, ['Pathfinder']), null);
-  assert.match(mayorNoteText(mayorBoost({ id: 'forge', tag: 'Добыча' }, ['Molten Forge'])), /Cole.*\+25%/);
+  assert.equal(mayorBoost({ id: 'farming', tag: 'Farming' }, ['Pathfinder']), null);
+  assert.match(mayorNoteText(mayorBoost({ id: 'forge', tag: 'Mining' }, ['Molten Forge'])), /Cole.*\+25%/);
   const base = moneyMethods(member(), market(), {}).find(x => x.id === 'slayer-zombie');
   const aatrox = moneyMethods(member(), market(), { mayor: 'Aatrox', perks: ['Pathfinder'] }).find(x => x.id === 'slayer-zombie');
   assert.ok(Math.abs(aatrox.coinsPerHour - base.coinsPerHour * 1.1) < 1);
@@ -96,7 +96,7 @@ test('перки мэра меняют доход методов по id и по
 test('Apex Minion: тир X и XI дают два Apex, Farming Simulator дохода не меняет (ревью #174)', () => {
   const apex = t => infernoPlan(market(), { tier: t })[0].parts.find(p => p.id === 'INFERNO_APEX').n;
   assert.ok(apex(10) > apex(9) * 1.9);
-  assert.equal(mayorBoost({ id: 'farming', tag: 'Фермерство' }, ['Farming Simulator']).factor, 1);
+  assert.equal(mayorBoost({ id: 'farming', tag: 'Farming' }, ['Farming Simulator']).factor, 1);
 });
 
 test('данные с вики: Chili 1/136, Vertex 1/5950, банк до 55 млрд, сброс Matriarch в 20:00 ET', async () => {

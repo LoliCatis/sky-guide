@@ -35,8 +35,8 @@ export function parseCount(s) {
 // Валюты в магазинах NPC: как называется и откуда берётся
 const CURRENCY = {
   SKYBLOCK_COIN: { ru: 'монет', coins: true },
-  SKYBLOCK_BIT: { ru: 'Bits', how: 'Bits начисляются, пока активен Booster Cookie; тратятся в Community Shop у Elizabeth (Хаб)' },
-  SKYBLOCK_BITS: { ru: 'Bits', how: 'Bits начисляются, пока активен Booster Cookie; тратятся в Community Shop у Elizabeth (Хаб)' },
+  SKYBLOCK_BIT: { ru: 'Bits', how: 'Bits начисляются, пока активен Booster Cookie; тратятся в Community Shop у Elizabeth (Hub)' },
+  SKYBLOCK_BITS: { ru: 'Bits', how: 'Bits начисляются, пока активен Booster Cookie; тратятся в Community Shop у Elizabeth (Hub)' },
   SKYBLOCK_COPPER: { ru: 'Copper', how: 'Copper дают посетители Garden (Visitors) за выполненные заказы' },
   SKYBLOCK_MOTE: { ru: 'Motes', how: 'Motes — валюта Rift: за мобов, продажу предметов и задания в Rift' },
   SKYBLOCK_PELT: { ru: 'Pelts', how: 'Pelts дают за охоту на животных по заданиям Trevor в Mushroom Desert' },
@@ -99,7 +99,7 @@ export function islandRu(key, constants) {
 /** Ближайший варп к точке на острове: { warp, dist } */
 export function nearestWarp(island, x, z, constants) {
   const warps = (constants?.islands?.island_warps || []).filter(w => w.mode === island);
-  if (island === 'hub') warps.unshift({ warp: 'hub', x: -3, z: -70 }); // точка появления в Хабе
+  if (island === 'hub') warps.unshift({ warp: 'hub', x: -3, z: -70 }); // точка появления в Hub
   let best = null;
   for (const w of warps) {
     const d = x == null ? 0 : Math.hypot(w.x - x, w.z - z);
@@ -113,14 +113,14 @@ const MAIN_WARP = { hub: 'hub', combat_1: 'spider', combat_3: 'end', crimson_isl
 
 // Сезонные и особые места: когда туда вообще можно попасть
 const ISLAND_NOTE = {
-  winter: 'Jerry\'s Workshop открыт только в месяц Late Winter (зима SkyBlock): попасть туда можно через порталы в Хабе.',
-  rift: 'В Rift попадают через портал в Wizard Tower в Хабе (нужен Rift-доступ).',
+  winter: 'Jerry\'s Workshop открыт только в месяц Late Winter (зима SkyBlock): попасть туда можно через порталы в Hub.',
+  rift: 'В Rift попадают через портал в Wizard Tower в Hub (нужен Rift-доступ).',
   dungeon: 'Это данж: заходи через Dungeon Hub (/warp dungeon_hub), группу собирают в Party Finder.',
   kuudra: 'Kuudra — босс-бой на Crimson Isle, заходят у NPC Elle в Dragontail.',
   dynamic: 'Встречается на личном острове и в обычных местах обитания этого моба.',
 };
 
-// ---------- контекст источника дропа: этаж данжа, тир слеера, морское существо, ивент ----------
+// ---------- контекст источника дропа: этаж данжа, тир слеера, Sea Creature, ивент ----------
 const DUNGEON_BOSS = { BONZO_BOSS: 1, SCARF_BOSS: 2, PROFESSOR_BOSS: 3, THORN_BOSS: 4, LIVID_BOSS: 5, SADAN_BOSS: 6, NECRON_BOSS: 7 };
 const SLAYER_BOSS = { REVENANT_HORROR: 'zombie', TARANTULA_BROODFATHER: 'spider', SVEN_PACKMASTER: 'wolf', VOIDGLOOM_SERAPH: 'enderman', INFERNO_DEMONLORD: 'blaze', RIFTSTALKER_BLOODFIEND: 'vampire' };
 const SLAYER_GUIDE = { zombie: 'slayer-zombie', spider: 'slayer-spider', wolf: 'slayer-wolf', enderman: 'slayer-enderman', blaze: 'slayer-blaze', vampire: 'slayer-vampire' };
@@ -168,7 +168,7 @@ export function mobContext(mobId, name, member) {
     const cost = costs[tier - 1];
     const cur = key === 'vampire' ? 'Motes' : 'монет';
     const out = {
-      how: `Слеер-босс ${info.title || name} ${ROMAN[tier]}: квест берут ${key === 'vampire' ? 'у Maddox the Slayer в Rift (Stillgore Château)' : 'у Maddox the Slayer (Хаб, или по Maddox Batphone)'}${cost ? `, квест стоит ${fmtCoins(cost)} ${cur}` : ''}. Где бить: ${info.where || 'по месту обитания босса'}.`,
+      how: `Slayer-босс ${info.title || name} ${ROMAN[tier]}: квест берут ${key === 'vampire' ? 'у Maddox the Slayer в Rift (Stillgore Château)' : 'у Maddox the Slayer (Hub, или по Maddox Batphone)'}${cost ? `, квест стоит ${fmtCoins(cost)} ${cur}` : ''}. Где бить: ${info.where || 'по месту обитания босса'}.`,
       guide: SLAYER_GUIDE[key],
     };
     const unlock = info.unlock && !/сразу/.test(info.unlock) ? info.unlock.replace(/^Нужен /, '') : null;
@@ -182,10 +182,10 @@ export function mobContext(mobId, name, member) {
   if (DRAGONS.test(mobId)) return { how: 'Дракон Энда: призывается на Dragon\'s Nest в The End, когда игроки кладут 8 Summoning Eye в алтарь. Награда зависит от вклада в урон.' };
   if (DIANA.test(mobId)) return { how: 'Моб Mythological Ritual: появляется из грифоновых нор (Griffin Burrow), которые ищут с Ancestral Spade.', event: 'Только пока мэр — Diana (ивент Mythological Ritual).' };
   if (SPOOKY.test(mobId)) return { how: 'Моб Spooky Festival.', event: 'Только во время Spooky Festival (осень SkyBlock).' };
-  if (SPOOKY_SC.test(mobId)) return { how: 'Морское существо Spooky Festival: ловится удочкой.', event: 'Только во время Spooky Festival.' };
+  if (SPOOKY_SC.test(mobId)) return { how: 'Sea Creature Spooky Festival: ловится удочкой.', event: 'Только во время Spooky Festival.' };
   if (SHARK_SC.test(mobId)) return { how: 'Акула Fishing Festival: ловится удочкой.', event: 'Только во время Fishing Festival (мэр Marina или перк Fishing Festival).' };
   if (JERRY.test(mobId)) return { how: 'Jerry, который выпрыгивает из удочки или кирки.', event: 'Только при мэре Jerry (перк Jerrypocalypse).' };
-  if (/_SC$/.test(mobId)) return { how: 'Морское существо: ловится удочкой в этой локации.' };
+  if (/_SC$/.test(mobId)) return { how: 'Sea Creature: ловится удочкой в этой локации.' };
   if (/^SKYBLOCK_CORPSE_/.test(mobId)) return { how: 'Труп в Glacite Mineshaft: открывается ключом, лут — из трупа.' };
   if (/_GIFTS$/.test(mobId)) return { how: 'Подарок, который падает при рубке деревьев на Galatea.' };
   if (/_MINIBOSS$/.test(mobId)) return { how: 'Мини-босс.' };
@@ -289,7 +289,7 @@ export function costTree(id, count, ctx, depth = 0, seen = new Set(), budget = {
     if (rift) Object.assign(node, { via: 'rift', viaRu: rift.short, rift: true });
     else if (drop) { const l = dropLabel(drop.amount, drop.chance); Object.assign(node, { via: 'drop', viaRu: `выпадает с ${drop.name}${l ? ` (${l})` : ''}` }); }
     else if (npcAny) Object.assign(node, { via: 'npc', viaRu: `NPC ${items.get(npcAny.npc)?.name?.replace(/\s*\(NPC\)$/, '') || npcAny.npc} за ${costLine(npcAny.cost, items)}` });
-    else if (idx.forge.get(id)) Object.assign(node, { via: 'forge', viaRu: 'кузница (Forge) в Dwarven Mines' });
+    else if (idx.forge.get(id)) Object.assign(node, { via: 'forge', viaRu: 'Forge в Dwarven Mines' });
     else Object.assign(node, { viaRu: 'нет цены и рецепта — смотри карточку предмета' });
   }
   return node;
@@ -420,7 +420,7 @@ export function buildObtainGuide(id, ctx) {
       methods.push({
         kind: 'market', title: 'Купить на Bazaar', total: mk.price,
         steps: [
-          { text: 'Открой Bazaar: команда /bz (нужен активный Booster Cookie) или NPC Bazaar в Хабе.' },
+          { text: 'Открой Bazaar: команда /bz (нужен активный Booster Cookie) или NPC Bazaar в Hub.' },
           { text: `Найди «${name}» поиском и купи сразу (кнопка «Buy Instantly») — сейчас ${fmtCoins(mk.price)} монет за штуку.` },
           ...(mk.order ? [{ text: `Дешевле — выставить заявку на покупку (кнопка «Create Buy Order»): примерно ${fmtCoins(mk.order)} за штуку, но придётся подождать, пока кто-то продаст.` }] : []),
         ],
@@ -429,7 +429,7 @@ export function buildObtainGuide(id, ctx) {
       methods.push({
         kind: 'market', title: 'Купить на аукционе', total: mk.price,
         steps: [
-          { text: 'Открой аукцион: команда /ah (нужен Booster Cookie) или Auction Master в Хабе.' },
+          { text: 'Открой аукцион: команда /ah (нужен Booster Cookie) или Auction Master в Hub.' },
           { text: `Найди «${name}» и выбери лот с пометкой BIN (Buy It Now) — самый дешёвый сейчас ${fmtCoins(mk.price)}${mk.count ? `, всего лотов: ${mk.count}` : ''}.` },
           { text: 'Проверь в описании лота зачарования, реформу и звёзды: дешёвый лот часто «голый».' },
         ],
@@ -463,7 +463,7 @@ export function buildObtainGuide(id, ctx) {
     methods.push({ kind: 'craft', title: 'Скрафтить', total: total != null ? total / (r.count || 1) : null, req, steps, grid: r.grid, ...(req?.guide ? { guide: req.guide } : {}) });
   }
 
-  // 4. Кузница
+  // 4. Forge
   for (const r of (idx.forge.get(id) || []).slice(0, 2)) {
     const tree = r.inputs.map(c => costTree(c.id, c.count, ctx, 1, new Set([id])));
     const req = reqStatus(r.crafttext, null, ctx);
@@ -471,8 +471,8 @@ export function buildObtainGuide(id, ctx) {
     if (req) steps.push({ text: `Нужно: ${req.text}.`, req });
     steps.push({ text: 'Собери ингредиенты:', tree });
     steps.push({ text: 'Иди в The Forge в Dwarven Mines — телепорт /warp forge.' });
-    steps.push({ text: `Положи всё в свободный слот кузницы и жди ${fmtDuration(r.duration)}. Перк Quick Forge в Heart of the Mountain сокращает время.` });
-    methods.push({ kind: 'forge', title: 'Выковать в кузнице (Forge)', total: sumTotal(tree), req, steps, duration: r.duration });
+    steps.push({ text: `Положи всё в свободный слот Forge и жди ${fmtDuration(r.duration)}. Перк Quick Forge в Heart of the Mountain сокращает время.` });
+    methods.push({ kind: 'forge', title: 'Выковать в Forge', total: sumTotal(tree), req, steps, duration: r.duration });
   }
 
   // 5. Улучшение питомца у Kat
@@ -538,7 +538,7 @@ export function buildObtainGuide(id, ctx) {
     const c = ctx.collections?.get(rc.name.toLowerCase());
     const have = ctx.member ? Number(ctx.member.collections?.[c?.id || id] || 0) : null;
     const steps = [
-      { text: 'Отправляйся в Рифт через портал в Wizard Tower в Хабе (время внутри ограничено Rift Time).' },
+      { text: 'Отправляйся в Рифт через портал в Wizard Tower в Hub (время внутри ограничено Rift Time).' },
       { text: rc.how },
     ];
     if (rc.tools) steps.push({ text: rc.tools });

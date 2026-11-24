@@ -23,7 +23,7 @@ function buildMetrics(m) {
   return [
     { group: 'main', key: 'nw', label: 'Состояние', fmt: coins, color: MAIN_COLOR, money: true },
     { group: 'main', key: 'items', label: 'Предметы', fmt: coins, color: MAIN_COLOR, money: true },
-    { group: 'main', key: 'coins', label: 'Монеты (кошелёк + банк)', fmt: coins, color: MAIN_COLOR, money: true },
+    { group: 'main', key: 'coins', label: 'Монеты (кошелёк + Bank)', fmt: coins, color: MAIN_COLOR, money: true },
     { group: 'main', key: 'sb', label: 'Уровень SkyBlock', fmt: lvl, color: OTHER_COLOR },
     { group: 'main', key: 'mp', label: 'Magical Power', fmt: num, color: OTHER_COLOR },
     { group: 'main', key: 'cata', label: 'Catacombs', fmt: lvl, color: DUNGEON_COLOR },
@@ -38,13 +38,13 @@ function buildMetrics(m) {
     { group: 'gather', key: 'powder.gemstone', label: 'Gemstone Powder (всего)', fmt: coins, color: MINING_COLOR },
     { group: 'gather', key: 'powder.glacite', label: 'Glacite Powder (всего)', fmt: coins, color: MINING_COLOR },
     { group: 'gather', key: 'hotfXp', label: 'Heart of the Forest', fmt: xp, color: SKILL_COLOR },
-    { group: 'gather', key: 'garden', label: 'Опыт Сада', fmt: xp, color: SKILL_COLOR },
-    { group: 'gather', key: 'visitors', label: 'Гости Сада', fmt: num, color: SKILL_COLOR },
-    { group: 'gather', key: 'trophy', label: 'Трофейная рыба', fmt: num, color: MINING_COLOR },
+    { group: 'gather', key: 'garden', label: 'Опыт Garden', fmt: xp, color: SKILL_COLOR },
+    { group: 'gather', key: 'visitors', label: 'Garden Visitors', fmt: num, color: SKILL_COLOR },
+    { group: 'gather', key: 'trophy', label: 'Trophy Fish', fmt: num, color: MINING_COLOR },
     { group: 'gather', key: 'kuudra', label: 'Забеги Kuudra', fmt: num, color: SLAYER_COLOR },
     { group: 'gather', key: 'rep', label: 'Репутация Crimson Isle', fmt: num, color: SLAYER_COLOR },
-    { group: 'other', key: 'bank', label: 'Банк', fmt: coins, color: MAIN_COLOR, money: true },
-    { group: 'other', key: 'purse', label: 'Кошелёк', fmt: coins, color: MAIN_COLOR, money: true },
+    { group: 'other', key: 'bank', label: 'Bank', fmt: coins, color: MAIN_COLOR, money: true },
+    { group: 'other', key: 'purse', label: 'Purse', fmt: coins, color: MAIN_COLOR, money: true },
     { group: 'other', key: 'souls', label: 'Fairy Souls', fmt: num, color: OTHER_COLOR },
     { group: 'other', key: 'petScore', label: 'Pet Score', fmt: num, color: OTHER_COLOR },
     { group: 'other', key: 'pets', label: 'Питомцев', fmt: num, color: OTHER_COLOR },
@@ -53,7 +53,7 @@ function buildMetrics(m) {
     { group: 'other', key: 'tasks', label: 'Задач SkyBlock', fmt: num, color: OTHER_COLOR },
   ];
 }
-const GROUPS = [['main', 'Главное'], ['skills', 'Скиллы'], ['slayers', 'Слееры'], ['dungeons', 'Данжи'], ['gather', 'Добыча'], ['other', 'Прочее']];
+const GROUPS = [['main', 'Главное'], ['skills', 'Skills'], ['slayers', 'Slayers'], ['dungeons', 'Dungeons'], ['gather', 'Mining'], ['other', 'Прочее']];
 
 const short = mt => (mt.fmt === xp ? coins : mt.fmt);
 const at = (p, key) => key.split('.').reduce((o, k) => (o == null ? undefined : o[k]), p);

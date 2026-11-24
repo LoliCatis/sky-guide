@@ -8,7 +8,7 @@ import {
 } from './glossary.js';
 import { wikiDropAmount } from '../../analysis/obtain.js';
 import { stripColor, normalizeGlyphs, translateLore, translateLoreLine } from './lore.js';
-import { TYPE_GENDER, agreeAdj } from './glossary.js';
+import { TYPE_GENDER, agreeAdj, RARITY_WORDS_RU } from './glossary.js';
 export { agreeAdj };
 
 /**
@@ -131,11 +131,10 @@ export function mergeMobVariants(list) {
   return list.filter(w => !drop.has(w)).map(w => merged.get(w) || w);
 }
 
-// Осколки охоты (Galatea): «FOREST SHARD (ID R34)» → «Осколок (лес), ID R34»
-const SHARD_FAMILY = { FOREST: 'лес', WATER: 'вода', COMBAT: 'бой' };
+// Осколки охоты (Galatea): «FOREST SHARD (ID R34)» → «Forest Shard, ID R34» — как в игре
 function typeRuOf(type) {
   const sh = /^(\w+) SHARD \(ID (\w+)\)$/.exec(type);
-  if (sh) return `Осколок${SHARD_FAMILY[sh[1]] ? ` (${SHARD_FAMILY[sh[1]]})` : ''}, ID ${sh[2]}`;
+  if (sh) return `${sh[1][0]}${sh[1].slice(1).toLowerCase()} Shard, ID ${sh[2]}`;
   return ITEM_TYPES[type] || type;
 }
 
@@ -218,19 +217,15 @@ export function buildDatabase(rawItems, { constants = {}, vanillaRu = {}, curate
   const reqFromCrafttext = (t, slayerReq) => {
     if (slayerReq && !t) {
       const m = /^([A-Z]+)_(\d+)$/.exec(slayerReq);
-      if (m && SLAYER_REQ[m[1]]) return `слеер «${SLAYER_REQ[m[1]]}» ${m[2]}`;
+      if (m && SLAYER_REQ[m[1]]) return `${SLAYER_REQ[m[1]]} Slayer ${m[2]}`;
     }
     if (!t) return null;
     return t.replace(/^Requires:?\s*/, '').split(/\s*&\s*/).map(s => {
       let m;
-      if ((m = /^(Zombie|Spider|Wolf|Enderman|Blaze|Vampire) Slayer (\d+)$/.exec(s))) {
-        const ru = { Zombie: 'Зомби', Spider: 'Паук', Wolf: 'Волк', Enderman: 'Эндермен', Blaze: 'Блейз', Vampire: 'Вампир' }[m[1]];
-        return `слеер «${ru}» ${m[2]}`;
-      }
       if ((m = /^HotM (\d+)$/.exec(s))) return `Heart of the Mountain ${m[1]}`;
       if ((m = /^HotF (\d+)$/.exec(s))) return `Heart of the Forest ${m[1]}`;
       if ((m = /^Bingo Rank ([IVX]+)$/.exec(s))) return `ранг Bingo ${m[1]}`;
-      if ((m = /^(.+) ([IVX]+)$/.exec(s))) return `коллекция ${vanillaRu[m[1]] ? `${m[1]} (${vanillaRu[m[1]].toLowerCase()})` : m[1]} ${m[2]}`;
+      if ((m = /^(.+) ([IVX]+)$/.exec(s))) return `коллекция ${m[1]} ${m[2]}`;
       return s;
     }).join(' и ');
   };
@@ -375,7 +370,7 @@ export function buildDatabase(rawItems, { constants = {}, vanillaRu = {}, curate
       if (vanillaRu[nameEn] && (it.vanilla || !/[A-Z]{2}/.test(it.id.replace(/_/g, '')))) nameRu = vanillaRu[nameEn];
       const em = /^Enchanted (.+)$/.exec(nameEn);
       if (em && vanillaRu[em[1]]) nameRu = enchantedRu(vanillaRu[em[1]]);
-      if (category === 'pet') nameRu = `Питомец ${nameEn}${rarity ? ` (${agreeAdj(RARITY[rarity] || rarity, 'm').toLowerCase()})` : ''}`;
+      if (category === 'pet') nameRu = `Питомец ${nameEn}${rarity ? ` (${(RARITY_WORDS_RU[rarity] || rarity).toLowerCase()})` : ''}`;
       if (category === 'npc') nameRu = `NPC ${nameEn}`;
       if (isBook) {
         const bm = /^(.+?) ([IVX]+)$/.exec(nameEn);
@@ -435,20 +430,20 @@ export function buildDatabase(rawItems, { constants = {}, vanillaRu = {}, curate
     const parts = [];
     {
       let head;
-      if (category === 'pet') head = `${agreeAdj(RARITY[rarity] || '', 'm')} питомец`.trim();
+      if (category === 'pet') head = rarity ? `Питомец, ${RARITY[rarity] || rarity}` : 'Питомец';
       else if (isBook) head = 'Зачарованная книга';
       else if (category === 'minion') head = 'Миньон';
       else if (category === 'npc') head = `NPC${it.island ? `, локация: ${islandRu(it.island)}` : ''}`;
       else if (category === 'mob') head = 'Моб';
-      else if (rarity && type) head = `${agreeAdj(RARITY[rarity], g)} ${typeRu.replace(/[А-ЯЁ][а-яё-]*/g, w => w.toLowerCase())}${dungeon ? ' для данжей' : ''}`;
-      else if (rarity) head = `${CATEGORIES[category] || 'Предмет'}, редкость «${RARITY[rarity]}»`;
+      else if (rarity && type) head = `${RARITY[rarity] || rarity} ${dungeon ? 'Dungeon ' : ''}${typeRu}`;
+      else if (rarity) head = `${CATEGORIES[category] || 'Предмет'}, ${RARITY[rarity] || rarity}`;
       else head = CATEGORIES[category] || 'Предмет';
       parts.push(head[0].toUpperCase() + head.slice(1) + '.');
       const st = Object.entries(stats).filter(([k]) => !['Accessory Power', 'Mana Cost', 'Cooldown', 'Soulflow Cost'].includes(k));
-      if (st.length) parts.push(`Характеристики: ${st.map(([k, v]) => `${STATS[k].toLowerCase()} ${v > 0 && units[k] !== ' с' ? '+' : ''}${v.toLocaleString('ru-RU')}${units[k] || ''}`).join(', ')}.`);
+      if (st.length) parts.push(`Характеристики: ${st.map(([k, v]) => `${STATS[k] || k} ${v > 0 && units[k] !== ' с' ? '+' : ''}${v.toLocaleString('ru-RU')}${units[k] || ''}`).join(', ')}.`);
       for (const a of abilities) {
         const trig = { 'RIGHT CLICK': 'ПКМ', 'LEFT CLICK': 'ЛКМ', SNEAK: 'присесть', 'SNEAK RIGHT CLICK': 'Shift+ПКМ', 'DOUBLE RIGHT CLICK': 'двойной ПКМ',
-          'Full Set Bonus': 'бонус полного сета', 'Piece Bonus': 'бонус предмета', 'Dungeon Bonus': 'бонус в данже' }[a.trigger];
+          'Full Set Bonus': 'Full Set Bonus', 'Piece Bonus': 'Piece Bonus', 'Dungeon Bonus': 'Dungeon Bonus' }[a.trigger];
         parts.push(`${/Bonus/.test(a.trigger || '') ? 'Бонус' : 'Способность'} «${a.name}»${trig ? ` (${trig})` : ''}.`);
       }
       if (requirementsRu.length) parts.push(requirementsRu.join(' '));

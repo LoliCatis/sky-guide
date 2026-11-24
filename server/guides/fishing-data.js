@@ -1,8 +1,8 @@
 // Справочные данные гайда по рыбалке.
 // Удочки, броня, детали удочек и наживки: id, требования и описания сверены с репозиторием NEU (items/*.json, ноябрь 2026).
-// Морские существа: список и ключи бестиария из NEU constants/bestiary.json. Требования Fishing сверены 23.11.2026
+// Sea Creatures: список и ключи бестиария из NEU constants/bestiary.json. Требования Fishing сверены 23.11.2026
 // по страницам существ на fandom-вики; lvl = null только у Nutcracker (на вики его страницы нет).
-// Трофейная рыба: условия поимки из описаний предметов NEU (*_BRONZE.json), разделка у Odger — fandom «Odger» и SkyHanni (у NEU для Lavahorse ошибка).
+// Trophy Fish: условия поимки из описаний предметов NEU (*_BRONZE.json), разделка у Odger — fandom «Odger» и SkyHanni (у NEU для Lavahorse ошибка).
 
 /** Удочки для воды и лавы по порядку улучшения. lvl — требование Fishing из описания предмета. */
 export const RODS = [
@@ -34,7 +34,7 @@ export const ROD_PARTS = [
 
 /** Броня для рыбалки по порядку. set — префикс id частей (HELMET/CHESTPLATE/LEGGINGS/BOOTS). */
 export const ARMOR = [
-  { set: 'ANGLER', name: 'Angler Armor', lvl: 0, kind: 'water', note: 'Fishing Merchant в Fisherman’s Hut (Хаб), 100 монет за часть' },
+  { set: 'ANGLER', name: 'Angler Armor', lvl: 0, kind: 'water', note: 'Fishing Merchant в Fisherman’s Hut (Hub), 100 монет за часть' },
   { set: 'BACKWATER', name: 'Backwater Armor', lvl: 5, kind: 'water', note: 'Junker Joel в Backwater Bayou: Angler-часть + 4 Rusty Coin' },
   { set: 'SALMON', name: 'Salmon Armor', lvl: 13, kind: 'water', note: 'крафт из Enchanted Raw Salmon (коллекция Raw Salmon VI)' },
   { set: 'SPONGE', name: 'Sponge Armor', lvl: 17, kind: 'water', note: 'крафт из 8 Enchanted Wet Sponge на нагрудник (коллекция Sponge IX)' },
@@ -57,7 +57,7 @@ export const EQUIPMENT = [
 ];
 
 /**
- * Морские существа. where — место/условие, keys — ключи бестиария (members.bestiary.kills), cap — убийств до макс. бестиария (NEU).
+ * Sea Creatures. where — место/условие, keys — ключи бестиария (members.bestiary.kills), cap — убийств до макс. бестиария (NEU).
  * lvl: требование Fishing, null — вики его не описывает.
  */
 export const CREATURES = [
@@ -137,7 +137,7 @@ export const ZONES = {
 /** Все ключи бестиария рыбалки — по ним ядро отбирает убийства из профиля. */
 export const FISHING_MOB_KEYS = new Set(CREATURES.flatMap(c => c.keys));
 
-/** 18 трофейных рыб: ключ в API, имя, редкость, где ловить, Magmafish при разделке (бронза/серебро/золото/алмаз). */
+/** 18 Trophy Fish: ключ в API, имя, редкость, где ловить, Magmafish при разделке (бронза/серебро/золото/алмаз). */
 export const TROPHY_FISH = [
   { key: 'blobfish', name: 'Blobfish', rarity: 'COMMON', how: 'ловится везде', fillet: [4, 8, 12, 16] },
   { key: 'sulphur_skitter', name: 'Sulphur Skitter', rarity: 'COMMON', how: 'стой в 4 блоках от блока Sulphur Ore', fillet: [40, 60, 80, 120] },

@@ -177,7 +177,7 @@ export function analyzeSackLadder(member, o = {}) {
 }
 
 // Где стоит NPC магазина: остров, координаты и ближайший /warp (по NEU)
-const SEASONAL = { winter: "Остров открыт только в Late Winter (зима SkyBlock), вход через порталы в Хабе или /warp winter." };
+const SEASONAL = { winter: "Остров открыт только в Late Winter (зима SkyBlock), вход через порталы в Hub или /warp winter." };
 function shopPlace(npcId, o) {
   const n = npcId && o.items?.get?.(npcId);
   if (!n?.island) return null;

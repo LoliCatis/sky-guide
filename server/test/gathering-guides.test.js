@@ -71,7 +71,7 @@ test('гайд по Саду: Crop Upgrades по меди, участок, го�
   const titles = g.next.map(n => n.title).join('\n');
   assert.match(titles, /Crop Upgrades: 12 культур/);
   assert.match(titles, /Extra Farming Fortune: 13\/15/);
-  assert.match(titles, /участок Сада: 23\/24/);
+  assert.match(titles, /участок Garden: 23\/24/);
   const plot = g.next.find(n => /участок/.test(n.title));
   assert.match(plot.why, /15× /); // четвёртый экспертный участок стоит 15 Enchanted Compost
   const crops = g.sections.find(s => s.title === 'Культуры');

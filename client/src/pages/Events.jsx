@@ -96,7 +96,7 @@ function ElectionCard({ cal, now }) {
               </div>
             ))}
           </div>
-          <p className="muted small">Голосуют у Election Booth в Хабе. Победитель станет мэром {when(e.closes)}.</p>
+          <p className="muted small">Голосуют у Election Booth в Hub. Победитель станет мэром {when(e.closes)}.</p>
         </>
       ) : (
         <p className="small">Голосование откроется {when(e.opens)} (27 число позднего лета) и продлится до 27 числа поздней весны: примерно 4 дня реального времени. Здесь появятся кандидаты и проценты голосов.</p>

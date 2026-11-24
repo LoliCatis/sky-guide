@@ -12,6 +12,7 @@ import { buildDatabase } from './lib/build-db.js';
 import { createSearch } from './lib/search.js';
 import { translateLore, translateLoreLine as tLine, stripColor } from './lib/lore.js';
 import { translateStat as tStat, fmtCoins } from './lib/glossary.js';
+import { enTerms } from './lib/terms.js';
 
 export * as glossary from './lib/glossary.js';
 export { translit, skeleton, ALIASES } from './lib/search.js';
@@ -146,7 +147,8 @@ export function getLoreRu(id) {
   ensure();
   const key = normalizeId(id);
   if (!state.lore) state.lore = readJson('lore-ru.json', {});
-  return state.lore[key] || null;
+  const lines = state.lore[key];
+  return lines ? lines.map(enTerms) : null;
 }
 
 /**
@@ -172,7 +174,7 @@ export function listByCategory(category) {
   return Object.values(state.items).filter(i => i.category === category);
 }
 
-/** Перевод названия характеристики: «Crit Damage» / «crit_damage» → «Крит. урон» */
+/** Перевод названия характеристики: «Crit Damage» / «crit_damage» → «Crit Damage» */
 export const translateStat = tStat;
 
 /** Перевод строки лора с сохранением §-цветов (совместимо с server/i18n/ru.js ядра) */

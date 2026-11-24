@@ -20,8 +20,8 @@ export function prettyId(id) {
 }
 
 /**
- * Название для показа: русское из базы items-ru, где оно есть (имена собственные там остаются английскими),
- * иначе английское из NEU, иначе собранное из ID.
+ * Название для показа — как в игре, на английском (24.11.2026: игроки просили не переводить названия предметов;
+ * русские названия остались только для поиска). Берём из базы items-ru, иначе из NEU, иначе собираем из ID.
  * @param {string} id
  * @param {Map<string, {name?: string}>} [items] база NEU
  */
@@ -29,11 +29,7 @@ export function displayName(id, items) {
   if (!id) return '';
   let n = null;
   try { n = getNames(id); } catch { /* база ещё не готова */ }
-  if (n) {
-    const ru = clean(n.nameRu);
-    if (ru && !/^NPC /.test(ru)) return ru;
-    if (n.nameEn) return clean(n.nameEn);
-  }
+  if (n?.nameEn) return clean(n.nameEn);
   const neuName = items?.get(id)?.name || items?.get(String(id).replace(/:(\d+)$/, '-$1'))?.name;
   return neuName ? clean(neuName) : prettyId(id);
 }

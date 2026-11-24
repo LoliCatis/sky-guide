@@ -14,7 +14,7 @@ test('сравнение: короткая сводка без инвентар�
   assert.equal(s.player.name, 'OwnerCat');
   assert.equal(s.networth.total, 8.5e9);
   assert.ok(s.skills.farming && typeof s.skills.farming.level === 'number');
-  assert.ok(s.slayers.zombie && s.slayers.zombie.name === 'Зомби');
+  assert.ok(s.slayers.zombie && s.slayers.zombie.name === 'Zombie');
   assert.equal(typeof s.dungeons.level, 'number');
   assert.equal(s.gear.armor[0].nbt, undefined, 'без сырых данных предмета');
   assert.equal(s.gear.armor[1], null);

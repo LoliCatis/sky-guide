@@ -56,7 +56,7 @@ export function topMovers(ctx, { period = 'd1', limit = 15, minWeeklyCoins = 100
     const pts = ctx.binHistory?.[id];
     const ref = pts?.length ? refTs(pts) : null;
     if (ref == null) continue;
-    add(id, 'Аукцион', b.price, smoothAt(pts, ref, 1, half), null, { lots: b.count });
+    add(id, 'Auction House', b.price, smoothAt(pts, ref, 1, half), null, { lots: b.count });
   }
   // Аномалии (×10 и больше за период) почти всегда — ошибка лота, а не движение рынка
   const sane = rows.filter(r => r.pct < 900 && r.pct > -90);

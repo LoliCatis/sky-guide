@@ -1,4 +1,4 @@
-// Вкладки «Банк» и «Bits» на странице «Заработок» и блок Maxwell на странице «Аксессуары».
+// Вкладки «Bank» и «Bits» на странице «Заработок» и блок Maxwell на странице «Аксессуары».
 import { useEffect, useState } from 'react';
 import { Stat, Empty, Badge } from '../components/ui.jsx';
 import { ItemIcon } from '../components/ItemIcon.jsx';
@@ -22,7 +22,7 @@ export function BankTab() {
   const { data: b } = useApi('/bank', []);
   const now = useNow();
   if (!b) return <div className="loader"><div className="spinner" /></div>;
-  if (b.balance == null) return <Empty>Банк не виден: в настройках API Hypixel выключен доступ к банку.</Empty>;
+  if (b.balance == null) return <Empty>Bank не виден: в настройках API Hypixel выключен доступ к банку.</Empty>;
   const next = b.nextAt > now ? b.nextAt : b.nextAt + b.periodHours * 3600_000;
   return (
     <div className="wealth">
@@ -39,7 +39,7 @@ export function BankTab() {
           <li>Проценты приходят не каждый день, а <b>раз в сезон SkyBlock, то есть раз в 31 час</b>. Если ты был не в игре, начисление придёт при входе.</li>
           <li>Процент ступенчатый: <b>2% на первые 10 млн</b>, 1% на следующие 10 млн, дальше 0,5%, 0,2% и 0,1% (зависит от счёта). Выше потолка баланс процентов не даёт совсем.</li>
           <li>При твоём балансе {coins(b.balance)} это <b>{coins(b.expected)} за начисление ≈ {coins(b.expectedPerDay)} в сутки</b>{b.expectedPerDay > 60_000 ? ', то есть больше, чем 50 тыс. в день' : ''}.</li>
-          {b.coop && <li>Это общий банк кооператива. Личный банк каждого участника даёт ещё проценты по тем же ступеням, только всё в 5 раз меньше{b.personal > 0 ? `: у тебя ${coins(b.personal)} → +${coins(b.personalExpected)}` : ''}.</li>}
+          {b.coop && <li>Это общий Bank кооператива. Личный Bank каждого участника даёт ещё проценты по тем же ступеням, только всё в 5 раз меньше{b.personal > 0 ? `: у тебя ${coins(b.personal)} → +${coins(b.personalExpected)}` : ''}.</li>}
         </ul>
         {b.last && <div className="muted small">Последнее начисление в истории банка: <b className="green">+{coins(b.last.amount)}</b> {ago(b.last.at)}{b.history.length > 1 ? ` · до этого: ${b.history.slice(1, 4).map(h => '+' + coins(h.amount)).join(', ')}` : ''}</div>}
       </div>
@@ -62,7 +62,7 @@ export function BankTab() {
           ))}</tbody>
         </table>
       </div>
-      <div className="muted tiny" style={{ marginTop: 6 }}>Цена улучшения — монеты и предметы по ценам гайда 2021–22 (сейчас может отличаться), путь считается от твоего счёта. Luxurious и Palatial нужны, чтобы хранить больше, для них нужны ещё пожертвования в Музей; прибавку процентов у них не сверяли. Улучшать счёт — у Banker в Хабе.</div>
+      <div className="muted tiny" style={{ marginTop: 6 }}>Цена улучшения — монеты и предметы по ценам гайда 2021–22 (сейчас может отличаться), путь считается от твоего счёта. Luxurious и Palatial нужны, чтобы хранить больше, для них нужны ещё пожертвования в Музей; прибавку процентов у них не сверяли. Улучшать счёт — у Banker в Hub.</div>
     </div>
   );
 }
@@ -156,7 +156,7 @@ export function MaxwellCard() {
         </table>
       </div>
       {r.powers.length > 8 && <button className="btn ghost small" onClick={() => setAll(!all)} style={{ marginTop: 6 }}>{all ? 'Свернуть' : `Показать все ${r.powers.length}`}</button>}
-      <div className="muted tiny" style={{ marginTop: 6 }}>«Очки» — {r.role === 'mage' ? 'Intelligence (+ бонус к урону способностями)' : 'Strength + Crit Damage'} вместе с уникальным бонусом. 9 одинаковых Power Stone превращает в силу Thaumaturgist в Хабе. Стартовые силы ({r.starter.join(', ')}) слабее, их статы в таблицу не вошли.</div>
+      <div className="muted tiny" style={{ marginTop: 6 }}>«Очки» — {r.role === 'mage' ? 'Intelligence (+ бонус к урону способностями)' : 'Strength + Crit Damage'} вместе с уникальным бонусом. 9 одинаковых Power Stone превращает в силу Thaumaturgist в Hub. Стартовые силы ({r.starter.join(', ')}) слабее, их статы в таблицу не вошли.</div>
 
       <h4 className="sub-h">Stats Tuning: {r.tuning.spent} из {r.tuning.points} очков</h4>
       <div className="tuning-row">

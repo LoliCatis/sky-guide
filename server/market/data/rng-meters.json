@@ -1,5 +1,5 @@
 {
- "$comment": "Шкалы RNG-метра с вики fandom (RNG Meter/UI/Slayer и RNG Meter/UI/Catacombs), сверено 23.11.2026. Слеер: очки = Slayer XP (T3 100, T4 500, T5 1500 за босса; T1–T2 шкалу не заполняют). Данжи: очки = Dungeon Score за S+ (S — 70%). Только предметы, которые есть в combat-loot.json.",
+ "$comment": "Шкалы RNG-метра с вики fandom (RNG Meter/UI/Slayer и RNG Meter/UI/Catacombs), сверено 23.11.2026. Slayer: очки = Slayer XP (T3 100, T4 500, T5 1500 за босса; T1–T2 шкалу не заполняют). Dungeons: очки = Dungeon Score за S+ (S — 70%). Только предметы, которые есть в combat-loot.json.",
  "slayer": {
   "zombie": {
    "FOUL_FLESH": 3093,

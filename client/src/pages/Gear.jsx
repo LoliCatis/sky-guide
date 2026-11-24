@@ -35,7 +35,7 @@ function Grid({ items, cols = 9, openItem }) {
   );
 }
 
-// Гардероб и наборы снаряжения: как в игре, столбик из 4 частей на каждый слот, подпись — названия наборов.
+// Wardrobe и наборы снаряжения: как в игре, столбик из 4 частей на каждый слот, подпись — названия наборов.
 // Номера слотов как в игре; надетый слот показан с надетой бронёй (в самом наборе он пустой)
 function SetsView({ sets, openItem }) {
   return (
@@ -54,13 +54,13 @@ function SetsView({ sets, openItem }) {
   );
 }
 
-const PLACE_RU = { inventory: 'Инвентарь', enderChest: 'Эндер-сундук', wardrobe: 'Гардероб', wardrobeEquipment: 'Набор снаряжения', vault: 'Хранилище', talismans: 'Аксессуары', armor: 'Надето', equipment: 'Экипировка', quiver: 'Колчан', fishingBag: 'Сумка рыбака', potions: 'Сумка зелий' };
+const PLACE_RU = { inventory: 'Инвентарь', enderChest: 'Ender Chest', wardrobe: 'Wardrobe', wardrobeEquipment: 'Wardrobe (Equipment)', vault: 'Personal Vault', talismans: 'Accessory Bag', armor: 'Надето', equipment: 'Экипировка', quiver: 'Quiver', fishingBag: 'Fishing Bag', potions: 'Potion Bag' };
 
 // Все предметы из всех хранилищ с подписью, где лежат
 function allStored(data) {
   const out = [];
   for (const [k, label] of Object.entries(PLACE_RU)) for (const it of data[k] || []) if (it?.id) out.push({ ...it, where: label });
-  for (const [k, list] of Object.entries(data.backpacks || {})) for (const it of list || []) if (it?.id) out.push({ ...it, where: `Рюкзак ${Number(k) + 1}` });
+  for (const [k, list] of Object.entries(data.backpacks || {})) for (const it of list || []) if (it?.id) out.push({ ...it, where: `Backpack ${Number(k) + 1}` });
   return out;
 }
 
@@ -86,11 +86,11 @@ function Storage({ openItem }) {
   const [q, setQ] = useState('');
   if (!data) return <div className="loader"><div className="spinner" /></div>;
   const tabs = [
-    { id: 'inventory', label: 'Инвентарь' }, { id: 'enderChest', label: 'Эндер-сундук' }, { id: 'wardrobe', label: 'Гардероб' }, { id: 'equipmentSets', label: 'Наборы снаряжения' },
-    { id: 'vault', label: 'Хранилище' }, { id: 'talismans', label: 'Аксессуары' }, { id: 'quiver', label: 'Колчан' },
-    { id: 'sacksBag', label: 'Сумка мешков' }, { id: 'potions', label: 'Сумка зелий' },
+    { id: 'inventory', label: 'Инвентарь' }, { id: 'enderChest', label: 'Ender Chest' }, { id: 'wardrobe', label: 'Wardrobe' }, { id: 'equipmentSets', label: 'Наборы снаряжения' },
+    { id: 'vault', label: 'Personal Vault' }, { id: 'talismans', label: 'Accessory Bag' }, { id: 'quiver', label: 'Quiver' },
+    { id: 'sacksBag', label: 'Сумка мешков' }, { id: 'potions', label: 'Potion Bag' },
     ...(data.rift ? [{ id: 'riftInventory', label: 'Rift: инвентарь' }, { id: 'riftEnder', label: 'Rift: эндер-сундук' }] : []),
-    ...Object.keys(data.backpacks || {}).sort((a, b) => a - b).map(k => ({ id: `bp${k}`, label: `Рюкзак ${Number(k) + 1}` })),
+    ...Object.keys(data.backpacks || {}).sort((a, b) => a - b).map(k => ({ id: `bp${k}`, label: `Backpack ${Number(k) + 1}` })),
   ];
   const rift = { riftInventory: data.rift?.inventory, riftEnder: data.rift?.enderChest };
   let items = (tab.startsWith('bp') ? data.backpacks[tab.slice(2)] : tab in rift ? rift[tab] : data[tab]) || [];
@@ -102,7 +102,7 @@ function Storage({ openItem }) {
         <Tabs tabs={tabs} value={tab} onChange={setTab} />
         {tab === 'wardrobe' && data.wardrobeSets?.length ? <SetsView sets={data.wardrobeSets} openItem={openItem} />
           : tab === 'equipmentSets' ? (data.equipmentSets?.length ? <SetsView sets={data.equipmentSets} openItem={openItem} /> : <Empty>Наборов снаряжения нет.</Empty>)
-          : items.length ? <Grid items={items} openItem={openItem} /> : <Empty>{tab === 'wardrobe' && data.wardrobeMissing ? 'Гардероб пуст.' : 'Пусто или доступ к инвентарю в API выключен.'}</Empty>}
+          : items.length ? <Grid items={items} openItem={openItem} /> : <Empty>{tab === 'wardrobe' && data.wardrobeMissing ? 'Wardrobe пуст.' : 'Пусто или доступ к инвентарю в API выключен.'}</Empty>}
       </>}
     </>
   );
@@ -145,7 +145,7 @@ function Worn({ g, member, openItem }) {
 }
 
 // Итог крупно + полоса долей, как на SkyCrypt
-const NW_PARTS = [['items', 'Предметы', '#f5c542'], ['pets', 'Питомцы', '#c879ff'], ['sacks', 'Мешки', '#4ade80'], ['essence', 'Эссенции', '#22d3ee'], ['coins', 'Монеты', '#60a5fa'], ['museum', 'Музей', '#f472b6']];
+const NW_PARTS = [['items', 'Предметы', '#f5c542'], ['pets', 'Питомцы', '#c879ff'], ['sacks', 'Мешки', '#4ade80'], ['essence', 'Essence', '#22d3ee'], ['coins', 'Монеты', '#60a5fa'], ['museum', 'Музей', '#f472b6']];
 function Networth({ nw, pricing }) {
   const total = nw.total || 0;
   const parts = NW_PARTS.map(([k, label, color]) => ({ k, label, color, v: nw[k] || 0 }));
@@ -165,7 +165,7 @@ function Networth({ nw, pricing }) {
 // Цены Bazaar и аукциона пришли — без них оценка предметов после перезапуска сервера «0»
 export const pricesLoaded = state => !!state?.pricesAt?.bazaar && !!(state.pricesAt.auctions || state.pricesAt.auctionsError);
 
-// Перековка в API строчными (heroic, pitchin) — в игре она пишется с заглавной: Heroic, Pitchin'
+// Reforge в API строчными (heroic, pitchin) — в игре она пишется с заглавной: Heroic, Pitchin'
 const reforgeName = r => String(r).split('_').map(w => (w ? w[0].toUpperCase() + w.slice(1) : w)).join(' ');
 
 // Название сета: «Necron Helmet» → «Necron». Если у части необычное имя («Wyld Helmet on a Helmet»,

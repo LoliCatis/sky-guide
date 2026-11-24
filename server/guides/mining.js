@@ -7,14 +7,14 @@ const POWDER = { MITHRIL: 'Mithril', GEMSTONE: 'Gemstone', GLACITE: 'Glacite' };
 
 // Ключевые перки и зачем они нужны (остальные показываем в общей таблице)
 const KEY_PERKS = {
-  mining_speed: 'Скорость добычи везде: основа всего дерева',
+  mining_speed: 'Mining Speed везде: основа всего дерева',
   mining_fortune: 'Mining Fortune везде',
   quick_forge: 'Forge работает до 30% быстрее: больше крафтов в сутки',
   professional: 'Скорость при добыче гемов',
   gem_lover: 'Gemstone Fortune',
   great_explorer: 'Больше сундуков в Crystal Hollows и меньше замков на них',
   powder_buff: '+% ко всему Powder',
-  speedy_mineman: 'Скорость добычи везде',
+  speedy_mineman: 'Mining Speed везде',
   fortunate_mineman: 'Mining Fortune везде',
   front_loaded: 'Первые 2 500 гемов за день: ×3 Gemstone Powder, Fortune и скорость',
   daily_powder: 'Ежедневный бонус Powder за первую руду',
@@ -59,7 +59,7 @@ const PETS = [
 const pieces = (ctx, a) => (a.ids || ['HELMET', 'CHESTPLATE', 'LEGGINGS', 'BOOTS'].map(s => `${a.base}_${s}`)).filter(id => hasItem(ctx, id)).length;
 
 export default {
-  id: 'mining', title: 'Добыча (Mining)', icon: 'DIVAN_DRILL', group: 'mining',
+  id: 'mining', title: 'Mining', icon: 'DIVAN_DRILL', group: 'mining',
   build(m, ctx) {
     const mi = m.mining || {};
     const lvl = mi.hotm?.level || 0;
@@ -201,7 +201,7 @@ export default {
     });
 
     // Заработок: методы из модуля цен с тегом «Добыча»
-    const methods = (ctx.analysis?.methods || []).filter(x => x.tag === 'Добыча' || /gem|forge|mining/i.test(x.id || ''));
+    const methods = (ctx.analysis?.methods || []).filter(x => x.tag === 'Mining' || /gem|forge|mining/i.test(x.id || ''));
     sections.push({
       kind: 'table', title: 'Заработок добычей',
       note: 'Доход по живым ценам Bazaar и аукциона, если модуль цен уже посчитал. Ориентиры — при хорошей экипировке.',

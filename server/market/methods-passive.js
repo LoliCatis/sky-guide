@@ -129,7 +129,7 @@ export function matriarchReset(now = Date.now()) {
   return nyTime(next.getUTCFullYear(), next.getUTCMonth(), next.getUTCDate(), 20);
 }
 
-// ---------- банк ----------
+// ---------- Bank ----------
 // Проценты платят раз в сезон SkyBlock (≈31 час): по ступеням баланса, ставка падает с ростом суммы,
 // у каждого уровня счёта свой потолок (Starter 250 тыс. … Palatial 1,5 млн за сезон). Ступени — вики fandom «Bank», сверено 23.11.2026.
 export const BANK_TIERS = [[10 * M, 0.02], [20 * M, 0.01], [30 * M, 0.005], [50 * M, 0.002], [160 * M, 0.001], [5100 * M, 0.0001], [55000 * M, 0.00001]];
@@ -230,7 +230,7 @@ export const PASSIVE_METHODS = [
   },
   {
     id: 'bank-interest', title: 'Проценты в банке', tag: 'Ежедневно', mode: 'passive',
-    desc: 'Банк сам начисляет проценты раз в сезон SkyBlock (около 31 часа). Ставка падает с ростом суммы, поэтому много монет в банке держать нет смысла — это подсказка, а не способ заработка.',
+    desc: 'Bank сам начисляет проценты раз в сезон SkyBlock (около 31 часа). Ставка падает с ростом суммы, поэтому много монет в банке держать нет смысла — это подсказка, а не способ заработка.',
     req: m => [{ text: 'Монеты в банке', ok: Number(m?.bank || 0) > 0, soft: true, have: `в банке ${fmtC(Number(m?.bank || 0))}` }],
     compute: (ctx, m, o) => {
       const bal = Number(m?.bank || 0);
@@ -239,7 +239,7 @@ export const PASSIVE_METHODS = [
       const boosted = perksOf(o).includes('Long Term Investment');
       return {
         coinsPerHour: season / BANK_SEASON_H,
-        detail: `При балансе ${fmtC(bal)} банк даёт ≈${fmtC(season)} за сезон, но не больше потолка твоего счёта: от 250 тыс. (Starter) до 1,5 млн (Palatial). Выше ≈50 млн ставка почти нулевая: такие деньги выгоднее вложить в Forge, миньонов или флипы.${boosted ? ' Сейчас действует перк Diaz Long Term Investment: проценты выше.' : ''}`,
+        detail: `При балансе ${fmtC(bal)} Bank даёт ≈${fmtC(season)} за сезон, но не больше потолка твоего счёта: от 250 тыс. (Starter) до 1,5 млн (Palatial). Выше ≈50 млн ставка почти нулевая: такие деньги выгоднее вложить в Forge, миньонов или флипы.${boosted ? ' Сейчас действует перк Diaz Long Term Investment: проценты выше.' : ''}`,
       };
     },
   },

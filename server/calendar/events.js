@@ -11,14 +11,14 @@ export const YEARLY = [
     what: 'Весенняя охота за яйцами для шоколадной фабрики.',
     tip: 'Ивент идёт почти всю весну SkyBlock (около 31 часа). Каждый час появляется 9 яиц: завтрак, обед и ужин, по три раза. Яйцо одно на все острова сразу; собирай их ради новых кроликов. Сам Hoppity продаёт кроликов под уровень твоей шоколадной фабрики.' },
   { id: 'zoo-summer', name: 'Бродячий зоопарк', en: 'Traveling Zoo', icon: 'LION;4', color: '#f0b429', tier: 'big', days: [[3, 1, 3]],
-    what: 'Oringo в Хабе продаёт редких питомцев.',
-    tip: 'Oringo стоит в Хабе 3 дня SkyBlock (1 реальный час) и продаёт 3 из 6 питомцев (лев, тигр, синий кит, слон, жираф, обезьяна): один — легендарный по очереди, два — случайные от обычного до эпического. Бывает два раза в год.' },
+    what: 'Oringo в Hub продаёт редких питомцев.',
+    tip: 'Oringo стоит в Hub 3 дня SkyBlock (1 реальный час) и продаёт 3 из 6 питомцев (лев, тигр, синий кит, слон, жираф, обезьяна): один — легендарный по очереди, два — случайные от обычного до эпического. Бывает два раза в год.' },
   { id: 'spooky', name: 'Хэллоуинский фестиваль', en: 'Spooky Festival', icon: 'JACK_O_LANTERN', color: '#ff7b2e', tier: 'big', days: [[7, 29, 31]],
     what: '1 час: конфеты с мобов.',
-    tip: 'С мобов падают Green и Purple Candy, ночью шанс выше. Конфеты меняются у Fear Mongerer в Хабе на хэллоуинские предметы и питомцев.' },
+    tip: 'С мобов падают Green и Purple Candy, ночью шанс выше. Конфеты меняются у Fear Mongerer в Hub на хэллоуинские предметы и питомцев.' },
   { id: 'zoo-winter', name: 'Бродячий зоопарк', en: 'Traveling Zoo', icon: 'LION;4', color: '#f0b429', tier: 'big', days: [[9, 1, 3]],
-    what: 'Oringo в Хабе продаёт редких питомцев.',
-    tip: 'Oringo стоит в Хабе 3 дня SkyBlock (1 реальный час): 3 питомца, один из них легендарный по очереди.' },
+    what: 'Oringo в Hub продаёт редких питомцев.',
+    tip: 'Oringo стоит в Hub 3 дня SkyBlock (1 реальный час): 3 питомца, один из них легендарный по очереди.' },
   { id: 'workshop', name: 'Мастерская Jerry открыта', en: "Jerry's Workshop", icon: 'SNOW_BALL', color: '#8fd3ff', tier: 'big', days: [[11, 1, 31]],
     what: 'Зимний остров Jerry открыт весь Late Winter (около 10 часов).',
     tip: 'На острове зимняя рыбалка (Frozen Steve, Yeti, Reindrake), ледяная пещера и подарки. Хорошее время для рыбалки и коллекции льда.' },
@@ -26,8 +26,8 @@ export const YEARLY = [
     what: 'Защита мастерской Jerry: 5 волн за 1 реальный час.',
     tip: 'Главное событие — защита мастерской: 5 раундов против лавовых мобов (больше всего Magma Cube). После каждого раунда — подарки по нанесённому урону.' },
   { id: 'newyear', name: 'Новый год', en: 'New Year Celebration', icon: 'NEW_YEAR_CAKE', color: '#ffd54a', tier: 'big', days: [[11, 29, 31]],
-    what: 'Baker в Хабе раздаёт New Year Cake.',
-    tip: 'Забери у Baker в Хабе бесплатный New Year Cake этого года: торты разных лет собирают в Cake Bag ради Cake Soul.' },
+    what: 'Baker в Hub раздаёт New Year Cake.',
+    tip: 'Забери у Baker в Hub бесплатный New Year Cake этого года: торты разных лет собирают в Cake Bag ради Cake Soul.' },
 ];
 
 // Каждый месяц: дни 7, 14, 21, 28, с 00:00 до 06:00 по времени SkyBlock (5 минут реального времени)
@@ -42,19 +42,19 @@ export const HOURLY = [
     tip: 'Фарми одну из трёх культур конкурса 20 минут: медали дают Jacob\'s Ticket и бонусы к Farming Fortune. Культуры видно у Jacob в Garden или в /calendar.' },
   { id: 'darkauction', name: 'Тёмный аукцион', en: 'Dark Auction', icon: 'MIDAS_SWORD', color: '#7f8c8d', tier: 'small', offsetDays: 0, length: 5 * 60_000,
     what: 'Редкие лоты, вход через Sirius.',
-    tip: 'Sirius в Хабе пускает на аукцион, если в кошельке от 400 000 монет: редкие лоты вроде Midas\' Sword и скинов.' },
+    tip: 'Sirius в Hub пускает на аукцион, если в кошельке от 400 000 монет: редкие лоты вроде Midas\' Sword и скинов.' },
 ];
 
 // События, которые включает перк мэра или министра
 export const PERK_EVENTS = {
   'Mythological Ritual': { id: 'ritual', name: 'Мифологический ритуал', en: 'Mythological Ritual', icon: 'GRIFFIN_FEATHER', color: '#57c27a', tier: 'big', whole: true,
-    what: 'Норы грифонов в Хабе.', tip: 'Копай норы грифонов с Ancestral Spade и питомцем Griffin. Пошагово — в гайде «Diana».', guide: 'diana' },
+    what: 'Норы грифонов в Hub.', tip: 'Копай норы грифонов с Ancestral Spade и питомцем Griffin. Пошагово — в гайде «Diana».', guide: 'diana' },
   'Fishing Festival': { id: 'fishfest', name: 'Рыболовный фестиваль', en: 'Fishing Festival', icon: 'SHARK_FIN', color: '#2dd4bf', tier: 'big', monthDays: [1, 3],
     what: 'Акулы в любой воде.', tip: 'Бери Shark Bait и рыбачь в любой воде: акулы дают Shark Fin и зубы, их продают или крафтят Shark Scale Armor.', guide: 'fishing' },
   'Mining Fiesta': { id: 'fiesta', name: 'Фиеста добычи', en: 'Mining Fiesta', icon: 'MITHRIL_ORE', color: '#c9a36b', tier: 'big', whole: true, approx: true,
     what: 'Двойной дроп при добыче.', tip: 'Во время фиесты добыча даёт двойной дроп: копай Mithril и гемы. Точные дни видно в игре: /calendar.' },
   'Chivalrous Carnival': { id: 'carnival', name: 'Карнавал', en: 'Carnival', icon: 'CARNIVAL_TICKET', color: '#ff9f43', tier: 'big', whole: true,
-    what: 'Мини-игры в Хабе.', tip: 'Мини-игры карнавала дают Carnival Ticket: на них меняются косметика и полезные предметы.' },
+    what: 'Мини-игры в Hub.', tip: 'Мини-игры карнавала дают Carnival Ticket: на них меняются косметика и полезные предметы.' },
 };
 
 /** Ближайшее начало периодического события после from (period и offset в мс, offset от EPOCH). */

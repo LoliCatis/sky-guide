@@ -52,7 +52,7 @@ export function loreStats(lore = []) {
 
 const LOC = {
   inventory: 'инвентарь', armor: 'надето', equipment: 'экипировка (надето)', wardrobe: 'гардероб', enderChest: 'эндер-сундук',
-  vault: 'личное хранилище', talismans: 'сумка аксессуаров', quiver: 'колчан', potions: 'сумка зелий', fishingBag: 'сумка рыбака',
+  vault: 'личное хранилище', talismans: 'Accessory Bag', quiver: 'колчан', potions: 'Potion Bag', fishingBag: 'Fishing Bag',
   sacksBag: 'сумка мешков', wardrobeEquipment: 'наборы экипировки', backpackItems: 'рюкзаки (сами)',
 };
 

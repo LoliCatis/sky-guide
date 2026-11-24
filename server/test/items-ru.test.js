@@ -23,8 +23,8 @@ test('карточка предмета соответствует контра�
   assert.equal(h.rarity, 'LEGENDARY');
   assert.equal(h.dungeon, true);
   assert.equal(h.stats.Strength, 150);
-  assert.match(h.descriptionRu, /^Легендарный меч для данжей\./);
-  assert.match(h.descriptionRu, /The Catacombs, этаж VII/);
+  assert.match(h.descriptionRu, /^Legendary Dungeon Sword\./);
+  assert.match(h.descriptionRu, /The Catacombs, Floor VII/);
   const craft = h.whereToGet.find(w => w.kind === 'craft');
   assert.deepEqual(craft.cost, [{ id: 'GIANT_FRAGMENT_LASER', count: 8 }, { id: 'NECRON_BLADE', count: 1 }]);
   for (const w of h.whereToGet) assert.ok(['craft', 'npc', 'drop', 'forge', 'shop', 'other'].includes(w.kind));
@@ -35,7 +35,7 @@ test('дроп с босса, NPC-магазин, кузница, Kat', () => {
   assert.equal(drop.source, 'NECRON_BOSS');
   assert.match(drop.textRu, /^Выпадает с Necron/);
   const npc = items.WHEAT.whereToGet.find(w => w.kind === 'npc');
-  assert.match(npc.textRu, /^Купить у NPC Farm Merchant \(Хаб\) за 30 монет/);
+  assert.match(npc.textRu, /^Купить у NPC Farm Merchant \(Hub\) за 30 монет/);
   const forge = items.PERFECT_JADE_GEM.whereToGet[0];
   assert.equal(forge.kind, 'forge');
   assert.match(forge.textRu, /Кузница \(Forge\).*20 ч/);
@@ -74,10 +74,10 @@ test('согласование прилагательных', () => {
 });
 
 test('перевод строк лора', () => {
-  assert.equal(api.translateLoreLine('§7Strength: §c+150'), '§7Сила: §c+150');
+  assert.equal(api.translateLoreLine('§7Strength: §c+150'), '§7Strength: §c+150');
   assert.equal(api.translateLoreLine('§8This item can be reforged!'), '§8Этот предмет можно перековать!');
-  assert.match(api.translateLoreLine('§4☠ §cRequires §5Enderman Slayer 5§c.'), /слеер «Эндермен» \(Enderman\) уровня 5/);
-  assert.match(api.translateLoreLine('§6§lLEGENDARY DUNGEON SWORD'), /ЛЕГЕНДАРНЫЙ МЕЧ \(ДАНЖ\)/);
+  assert.match(api.translateLoreLine('§4☠ §cRequires §5Enderman Slayer 5§c.'), /Требуется Enderman Slayer 5/);
+  assert.match(api.translateLoreLine('§6§lLEGENDARY DUNGEON SWORD'), /LEGENDARY DUNGEON SWORD/);
   const r = translateLore(fx.items.find(i => i.internalname === 'ASPECT_OF_THE_END').lore);
   const text = r.lines.join('\n').replace(/§./g, '');
   assert.match(text, /Способность: Instant Transmission \(ПКМ\)/);
@@ -85,8 +85,8 @@ test('перевод строк лора', () => {
 });
 
 test('перевод характеристик', () => {
-  assert.equal(api.translateStat('Crit Damage'), 'Крит. урон');
-  assert.equal(api.translateStat('crit_damage'), 'Крит. урон');
+  assert.equal(api.translateStat('Crit Damage'), 'Crit Damage');
+  assert.equal(api.translateStat('crit_damage'), 'Crit Damage');
   assert.equal(api.translateStat('Unknown Stat'), 'Unknown Stat');
 });
 

@@ -47,8 +47,8 @@ export default function Overview({ state }) {
             <Stat href="#/gear" title="Из чего складывается — на «Снаряжении»" label="Состояние" value={coins(nw.total)} sub={pricesLoaded(state) ? `оценка · предметы ${coins(nw.items)} · монеты ${coins(nw.coins)}` : `монеты ${coins(nw.coins)} · цены предметов ещё грузятся…`} accent="#f5c542" icon={<img src="/api/texture/gold_ingot" alt="" />} />
             <Stat href="#/accessories" title="Как поднять — на «Аксессуарах»" label="Magical Power" value={num(m.magicalPower)} sub={m.selectedPower ? `сила: ${prettyId(m.selectedPower)}` : 'сила не выбрана'} accent="#c879ff" icon={<img src="/api/texture/ender_eye" alt="" />} />
             <Stat href="#/skills" title="Классы и этажи — на «Прогрессе»" label="Catacombs" value={m.dungeons.catacombs.level} sub={`классы ~${m.dungeons.classAverage.toFixed(1).replace('.', ',')}`} accent="#ff5e5e" icon={<img src="/api/texture/bone" alt="" />} />
-            <Stat href="#/skills" title="Все скиллы — на «Прогрессе»" label="Средний скилл" value={m.skillAverage.toFixed(1).replace('.', ',')} sub="9 основных скиллов" accent="#4ade80" icon={<img src="/api/texture/experience_bottle" alt="" />} />
-            <Stat href="#/money" title="Как заработать — на «Заработке»" label="Банк" value={coins(m.bank)} sub={`кошелёк ${coins(m.purse)}`} accent="#60a5fa" icon={<img src="/api/texture/gold_block" alt="" />} />
+            <Stat href="#/skills" title="Все скиллы — на «Прогрессе»" label="Skill Average" value={m.skillAverage.toFixed(1).replace('.', ',')} sub="9 основных скиллов" accent="#4ade80" icon={<img src="/api/texture/experience_bottle" alt="" />} />
+            <Stat href="#/money" title="Как заработать — на «Заработке»" label="Bank" value={coins(m.bank)} sub={`кошелёк ${coins(m.purse)}`} accent="#60a5fa" icon={<img src="/api/texture/gold_block" alt="" />} />
           </div>
         </div>
       </div>
@@ -89,7 +89,7 @@ export default function Overview({ state }) {
         )}
       </Card>
 
-      <Card title="Скиллы" className="span-6" right={<a href="#/skills" className="link">подробнее →</a>}>
+      <Card title="Skills" className="span-6" right={<a href="#/skills" className="link">подробнее →</a>}>
         <div className="skill-mini">
           {Object.entries(m.skills).filter(([k]) => k !== 'social').map(([k, s]) => (
             <div key={k} className="skill-mini-row">

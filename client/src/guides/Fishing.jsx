@@ -1,4 +1,4 @@
-// Гайд по рыбалке: общий вид + наглядная сетка трофейной рыбы (18 видов × 4 тира).
+// Гайд по рыбалке: общий вид + наглядная сетка Trophy Fish (18 видов × 4 тира).
 import { Card } from '../components/ui.jsx';
 import { ItemIcon } from '../components/ItemIcon.jsx';
 import { RARITY_COLOR } from '../api.js';
@@ -8,7 +8,7 @@ import TrophyTiers from '../components/TrophyTiers.jsx';
 
 const TIERS = [['bronze', 'Бронза'], ['silver', 'Серебро'], ['gold', 'Золото'], ['diamond', 'Алмаз']];
 
-export function TrophyGrid({ fish, ranks, counts, title = 'Трофейная рыба по тирам' }) {
+export function TrophyGrid({ fish, ranks, counts, title = 'Trophy Fish по тирам' }) {
   const { openItem } = useApp();
   return (
     <Card title={title} className="fish-trophy">

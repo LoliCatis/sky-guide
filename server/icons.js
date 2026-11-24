@@ -116,7 +116,7 @@ export async function getSkin(hash) {
 // Порядок: ресурс-паки → кэш на диске → установленный Minecraft → db/icons → интернет (GitHub, затем jsDelivr).
 // Неудачу помним 10 минут, чтобы не долбить недоступный хост на каждую картинку.
 const texMiss = new Map();
-// scope 'public' (гости и друзья): без текстур паков, не разрешённых для всех, и без db/icons (рендеры Coflnet)
+// scope 'public' (Visitors и друзья): без текстур паков, не разрешённых для всех, и без db/icons (рендеры Coflnet)
 export async function getTexture(name, { scope = 'all' } = {}) {
   if (!/^[a-z0-9_]+$/.test(name)) return null;
   const fromPack = packVanillaTexture(name, scope);
@@ -263,7 +263,7 @@ const ID_ALIAS = { RAW_SALMON: 'RAW_FISH:1', CLOWNFISH: 'RAW_FISH:2', PUFFERFISH
 const DAMAGE_TEXTURE = { 'RAW_FISH:1': 'salmon', 'RAW_FISH:2': 'tropical_fish', 'RAW_FISH:3': 'pufferfish' };
 
 // Готовые рендеры Coflnet (и папка db/icons, собранная из них) распространять без разрешения Coflnet нельзя:
-// гостям их не отдаём, пока в .env нет RENDERS_PUBLIC=1 (вписать только после разрешения). Тогда сайт
+// Visitors их не отдаём, пока в .env нет RENDERS_PUBLIC=1 (вписать только после разрешения). Тогда сайт
 // у гостя рисует голову из скина (textures.minecraft.net) или ванильную текстуру — как в «чистом» SkyCrypt.
 export const rendersPublic = (env = process.env) => env.RENDERS_PUBLIC === '1';
 

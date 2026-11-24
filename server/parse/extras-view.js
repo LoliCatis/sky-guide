@@ -1,4 +1,4 @@
-// Человеческий вид для «прочих» разделов профиля (Hunting, сад, шоколадная фабрика, кооп):
+// Человеческий вид для «прочих» разделов профиля (Hunting, Garden, шоколадная фабрика, кооп):
 // сырые ID из API → настоящие названия, ID предметов для иконок и максимумы для полосок.
 import { getItemRu, getLoreRu, shardId } from '../items-ru/index.js';
 import { itemName } from '../neu.js';
@@ -7,7 +7,7 @@ import { itemName } from '../neu.js';
 export const ATTRIBUTE_MAX = { COMMON: 96, UNCOMMON: 64, RARE: 48, EPIC: 32, LEGENDARY: 24 };
 // Максимальные тиры улучшений кооператива (Elizabeth → Community Shop)
 export const COMMUNITY_MAX = { minion_slots: 5, coins_allowance: 5, guests_count: 5, island_size: 10, coop_slots: 3 };
-export const COMMUNITY_RU = { minion_slots: 'Слоты миньонов', coins_allowance: 'Карманные монеты', guests_count: 'Лимит гостей', island_size: 'Размер острова', coop_slots: 'Слоты кооператива' };
+export const COMMUNITY_RU = { minion_slots: 'Слоты миньонов', coins_allowance: 'Карманные монеты', guests_count: 'Лимит Visitors', island_size: 'Размер острова', coop_slots: 'Слоты кооператива' };
 export const GARDEN_CHIP_MAX = 20;
 export const TIME_TOWER_MAX = 15;
 export const GARDEN_PLOTS = 24;

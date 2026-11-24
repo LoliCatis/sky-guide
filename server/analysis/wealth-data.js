@@ -1,4 +1,4 @@
-// Справочные данные для «Банка», «Bits» и советов по Maxwell.
+// Справочные данные для «Bank», «Bits» и советов по Maxwell.
 // Источники (вики из облака недоступны, поэтому сверено по данным модов и гайду):
 // - ступени банка и потолки процентов: гайд «Should you upgrade your bank?» (hypixel.net, 2021–2022),
 //   названия улучшений — NEU constants/sblevels.json (BANK_UPGRADE_*), ступени процентов выведены из потолков гайда;
@@ -76,7 +76,7 @@ export const BITS_SHOP = [
 // Силы, которые выдаются сразу (без Power Stone). Статы у Maxwell меняются, поэтому без цифр
 export const STARTER_POWERS = ['Fortuitous', 'Pretty', 'Protected', 'Simple', 'Warrior', 'Commando', 'Disciplined', 'Inspired', 'Ominous', 'Prepared'];
 
-// Силы из Power Stone (9 камней комбинируются у Thaumaturgist в Хабе). Статы при 250 Accessory Power
+// Силы из Power Stone (9 камней комбинируются у Thaumaturgist в Hub). Статы при 250 Accessory Power
 export const POWER_STONES = [
   { power: "Forceful", stone: "ACACIA_BIRDHOUSE", stoneName: "Acacia Birdhouse", rarity: "RARE", req: "Combat Skill 20", stats: {"Health": 16.2, "Strength": 173.56, "Crit Damage": 46.28}, unique: {"Ferocity": 4.0} },
   { power: "Bloody", stone: "BEATING_HEART", stoneName: "Beating Heart", rarity: "RARE", req: "Combat Skill 20", stats: {"Strength": 104.13, "Crit Damage": 104.13, "Intelligence": 34.71}, unique: {"Attack Speed": 10.0} },

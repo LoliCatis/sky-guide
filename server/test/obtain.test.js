@@ -33,7 +33,7 @@ test('NPC: остров, телепорт, координаты и цена', ()
   assert.equal(m.title, 'Купить у NPC Combat Merchant');
   assert.equal(m.total, 500);
   const text = m.steps.map(s => s.text).join(' ');
-  assert.match(text, /Хаб/);
+  assert.match(text, /Hub/);
   assert.match(text, /\/warp stonks/);
   assert.match(text, /X -50, Y 69, Z -67/);
   assert.match(text, /500 монет/);

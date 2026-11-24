@@ -484,7 +484,7 @@ mountMinionRoutes(app, {
 });
 mountObtainRoutes(app, { getMember: async req => (await req.sbView().catch(() => null))?.member || null, neu, prices, getCollections: () => moneyMod.craftCollections });
 mountItemUpgradeRoutes(app, { getMember: async req => (await req.sbView().catch(() => null))?.member || null, neu, priceOf, petPriceOf, translateLoreLine, translateLore });
-// Банк (проценты, счета), Bits (Community Shop), Maxwell (силы и Tuning): /api/bank, /api/bits, /api/maxwell
+// Bank (проценты, счета), Bits (Community Shop), Maxwell (силы и Tuning): /api/bank, /api/bits, /api/maxwell
 mountWealthRoutes(app, { getMember: async req => (await req.sbView().catch(() => null))?.member || null, prices, priceOf, itemName });
 // Гайды по направлениям (данжи, слееры, Kuudra, Рифт, рыбалка…): /api/guides, /api/guides/:id
 mountGuideRoutes(app, {
@@ -582,7 +582,7 @@ app.get('/api/skin/:hash', async (req, res) => {
   res.set({ 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=604800' }).send(buf);
 });
 // Иконки зависят от того, кто смотрит: текстуры чужих паков и рендеры Coflnet — только владельцу (см. packs.js, icons.js).
-// Поэтому кэш только в браузере (private) и с Vary: Cookie, чтобы прокси/CDN не раздали картинку владельца гостям.
+// Поэтому кэш только в браузере (private) и с Vary: Cookie, чтобы прокси/CDN не раздали картинку владельца Visitors.
 const iconScope = req => (req.sbUser?.admin ? 'all' : 'public');
 const sendIcon = (res, buf, maxAge) => res.set({ 'Content-Type': 'image/png', 'Cache-Control': `private, max-age=${maxAge}`, Vary: 'Cookie' }).send(buf);
 app.get('/api/img/:id', async (req, res) => {

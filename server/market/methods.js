@@ -70,7 +70,7 @@ const runs = n => (n > 0 ? `пройден ${fmtN(n)} ${raz(n)}` : 'ещё не 
 
 const fmtM = n => `${(n / M).toLocaleString('ru-RU', { maximumFractionDigits: 1 })} млн`;
 
-/** Живые деньги игрока: кошелёк + банк. */
+/** Живые деньги игрока: кошелёк + Bank. */
 const liquid = m => Number(m?.purse || 0) + Number(m?.bank || 0);
 /**
  * Сколько игрок реально может вложить в один крафт: живые деньги, а если богатство известно — до 20% от него
@@ -86,7 +86,7 @@ export function spendBudget(m, o = {}) {
  */
 export const METHODS = [
   {
-    id: 'farming', title: 'Фарм культур в Саду', tag: 'Фермерство', mode: 'active',
+    id: 'farming', title: 'Фарм культур в Garden', tag: 'Farming', mode: 'active',
     desc: 'Сильнейшая сторона профиля. Доход посчитан по живым ценам для лучшей культуры при твоём Farming Fortune; продаём в том виде, который выгоднее (NPC, сырьё или сжатое на Bazaar).',
     req: m => [need('Farming', skill(m, 'farming'), 40)],
     compute: (ctx, m, o) => {
@@ -96,7 +96,7 @@ export const METHODS = [
       if (!best?.perHour) return null;
       return {
         coinsPerHour: best.perHour,
-        detail: `Лучшая культура: ${best.name}, продавать как ${best.sellAsName} (${best.market}). Farming Fortune ${Math.round(typeof ff === 'number' ? ff : best.fortune)}${o.farmingFortune == null ? ' (грубая оценка: укажи своё значение ползунком на вкладке «Культуры»)' : ''}. Посчитан только урожай: с патча 0.27.3 (ноябрь 2026) NPC платит за культуры в 1,5–2 раза меньше (арбуз 0,5, тростник и незерский нарост по 1,5). Вредители, Jacob's Contest и дропы Dicer сверху; Hypixel целился в ~25–30 млн/ч для фарма вредителей на максимальной экипировке.`,
+        detail: `Лучшая культура: ${best.name}, продавать как ${best.sellAsName} (${best.market}). Farming Fortune ${Math.round(typeof ff === 'number' ? ff : best.fortune)}${o.farmingFortune == null ? ' (грубая оценка: укажи своё значение ползунком на вкладке «Культуры»)' : ''}. Посчитан только урожай: с патча 0.27.3 (ноябрь 2026) NPC платит за культуры в 1,5–2 раза меньше (арбуз 0,5, тростник и незерский нарост по 1,5). Pests, Jacob's Contest и дропы Dicer сверху; Hypixel целился в ~25–30 млн/ч для фарма Pests на максимальной экипировке.`,
         top: list.slice(0, 3).map(c => ({ id: c.id, name: c.name, perHour: c.perHour })),
       };
     },
@@ -141,7 +141,7 @@ export const METHODS = [
     },
   },
   {
-    id: 'forge', title: 'Forge в Dwarven Mines', tag: 'Добыча', mode: 'passive',
+    id: 'forge', title: 'Forge в Dwarven Mines', tag: 'Mining', mode: 'passive',
     desc: 'Пассивный доход: загружаешь слоты Forge и забираешь результат. Посчитано на все слоты по лучшему рецепту прямо сейчас.',
     req: m => [need('HotM', hotm(m), 2)],
     compute: (ctx, m, o) => {
@@ -176,9 +176,9 @@ export const METHODS = [
     drops: ['ENCHANTMENT_ULTIMATE_CHIMERA_1', 'MINOS_RELIC', 'DAEDALUS_STICK', 'GRIFFIN_FEATHER'],
   },
   {
-    id: 'visitors', title: 'Гости Сада (Visitors)', tag: 'Фермерство', mode: 'daily',
-    desc: 'Выполняй заказы гостей: медь для SkyMart, Overgrown Grass, Jungle Key, опыт Сада. Отказывайся от убыточных заказов.',
-    req: m => [{ text: 'Сад открыт', ok: !!m?.garden }],
+    id: 'visitors', title: 'Garden Visitors', tag: 'Farming', mode: 'daily',
+    desc: 'Выполняй заказы Visitors: Copper для SkyMart, Overgrown Grass, Jungle Key, опыт Garden. Отказывайся от убыточных заказов.',
+    req: m => [{ text: 'Garden открыт', ok: !!m?.garden }],
     drops: ['JUNGLE_KEY', 'FINE_FLOUR', 'OVERGROWN_GRASS', 'DEDICATION;4'],
   },
   {
@@ -198,7 +198,7 @@ for (const p of MISC_PATCHES) Object.assign(METHODS.find(x => x.id === p.id) || 
 
 /**
  * Приблизительный Farming Fortune по профилю, если точного значения нет.
- * Уровень Farming даёт 4 FF за уровень, апгрейды культур в Саду по 5 FF за уровень; остальное — по набору брони.
+ * Уровень Farming даёт 4 FF за уровень, апгрейды культур в Garden по 5 FF за уровень; остальное — по набору брони.
  */
 export function estimateFarmingFortune(m) {
   let ff = skill(m, 'farming') * 4;

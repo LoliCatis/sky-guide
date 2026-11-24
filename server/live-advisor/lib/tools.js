@@ -20,7 +20,7 @@ export const TOOLS = [
   },
   {
     name: 'get_steps',
-    description: 'Полные шаги плана прогрессии игрока от движка правил (зачем, как, цена). Можно отфильтровать по категории («Данжи», «Слееры», «Снаряжение», «Аксессуары», «Питомцы», «Скиллы», «Деньги» и т.д.) или по id шага.',
+    description: 'Полные шаги плана прогрессии игрока от движка правил (зачем, как, цена). Можно отфильтровать по категории («Dungeons», «Slayers», «Снаряжение», «Аксессуары», «Питомцы», «Skills», «Деньги» и т.д.) или по id шага.',
     strict: true,
     input_schema: { type: 'object', additionalProperties: false, required: ['filter'], properties: { filter: { type: 'string', description: 'Категория, id шага или пустая строка для топ-10' } } },
   },
@@ -157,7 +157,7 @@ export function makeToolHandlers(deps) {
           wither: lo.wither ? `${lo.wither}/4 частей Wither${lo.mixed ? ` вперемешку (${familiesLabel(lo.families)})` : ''}${lo.witherborn ? ', бонус Witherborn полный' : ''}` : undefined,
           pieces: lo.items.map((it, i) => (it ? { part: SLOT_RU[SLOTS[i]], ...compactItem({ ...it, where: lo.label }, { value }) } : { part: SLOT_RU[SLOTS[i]], empty: true })),
         }));
-        if (!slots.length) return { note: 'Гардероб пуст или закрыт в настройках API' };
+        if (!slots.length) return { note: 'Wardrobe пуст или закрыт в настройках API' };
         return {
           slots,
           dungeonSet: dl ? dl.label : null,

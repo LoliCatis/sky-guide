@@ -61,7 +61,7 @@ export function build(m, ctx) {
   }
   if (highest != null && total < 20) {
     next.push({ priority: 64, title: `Набери стабильность на ${KUUDRA_TIERS[highest].name}: всего ${total} ${plural(total, 'заход', 'захода', 'заходов')}`,
-      why: 'Эссенция Crimson и Kuudra Teeth копятся с каждого захода; на высоких тирах ошибки команды стоят дорого.' });
+      why: 'Essence Crimson и Kuudra Teeth копятся с каждого захода; на высоких тирах ошибки команды стоят дорого.' });
   }
   if (!myArmor) {
     next.push({ priority: 60, title: `Купи сет ${mySet.base[0] + mySet.base.slice(1).toLowerCase()} (${mySet.role}) под свой класс`,

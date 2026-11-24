@@ -140,7 +140,7 @@ export function analyzeMember(m) {
     } catch (e) { console.warn('[taming refs]', e.message); }
   }
   let chocolate = null;
-  try { chocolate = chocolateAdvice(m.extras?.chocolate); } catch (e) { console.warn('[шоколад]', e.message); }
+  try { chocolate = chocolateAdvice(m.extras?.chocolate); } catch (e) { console.warn('[Chocolate]', e.message); }
   return { acc, gear, roadmap, map, plan, summary, methods, museum, petScore, chocolate };
 }
 
@@ -192,7 +192,7 @@ async function doRefreshProfile() {
     // Сырые ответы храним: профили друзей по тому же острову (кооп) и другие свои профили берутся отсюда без лишних запросов
     state.raw = { resp, at: Date.now(), garden: null, museum: null, profileId: profile.profile_id };
     if (state.demo) {
-      try { extra.garden = state.raw.garden = parseGarden(JSON.parse(fs.readFileSync(path.join(config.dataDir, 'fixture-garden.json'), 'utf8'))); } catch { /* в демо сада может не быть */ }
+      try { extra.garden = state.raw.garden = parseGarden(JSON.parse(fs.readFileSync(path.join(config.dataDir, 'fixture-garden.json'), 'utf8'))); } catch { /* в демо Garden может не быть */ }
     } else {
       try { extra.garden = state.raw.garden = parseGarden(await getGarden(profile.profile_id)); } catch {}
       try { state.raw.museum = await getMuseum(profile.profile_id); extra.museum = state.raw.museum?.members?.[uuid] || null; extra.museumFetched = true; } catch {}

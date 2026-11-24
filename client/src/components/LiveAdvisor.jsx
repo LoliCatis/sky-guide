@@ -248,11 +248,11 @@ export default function LiveAdvisor({ className = 'span-12' }) {
       {friend && (
         <p className="la-friend small">
           Сейчас открыт профиль <b>{friend}</b>{s.coopMate ? ' (сосед по коопу)' : ''}: совет и вопросы в чате — про него, по его скиллам, снаряжению и кошельку.
-          {coop && ' Банк, сад, миньоны и коллекции на кооп-острове общие, советчик это учитывает.'}
+          {coop && ' Bank, Garden, миньоны и коллекции на кооп-острове общие, советчик это учитывает.'}
           {!s.friend && ' Лимит на день общий с твоим.'}
         </p>
       )}
-      {!friend && coop && <p className="la-friend small">Банк, сад, миньоны и коллекции на кооп-острове общие с соседями: советы с тратами из банка это учитывают.</p>}
+      {!friend && coop && <p className="la-friend small">Bank, Garden, миньоны и коллекции на кооп-острове общие с соседями: советы с тратами из банка это учитывают.</p>}
       {!a && s.busy ? (
         <p className="muted"><span className="spinner sm" /> Советчик разбирает профиль{s.adviceFor ? ` ${s.adviceFor.split(' (')[0]}` : ''}…</p>
       ) : !a && s.friend && !s.adviceFor ? (

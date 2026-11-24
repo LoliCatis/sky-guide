@@ -6,58 +6,46 @@
 // редкости, служебные фразы лора и ванильные предметы Minecraft (по официальной локализации ru_ru).
 
 export const SKILLS = {
-  farming: 'Фермерство', mining: 'Добыча', combat: 'Бой', foraging: 'Лесорубство',
-  fishing: 'Рыбалка', enchanting: 'Зачарование', alchemy: 'Алхимия', carpentry: 'Плотничество',
-  runecrafting: 'Руническое ремесло', taming: 'Приручение', social: 'Общение', hunting: 'Охота',
+  farming: 'Farming', mining: 'Mining', combat: 'Combat', foraging: 'Foraging',
+  fishing: 'Fishing', enchanting: 'Enchanting', alchemy: 'Alchemy', carpentry: 'Carpentry',
+  runecrafting: 'Runecrafting', taming: 'Taming', social: 'Social', hunting: 'Hunting',
 };
 
 export const SLAYERS = {
-  zombie: { name: 'Revenant Horror', ru: 'Зомби' },
-  spider: { name: 'Tarantula Broodfather', ru: 'Паук' },
-  wolf: { name: 'Sven Packmaster', ru: 'Волк' },
-  enderman: { name: 'Voidgloom Seraph', ru: 'Эндермен' },
-  blaze: { name: 'Inferno Demonlord', ru: 'Блейз' },
-  vampire: { name: 'Riftstalker Bloodfiend', ru: 'Вампир' },
+  zombie: { name: 'Revenant Horror', ru: 'Zombie' },
+  spider: { name: 'Tarantula Broodfather', ru: 'Spider' },
+  wolf: { name: 'Sven Packmaster', ru: 'Wolf' },
+  enderman: { name: 'Voidgloom Seraph', ru: 'Enderman' },
+  blaze: { name: 'Inferno Demonlord', ru: 'Blaze' },
+  vampire: { name: 'Riftstalker Bloodfiend', ru: 'Vampire' },
 };
 
 /** Ключи slayer_req из NEU → русский текст */
-export const SLAYER_REQ = { ZOMBIE: 'Зомби', SPIDER: 'Паук', WOLF: 'Волк', EMAN: 'Эндермен', BLAZE: 'Блейз', VAMPIRE: 'Вампир' };
+export const SLAYER_REQ = { ZOMBIE: 'Zombie', SPIDER: 'Spider', WOLF: 'Wolf', EMAN: 'Enderman', BLAZE: 'Blaze', VAMPIRE: 'Vampire' };
 
-export const CLASSES = { healer: 'Хилер', mage: 'Маг', berserk: 'Берсерк', archer: 'Лучник', tank: 'Танк' };
+export const CLASSES = { healer: 'Healer', mage: 'Mage', berserk: 'Berserk', archer: 'Archer', tank: 'Tank' };
 
 export const RARITY = {
-  COMMON: 'Обычный', UNCOMMON: 'Необычный', RARE: 'Редкий', EPIC: 'Эпический', LEGENDARY: 'Легендарный',
-  MYTHIC: 'Мифический', DIVINE: 'Божественный', SPECIAL: 'Особый', 'VERY SPECIAL': 'Очень особый',
-  ULTIMATE: 'Ультимативный', ADMIN: 'Админский',
+  COMMON: 'Common', UNCOMMON: 'Uncommon', RARE: 'Rare', EPIC: 'Epic', LEGENDARY: 'Legendary',
+  MYTHIC: 'Mythic', DIVINE: 'Divine', SPECIAL: 'Special', 'VERY SPECIAL': 'Very Special',
+  ULTIMATE: 'Ultimate', ADMIN: 'Admin',
 };
 
-export const STATS = {
-  'Health': 'Здоровье', 'Max Health': 'Макс. здоровье', 'Defense': 'Защита', 'True Defense': 'Истинная защита',
-  'Strength': 'Сила', 'Speed': 'Скорость', 'Crit Chance': 'Шанс крита', 'Crit Damage': 'Крит. урон',
-  'Intelligence': 'Интеллект', 'Mana': 'Мана', 'Mana Regen': 'Регенерация маны',
-  'Bonus Attack Speed': 'Скорость атаки', 'Attack Speed': 'Скорость атаки', 'Sea Creature Chance': 'Шанс морского существа',
-  'Magic Find': 'Magic Find (удача на дроп)', 'Pet Luck': 'Удача питомцев', 'Ferocity': 'Свирепость',
-  'Ability Damage': 'Урон способностей', 'Mining Speed': 'Скорость добычи', 'Mining Fortune': 'Удача добычи',
-  'Gemstone Fortune': 'Удача на самоцветы', 'Block Fortune': 'Удача на блоки', 'Ore Fortune': 'Удача на руду',
-  'Farming Fortune': 'Фермерская удача', 'Foraging Fortune': 'Удача лесорубства', 'Hunting Fortune': 'Удача охоты',
-  'Pristine': 'Чистота (Pristine)', 'Mining Spread': 'Радиус добычи (Mining Spread)', 'Gemstone Spread': 'Радиус добычи самоцветов',
-  'Health Regen': 'Регенерация здоровья', 'Vitality': 'Живучесть', 'Mending': 'Лечение', 'Damage': 'Урон',
-  'Gear Score': 'Рейтинг снаряжения', 'Fishing Speed': 'Скорость рыбалки', 'Swing Range': 'Дальность удара',
-  'Combat Wisdom': 'Мудрость боя', 'Mining Wisdom': 'Мудрость добычи', 'Farming Wisdom': 'Мудрость фермерства',
-  'Foraging Wisdom': 'Мудрость лесорубства', 'Fishing Wisdom': 'Мудрость рыбалки', 'Enchanting Wisdom': 'Мудрость зачарования',
-  'Alchemy Wisdom': 'Мудрость алхимии', 'Carpentry Wisdom': 'Мудрость плотничества', 'Taming Wisdom': 'Мудрость приручения',
-  'Social Wisdom': 'Мудрость общения', 'Runecrafting Wisdom': 'Мудрость рунического ремесла', 'Hunting Wisdom': 'Мудрость охоты',
-  'Breaking Power': 'Сила разрушения', 'Heat Resistance': 'Термостойкость', 'Cold Resistance': 'Морозостойкость',
-  'Pressure Resistance': 'Сопротивление давлению', 'Respiration': 'Дыхание',
-  'Bonus Pest Chance': 'Шанс вредителей', 'Trophy Fish Chance': 'Шанс трофейной рыбы', 'Double Hook Chance': 'Шанс двойного улова',
-  'Treasure Chance': 'Шанс сокровища', 'Sweep': 'Размах (Sweep)', 'Shot Cooldown': 'Перезарядка выстрела',
-  'Rift Time': 'Время в Rift', 'Rift Damage': 'Урон в Rift', 'Hearts': 'Сердца', 'Overbloom': 'Overbloom',
-  'Accessory Power': 'Сила аксессуара', 'Mana Cost': 'Затраты маны', 'Cooldown': 'Перезарядка',
-  'Soulflow Cost': 'Затраты Soulflow', 'Fuel': 'Топливо', 'Gemstones': 'Самоцветы', 'Pull': 'Тяга',
-  'Fear': 'Страх', 'Timber': 'Timber', 'Trophy Chance': 'Шанс трофея', 'Speed Cap': 'Предел скорости',
-  'Max Storage': 'Макс. вместимость', 'Time Between Actions': 'Время между действиями',
-  'Resources Generated': 'Произведено ресурсов', 'Capacity': 'Вместимость', 'Mining Speed Boost': 'Ускорение добычи',
-};
+// Статы показываем как в игре, на английском (24.11.2026: игроки просили не переводить игровые термины)
+export const STATS = Object.fromEntries([
+  'Health', 'Max Health', 'Defense', 'True Defense', 'Strength', 'Speed', 'Crit Chance', 'Crit Damage',
+  'Intelligence', 'Mana', 'Mana Regen', 'Bonus Attack Speed', 'Attack Speed', 'Sea Creature Chance', 'Magic Find',
+  'Pet Luck', 'Ferocity', 'Ability Damage', 'Mining Speed', 'Mining Fortune', 'Gemstone Fortune', 'Block Fortune',
+  'Ore Fortune', 'Farming Fortune', 'Foraging Fortune', 'Hunting Fortune', 'Pristine', 'Mining Spread',
+  'Gemstone Spread', 'Health Regen', 'Vitality', 'Mending', 'Damage', 'Gear Score', 'Fishing Speed', 'Swing Range',
+  'Combat Wisdom', 'Mining Wisdom', 'Farming Wisdom', 'Foraging Wisdom', 'Fishing Wisdom', 'Enchanting Wisdom',
+  'Alchemy Wisdom', 'Carpentry Wisdom', 'Taming Wisdom', 'Social Wisdom', 'Runecrafting Wisdom', 'Hunting Wisdom',
+  'Breaking Power', 'Heat Resistance', 'Cold Resistance', 'Pressure Resistance', 'Respiration', 'Bonus Pest Chance',
+  'Trophy Fish Chance', 'Double Hook Chance', 'Treasure Chance', 'Sweep', 'Shot Cooldown', 'Rift Time',
+  'Rift Damage', 'Hearts', 'Overbloom', 'Accessory Power', 'Mana Cost', 'Cooldown', 'Soulflow Cost', 'Fuel',
+  'Gemstones', 'Pull', 'Fear', 'Timber', 'Trophy Chance', 'Speed Cap', 'Max Storage', 'Time Between Actions',
+  'Resources Generated', 'Capacity', 'Mining Speed Boost',
+].map(k => [k, k]));
 
 /** Ключи характеристик из reforges.json / pets.json NEU (snake_case) → английское название */
 export const STAT_KEYS = {
@@ -94,25 +82,17 @@ export const MOB_TYPES = {
   Undead: 'нежить', Wither: 'визер-существа', Woodland: 'лесные', Critter: 'зверьки', Timid: 'пугливые',
 };
 
-/** Тип предмета из последней строки лора («LEGENDARY DUNGEON SWORD» → тип «SWORD», данжевый) */
-export const ITEM_TYPES = {
-  SWORD: 'Меч', LONGSWORD: 'Длинный меч', BOW: 'Лук', SHORTBOW: 'Шортбоу', WAND: 'Посох', GAUNTLET: 'Перчатка-оружие',
-  HELMET: 'Шлем', CHESTPLATE: 'Нагрудник', LEGGINGS: 'Поножи', BOOTS: 'Ботинки',
-  NECKLACE: 'Ожерелье', CLOAK: 'Плащ', BELT: 'Пояс', GLOVES: 'Перчатки', BRACELET: 'Браслет',
-  ACCESSORY: 'Аксессуар', HATCESSORY: 'Аксессуар-шляпа', PET: 'Питомец', 'PET ITEM': 'Предмет для питомца',
-  'REFORGE STONE': 'Камень перековки', 'POWER STONE': 'Камень силы', GEMSTONE: 'Самоцвет', COSMETIC: 'Косметика',
-  DYE: 'Краска', SACK: 'Мешок', 'TRAVEL SCROLL': 'Свиток перемещения', PORTAL: 'Портал', ORE: 'Руда', BLOCK: 'Блок',
-  'FISHING ROD': 'Удочка', 'FISHING WEAPON': 'Удочка-оружие', 'ROD PART': 'Деталь удочки', BAIT: 'Наживка', AXE: 'Топор',
-  PICKAXE: 'Кирка', DRILL: 'Бур', SHOVEL: 'Лопата', HOE: 'Мотыга', SHEARS: 'Ножницы', 'FARMING TOOL': 'Фермерский инструмент',
-  'HUNTING TOOL': 'Инструмент охоты', 'GARDEN CHIP': 'Чип Garden', MUTATION: 'Мутация', ARROW: 'Стрела',
-  'ARROW POISON': 'Яд для стрел', DEPLOYABLE: 'Размещаемый предмет', 'DWARVEN METAL': 'Гномий металл', MEMENTO: 'Памятный предмет',
-  TROPHY: 'Трофей', 'SEA CREATURE': 'Морское существо', RABBIT: 'Кролик', BOOSTER: 'Бустер', SALT: 'Соль',
-  'RIFT TIMECHARM': 'Rift Timecharm', 'CARNIVAL MASK': 'Карнавальная маска', VACUUM: 'Пылесос', 'WATERING CAN': 'Лейка',
-  TRAP: 'Ловушка', ITEM: 'Предмет', 'DUNGEON ITEM': 'Данжевый предмет', CHISEL: 'Долото', LASSO: 'Лассо',
-  'BELT BUCKLE': 'Пряжка', SHARD: 'Осколок', 'ATTRIBUTE SHARD': 'Осколок атрибута', SPADE: 'Лопата',
-  'ENCHANTED BOOK': 'Зачарованная книга', 'FISHING NET': 'Рыболовная сеть', CONSUMABLE: 'Расходник',
-  'SLAYER SWORD': 'Меч слеера', CAPSULE: 'Капсула', 'ABILITY SCROLL': 'Свиток способности',
-};
+/** Тип предмета из последней строки лора — как в игре («LEGENDARY DUNGEON SWORD» → «Sword»), только регистр помягче */
+export const ITEM_TYPES = Object.fromEntries([
+  'SWORD', 'LONGSWORD', 'BOW', 'SHORTBOW', 'WAND', 'GAUNTLET', 'HELMET', 'CHESTPLATE', 'LEGGINGS', 'BOOTS',
+  'NECKLACE', 'CLOAK', 'BELT', 'GLOVES', 'BRACELET', 'ACCESSORY', 'HATCESSORY', 'PET', 'PET ITEM', 'REFORGE STONE',
+  'POWER STONE', 'GEMSTONE', 'COSMETIC', 'DYE', 'SACK', 'TRAVEL SCROLL', 'PORTAL', 'ORE', 'BLOCK', 'FISHING ROD',
+  'FISHING WEAPON', 'ROD PART', 'BAIT', 'AXE', 'PICKAXE', 'DRILL', 'SHOVEL', 'HOE', 'SHEARS', 'FARMING TOOL',
+  'HUNTING TOOL', 'GARDEN CHIP', 'MUTATION', 'ARROW', 'ARROW POISON', 'DEPLOYABLE', 'DWARVEN METAL', 'MEMENTO',
+  'TROPHY', 'SEA CREATURE', 'RABBIT', 'BOOSTER', 'SALT', 'RIFT TIMECHARM', 'CARNIVAL MASK', 'VACUUM', 'WATERING CAN',
+  'TRAP', 'ITEM', 'DUNGEON ITEM', 'CHISEL', 'LASSO', 'BELT BUCKLE', 'SHARD', 'ATTRIBUTE SHARD', 'SPADE',
+  'ENCHANTED BOOK', 'FISHING NET', 'CONSUMABLE', 'SLAYER SWORD', 'CAPSULE', 'ABILITY SCROLL',
+].map(k => [k, k.split(' ').map(w => w[0] + w.slice(1).toLowerCase()).join(' ')]));
 
 /** Категории базы (поле category) и их русские подписи */
 export const CATEGORIES = {
@@ -129,25 +109,25 @@ export const TOOL_TYPES = new Set(['AXE', 'PICKAXE', 'DRILL', 'SHOVEL', 'HOE', '
   'VACUUM', 'WATERING CAN', 'CHISEL', 'LASSO', 'SPADE', 'FISHING NET']);
 
 export const ISLANDS = {
-  hub: 'Хаб', dungeon_hub: 'Хаб данжей', crimson_isle: 'Crimson Isle (Багровый остров)', the_end: 'Энд', combat_3: 'The End (Энд)',
-  dwarven_mines: 'Dwarven Mines (Гномьи шахты)', mining_3: 'Dwarven Mines (Гномьи шахты)',
-  crystal_hollows: 'Crystal Hollows (Хрустальные пещеры)', garden: 'Сад (Garden)', rift: 'Rift (Разлом)',
-  park: 'The Park (Парк)', foraging_1: 'The Park (Парк)', galatea: 'Galatea', foraging_2: 'Galatea (Moonglade Marsh)',
-  spider_den: "Spider's Den (Паучье логово)", combat_1: "Spider's Den (Паучье логово)",
-  deep_caverns: 'Deep Caverns (Глубокие пещеры)', mining_2: 'Deep Caverns (Глубокие пещеры)',
-  gold_mine: 'Gold Mine (Золотой рудник)', mining_1: 'Gold Mine (Золотой рудник)',
-  barn: 'The Barn (Ферма)', farming_1: 'The Farming Islands (Фермерские острова)', mushroom_desert: 'Mushroom Desert (Грибная пустыня)',
-  backwater_bayou: 'Backwater Bayou (Болото)', fishing_1: 'Backwater Bayou (Болото)', jerry: "Jerry's Workshop (Мастерская Джерри)",
-  winter: "Jerry's Workshop (Мастерская Джерри)", glacite_tunnels: 'Glacite Tunnels (Ледниковые тоннели)',
-  mineshaft: 'Glacite Mineshafts (Ледниковые шахты)', dynamic: 'Личный остров', dungeon: 'Данж (The Catacombs)',
+  hub: 'Hub', dungeon_hub: 'Dungeon Hub', crimson_isle: 'Crimson Isle', the_end: 'The End', combat_3: 'The End',
+  dwarven_mines: 'Dwarven Mines', mining_3: 'Dwarven Mines',
+  crystal_hollows: 'Crystal Hollows', garden: 'Garden', rift: 'Rift',
+  park: 'The Park', foraging_1: 'The Park', galatea: 'Galatea', foraging_2: 'Galatea (Moonglade Marsh)',
+  spider_den: "Spider's Den", combat_1: "Spider's Den",
+  deep_caverns: 'Deep Caverns', mining_2: 'Deep Caverns',
+  gold_mine: 'Gold Mine', mining_1: 'Gold Mine',
+  barn: 'The Barn', farming_1: 'The Farming Islands', mushroom_desert: 'Mushroom Desert',
+  backwater_bayou: 'Backwater Bayou', fishing_1: 'Backwater Bayou', jerry: "Jerry's Workshop",
+  winter: "Jerry's Workshop", glacite_tunnels: 'Glacite Tunnels',
+  mineshaft: 'Glacite Mineshafts', dynamic: 'Private Island', dungeon: 'The Catacombs',
   kuudra: "Kuudra's Hollow", lotus_atoll: 'Lotus Atoll',
 };
 
 export const CROPS = {
-  WHEAT: 'Пшеница', CARROT_ITEM: 'Морковь', POTATO_ITEM: 'Картофель', PUMPKIN: 'Тыква', MELON: 'Арбуз',
-  SUGAR_CANE: 'Сахарный тростник', CACTUS: 'Кактус', INK_SACK_3: 'Какао-бобы', 'INK_SACK:3': 'Какао-бобы',
-  MUSHROOM_COLLECTION: 'Грибы', NETHER_STALK: 'Незерский нарост', DOUBLE_PLANT: 'Подсолнух', MOONFLOWER: 'Лунный цветок',
-  WILD_ROSE: 'Дикая роза',
+  WHEAT: 'Wheat', CARROT_ITEM: 'Carrot', POTATO_ITEM: 'Potato', PUMPKIN: 'Pumpkin', MELON: 'Melon',
+  SUGAR_CANE: 'Sugar Cane', CACTUS: 'Cactus', INK_SACK_3: 'Cocoa Beans', 'INK_SACK:3': 'Cocoa Beans',
+  MUSHROOM_COLLECTION: 'Mushroom', NETHER_STALK: 'Nether Wart', DOUBLE_PLANT: 'Sunflower', MOONFLOWER: 'Moonflower',
+  WILD_ROSE: 'Wild Rose',
 };
 
 /** Ванильные чары Minecraft: официальные русские названия из ru_ru. SkyBlock-чары остаются на английском. */
@@ -160,6 +140,12 @@ export const ENCHANTS_RU = {
   fortune: 'Удача', power: 'Сила', punch: 'Откидывание', flame: 'Горящая стрела', infinite_quiver: 'Бесконечность',
   luck_of_the_sea: 'Морская удача', lure: 'Приманка', impaling: 'Пронзатель', piercing: 'Пронзающая стрела',
   respite: 'Respite', smelting_touch: 'Smelting Touch',
+};
+
+/** Русские слова редкостей — только для поиска («легендарный питомец»), на сайте редкость как в игре */
+export const RARITY_WORDS_RU = {
+  COMMON: 'Обычный', UNCOMMON: 'Необычный', RARE: 'Редкий', EPIC: 'Эпический', LEGENDARY: 'Легендарный',
+  MYTHIC: 'Мифический', DIVINE: 'Божественный', SPECIAL: 'Особый', 'VERY SPECIAL': 'Очень особый',
 };
 
 export function rarityRu(r) { return RARITY[r] || r || ''; }

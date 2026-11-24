@@ -407,7 +407,7 @@ test('кооп: совет по открытому профилю соседа �
   const last = client.log.filter(x => x.params.output_config?.format).at(-1);
   const sent = JSON.stringify(last.params.messages);
   assert.match(sent, /Nightowl/);
-  assert.match(sent, /общий банк кооп-острова/);
+  assert.match(sent, /общий Bank кооп-острова/);
   assert.match(sent, /Личный вклад игрока в коллекции острова: 30%/);
   // свежий совет не пересоздаётся сам; через 3 часа — да
   assert.equal(live.ensureViewAdvice(view, null), false);

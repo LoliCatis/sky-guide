@@ -17,28 +17,28 @@ export const WARPS_SNAPSHOT = read('island_warps.json').island_warps;
 
 // Острова в порядке, удобном для сбора фей (сначала доступные с самого начала)
 export const ISLANDS = {
-  hub: { name: 'Hub', ru: 'Хаб',
-    tip: 'Больше всего фей. Часть на крышах домов и в шпилях, часть в подземельях: канализация под Хабом, шахта в Graveyard, пещеры под Wilderness. Высокие удобнее брать с Aspect of the End или Grappling Hook.' },
+  hub: { name: 'Hub', ru: 'Hub',
+    tip: 'Больше всего фей. Часть на крышах домов и в шпилях, часть в подземельях: канализация под Hub, шахта в Graveyard, пещеры под Wilderness. Высокие удобнее брать с Aspect of the End или Grappling Hook.' },
   foraging_1: { name: 'The Park', ru: 'Парк',
     tip: 'Феи раскиданы по лесам разных пород: на кронах, в дуплах и у пещеры Howling Cave. Отсюда же вход к Melody с арфой.' },
   farming_1: { name: 'The Farming Islands', ru: 'Фермерские острова',
     tip: 'The Barn и Mushroom Desert: феи на полях, в трещинах пустыни, у Trapper и на скалах.' },
-  combat_1: { name: "Spider's Den", ru: 'Паучье логово',
+  combat_1: { name: "Spider's Den", ru: '',
     tip: 'Много фей на горе к вершине Arachne и в пещерах под ней. Наверх ведут паутина и уступы.' },
   mining_1: { name: 'Gold Mine', ru: 'Золотой рудник',
     tip: 'Небольшой остров: феи в тоннелях и на верхних ярусах шахты.' },
   mining_2: { name: 'Deep Caverns', ru: 'Глубокие пещеры',
     tip: 'Феи по уровням пещер сверху вниз: Gunpowder Mines → Lapis Quarry → Pigmen\'s Den → Slimehill → Diamond Reserve → Obsidian Sanctuary.' },
-  mining_3: { name: 'Dwarven Mines', ru: 'Гномьи шахты',
+  mining_3: { name: 'Dwarven Mines', ru: 'Dwarven Mines',
     tip: 'Большая карта: феи у Royal Palace, Forge, в Cliffside Veins, Rampart\'s Quarry и на ледяных скалах. Ищи и под потолком.' },
   combat_3: { name: 'The End', ru: 'Энд',
     tip: 'Феи на шипах обсидиана, у Dragon\'s Nest и в Void Sepulture. Зилоты и эндермены мешают — бери броню против Энда.' },
-  crimson_isle: { name: 'Crimson Isle', ru: 'Багровый остров',
+  crimson_isle: { name: 'Crimson Isle', ru: 'Crimson Isle',
     tip: 'Остров огромный и опасный: феи в Dragontail, Scarleton, Stronghold, у вулкана Blazing Volcano и в Burning Desert. Без огнестойкости в лаве не ныряй.' },
-  dungeon_hub: { name: 'Dungeon Hub', ru: 'Хаб данжей',
+  dungeon_hub: { name: 'Dungeon Hub', ru: 'Dungeon Hub',
     tip: 'Все феи на поверхности хаба данжей и в его постройках, обычно за 5 минут.' },
   winter: { name: "Jerry's Workshop", ru: 'Мастерская Джерри',
-    tip: 'Открыта только в Late Winter (последний месяц года SkyBlock), вход через портал в Хабе. Запланируй заранее — иначе ждать год.' },
+    tip: 'Открыта только в Late Winter (последний месяц года SkyBlock), вход через портал в Hub. Запланируй заранее — иначе ждать год.' },
   fishing_1: { name: 'Backwater Bayou', ru: 'Болото',
     tip: 'Феи у воды, на сваях домиков и на деревьях над болотом.' },
   foraging_2: { name: 'Galatea', ru: 'Галатея',
@@ -49,11 +49,12 @@ export const ISLANDS = {
     tip: 'Маленький атолл: феи на островках и под водой у кораллов.' },
   safari: { name: 'Safari', ru: 'Сафари',
     tip: 'Зона охоты (Hunting): феи по краям сафари.' },
-  garden: { name: 'The Garden', ru: 'Сад' },
-  crystal_hollows: { name: 'Crystal Hollows', ru: 'Хрустальные пещеры' },
-  dungeon: { name: 'Dungeon', ru: 'Данж' },
+  garden: { name: 'The Garden', ru: 'Garden' },
+  crystal_hollows: { name: 'Crystal Hollows', ru: 'Crystal Hollows' },
+  dungeon: { name: 'Dungeon', ru: 'Dungeon' },
 };
-export const islandName = id => ISLANDS[id] ? `${ISLANDS[id].name} (${ISLANDS[id].ru})` : (id || 'неизвестно где');
+// острова — как в игре, без русских подписей (поле ru оставлено для старых данных, на сайте не показывается)
+export const islandName = id => ISLANDS[id] ? ISLANDS[id].name : (id || 'неизвестно где');
 
 // Песни арфы Melody по порядку открытия. id — как в API (song_<id>_best_completion).
 export const HARP_SONGS = [

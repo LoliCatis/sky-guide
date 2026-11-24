@@ -165,10 +165,10 @@ export function itemValue(it) {
 
 export function allStoredItems(inv) {
   const groups = [
-    ['Инвентарь', inv.inventory], ['Броня', inv.armor], ['Экипировка', inv.equipment], ['Гардероб', inv.wardrobe], ['Наборы снаряжения', inv.wardrobeEquipment], ['Рюкзаки (сами)', inv.backpackItems],
-    ['Эндер-сундук', inv.enderChest], ['Личное хранилище', inv.vault], ['Сумка аксессуаров', inv.talismans], ['Колчан', inv.quiver], ['Сумка зелий', inv.potions], ['Сумка мешков', inv.sacksBag],
-    ['Rift: инвентарь', inv.rift?.inventory], ['Rift: броня', inv.rift?.armor], ['Rift: экипировка', inv.rift?.equipment], ['Rift: эндер-сундук', inv.rift?.enderChest],
-    ...Object.entries(inv.backpacks || {}).map(([k, v]) => [`Рюкзак ${Number(k) + 1}`, v]),
+    ['Инвентарь', inv.inventory], ['Броня', inv.armor], ['Экипировка', inv.equipment], ['Wardrobe', inv.wardrobe], ['Wardrobe (Equipment)', inv.wardrobeEquipment], ['Backpacks', inv.backpackItems],
+    ['Ender Chest', inv.enderChest], ['Personal Vault', inv.vault], ['Accessory Bag', inv.talismans], ['Quiver', inv.quiver], ['Potion Bag', inv.potions], ['Sack of Sacks', inv.sacksBag],
+    ['Rift: инвентарь', inv.rift?.inventory], ['Rift: броня', inv.rift?.armor], ['Rift: экипировка', inv.rift?.equipment], ['Rift: Ender Chest', inv.rift?.enderChest],
+    ...Object.entries(inv.backpacks || {}).map(([k, v]) => [`Backpack ${Number(k) + 1}`, v]),
   ];
   const out = [];
   for (const [where, list] of groups) for (const it of list || []) if (it?.id && !isGuiItem(it)) out.push({ ...it, where }); // служебные (меню SkyBlock) — не вещи

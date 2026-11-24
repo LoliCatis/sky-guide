@@ -73,7 +73,7 @@ test('методы рыбалки в «Заработке»: разбор, до�
   const by = Object.fromEntries(list.map(x => [x.id, x]));
   for (const def of FISHING_METHODS) {
     assert.ok(by[def.id], def.id);
-    assert.equal(by[def.id].tag, 'Рыбалка');
+    assert.equal(by[def.id].tag, 'Fishing');
     assert.ok(FISHING_DETAILS[def.id]?.steps.length >= 2, `${def.id}: шаги`);
   }
   const lava = by['fish-crimson-lava'];

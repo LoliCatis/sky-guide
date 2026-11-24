@@ -150,7 +150,7 @@ export default {
     // Питомец
     const sloth = pets.find(p => p.type === 'SLOTH');
     if (!sloth.pet) next.push({ title: 'Возьми питомца Sloth', priority: 55, why: `Лучший питомец для Galatea: ${sloth.why}. Где взять: ${sloth.how}.`, item: 'SLOTH;4' });
-    else if (sloth.pet.tier !== 'LEGENDARY') next.push({ title: `Подними редкость Sloth (${sloth.pet.tier.toLowerCase()})`, priority: 38, why: 'Kat в Хабе повышает редкость за Sloth Claw — их продаёт Miria за купоны. Legendary открывает все способности.', item: 'GIANT_SLOTH_CLAW' });
+    else if (sloth.pet.tier !== 'LEGENDARY') next.push({ title: `Подними редкость Sloth (${sloth.pet.tier.toLowerCase()})`, priority: 38, why: 'Kat в Hub повышает редкость за Sloth Claw — их продаёт Miria за купоны. Legendary открывает все способности.', item: 'GIANT_SLOTH_CLAW' });
 
     // Осколки
     const shardHave = SHARDS.filter(s => attrs.get(s.attr));
@@ -158,7 +158,7 @@ export default {
       next.push({ title: 'Осколки Hunting для Foraging', priority: 34, why: `Атрибуты дают Sweep и Fortune по конкретным деревьям: ${SHARDS.slice(0, 3).map(s => `${s.shard} — ${lc(s.what)}`).join('; ')}. Первые два продаёт Agatha за купоны конкурсов.`, item: 'ATTRIBUTE_SHARD_FIG_SHARPENING;1' });
     }
 
-    // Скилл
+    // Skill
     if (sLvl < cap) {
       const gate = SKILL_GATES.find(([lv]) => lv > sLvl);
       next.push({

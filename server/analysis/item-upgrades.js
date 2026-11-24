@@ -93,7 +93,7 @@ const WEIGHTS = {
   fishing: { sea_creature_chance: 10, fishing_speed: 1, treasure_chance: 2, trophy_chance: 1 },
   foraging: { foraging_fortune: 1, sweep: 3 },
 };
-const ROLE_RU = { melee: 'ближний бой', archer: 'лучник', mage: 'маг', tank: 'танк', mining: 'добыча', farming: 'фермерство', fishing: 'рыбалка', foraging: 'лесорубство' };
+const ROLE_RU = { melee: 'ближний бой', archer: 'лучник', mage: 'маг', tank: 'танк', mining: 'добыча', farming: 'Farming', fishing: 'рыбалка', foraging: 'Foraging' };
 
 // Цена одного ролла у кузнеца (случайная реформа) — по редкости
 const BLACKSMITH_COST = { COMMON: 250, UNCOMMON: 500, RARE: 1000, EPIC: 2500, LEGENDARY: 5000, MYTHIC: 10000, DIVINE: 15000, SPECIAL: 25000, 'VERY SPECIAL': 50000 };
@@ -328,7 +328,7 @@ function starSteps(it, cls, ctx) {
   return steps;
 }
 
-// ---------- Самоцветы ----------
+// ---------- Gemstones ----------
 
 const SLOT_GEMS = {
   COMBAT: ['JASPER', 'SAPPHIRE', 'RUBY', 'AMETHYST', 'ONYX'], OFFENSIVE: ['JASPER', 'SAPPHIRE'], DEFENSIVE: ['RUBY', 'AMETHYST', 'OPAL'],
@@ -336,7 +336,7 @@ const SLOT_GEMS = {
   CHISEL: ['CITRINE', 'AQUAMARINE', 'PERIDOT', 'ONYX'],
 };
 const GEM_PREF = { melee: ['JASPER', 'ONYX', 'RUBY'], archer: ['JASPER', 'ONYX', 'RUBY'], mage: ['SAPPHIRE', 'RUBY'], tank: ['AMETHYST', 'RUBY', 'OPAL'], mining: ['JADE', 'TOPAZ', 'AMBER'], farming: ['PERIDOT'], fishing: ['AQUAMARINE'], foraging: ['CITRINE'] };
-const GEM_RU = { RUBY: 'Ruby (здоровье)', AMETHYST: 'Amethyst (защита)', JADE: 'Jade (удача добычи)', AMBER: 'Amber (скорость добычи)', TOPAZ: 'Topaz (Pristine)', SAPPHIRE: 'Sapphire (интеллект)', JASPER: 'Jasper (сила)', OPAL: 'Opal (истинная защита)', ONYX: 'Onyx (крит. урон)', AQUAMARINE: 'Aquamarine (шанс морских существ)', CITRINE: 'Citrine (удача лесоруба)', PERIDOT: 'Peridot (удача фермера)' };
+const GEM_RU = { RUBY: 'Ruby (здоровье)', AMETHYST: 'Amethyst (защита)', JADE: 'Jade (Mining Fortune)', AMBER: 'Amber (Mining Speed)', TOPAZ: 'Topaz (Pristine)', SAPPHIRE: 'Sapphire (интеллект)', JASPER: 'Jasper (сила)', OPAL: 'Opal (истинная защита)', ONYX: 'Onyx (крит. урон)', AQUAMARINE: 'Aquamarine (шанс Sea Creatures)', CITRINE: 'Citrine (удача лесоруба)', PERIDOT: 'Peridot (удача фермера)' };
 const QUALITY = ['ROUGH', 'FLAWED', 'FINE', 'FLAWLESS', 'PERFECT'];
 
 function gemSteps(it, cls, ctx) {
@@ -488,7 +488,7 @@ function petSteps(p, ctx) {
   if (topTier > tierIdx) {
     const next = RARITIES[tierIdx + 1];
     const tb = ctx.priceOf('PET_ITEM_TIER_BOOST');
-    s.push({ key: 'pet:tier', group: 'core', title: `Редкость ${next}`, current: p.tier, target: RARITIES[topTier], done: false, cost: tb || null, parts: [{ id: 'PET_ITEM_TIER_BOOST', count: 1, price: tb }], impact: 6, note: 'Tier Boost (предмет) или улучшение у Kat в Хабе' });
+    s.push({ key: 'pet:tier', group: 'core', title: `Редкость ${next}`, current: p.tier, target: RARITIES[topTier], done: false, cost: tb || null, parts: [{ id: 'PET_ITEM_TIER_BOOST', count: 1, price: tb }], impact: 6, note: 'Tier Boost (предмет) или улучшение у Kat в Hub' });
   }
   const held = p.heldItem;
   s.push({ key: 'pet:item', group: 'core', title: 'Предмет питомцу', current: held ? title(String(held).replace(/^PET_ITEM_/, '')) : 'нет', target: 'есть', done: !!held, cost: held ? 0 : null, parts: [], impact: 5,

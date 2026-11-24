@@ -1,6 +1,7 @@
 // Аксессуары и Magical Power, питомцы, миньоны, коллекции, заработок и план покупок.
 import KEY_PETS from '../../data/key-pets.json' with { type: 'json' };
 import LADDERS from '../../data/ladders.json' with { type: 'json' };
+import { tamingCapPlan, RARITIES } from '../../../analysis/pet-score.js';
 import { fmtCoins, fmtNum, plural, prettyId, bestPets, petLevel, petTierIndex, PET_TIER_RU } from '../util.js';
 
 // Граница «выгодного» аксессуара: сколько монет за 1 Magical Power ещё считаем дёшево
@@ -138,28 +139,19 @@ export function petRules(ctx, add) {
     });
   }
 
-  // Кап Taming
+  // Кап Taming: квест George в Pet Care — 10 конкретных питомцев не ниже нужной редкости
   if ((m.tamingCap || 50) < 60) {
-    const typesAll = Object.keys(ctx.data.petTypes || {});
-    const ownedTypes = new Set(best.keys());
-    // уже сданные типы второй раз кап не поднимают
-    const sacrificed = new Set((m.tamingSacrificedTypes || []).map(t => String(t).toUpperCase()));
-    // берём Epic и выше: так точно подойдёт под требования Pet Care
-    const cheap = typesAll.filter(t => !ownedTypes.has(t) && !sacrificed.has(t)).map(t => {
-      const tiers = [3, 4].map(i => ({ i, p: ctx.price(`${t};${i}`) })).filter(x => x.p);
-      tiers.sort((a, b) => a.p - b.p);
-      return tiers[0] ? { type: t, ...tiers[0] } : null;
-    }).filter(Boolean).filter(c => c.p < 50_000_000).sort((a, b) => a.p - b.p).slice(0, 6);
-    const left = 60 - (m.tamingCap || 50);
+    const plan = tamingCapPlan({ tamingCap: m.tamingCap || 50, sacrificed: m.tamingSacrificedTypes || [], pets: m.pets || [], price: ctx.price });
+    const left = plan.left;
+    const line = c => `${prettyId(c.type)} (${PET_TIER_RU[RARITIES.indexOf(c.minTier)]} или выше)${c.owned ? ' — уже есть у тебя' : c.cost ? `, ~${fmtCoins(c.cost)}` : ''}`;
     add({
       id: 'pets-taming-cap', cat: 'Питомцы', priority: 66, effort: 'монеты',
       title: `Подними кап Taming: ${m.tamingCap} → 60`,
-      why: `Сдано типов питомцев: ${m.tamingSacrificed || 0}/10. Каждый новый тип поднимает кап Taming на 1, а уровень Taming усиливает всех питомцев и даёт SkyBlock XP. Осталось ${left} ${plural(left, 'тип', 'типа', 'типов')}.`,
+      why: `George в Pet Care поднимает кап Taming на 1 за каждого питомца из своего списка (всего 10). Сдано ${m.tamingSacrificed || 0} из 10. Уровень Taming усиливает всех питомцев и даёт SkyBlock XP.`,
       how: [
-        'Сдача (sacrifice) делается в меню Pet Care; требования к редкости показаны там же',
-        'Не сдавай питомцев, которыми пользуешься: дешевле купить отдельного питомца того же типа; лишние питомцы из меню питомцев тоже подходят',
-        ...(sacrificed.size ? [`Уже сдано: ${[...sacrificed].map(t => t.replace(/_/g, ' ')).join(', ')}`] : []),
-        ...(cheap.length ? [`Дешёвые типы, которых у тебя нет: ${cheap.map(c => `${prettyId(c.type)} (${PET_TIER_RU[c.i]}, ~${fmtCoins(c.p)})`).join(', ')}`] : []),
+        'Hub → Pet Care → George: отдай ему питомца из списка (продажа George), порядок любой',
+        ...plan.candidates.map(c => `Нужен: ${line(c)}`),
+        'Своего рабочего питомца не отдавай: дешевле купить отдельного на аукционе',
       ],
       payoff: `+${left} к капу Taming`,
       link: 'pets',

@@ -4,6 +4,7 @@ import { Card, Progress } from '../components/ui.jsx';
 import { ItemIcon } from '../components/ItemIcon.jsx';
 import { RARITY_COLOR, RARITY_RU, coins, plural } from '../api.js';
 import { useApp } from '../App.jsx';
+import { RefsProvider, Rich } from '../guides/Rich.jsx';
 
 const KIND = { new: 'новый тип', rarity: 'выше редкость', maxed: 'макс. уровень' };
 
@@ -13,7 +14,7 @@ function PetRow({ o, onOpen, right }) {
       <ItemIcon id={o.id} size={30} />
       <span className="ps-row-name">
         <b style={{ color: RARITY_COLOR[o.tier] }}>{o.name}</b>
-        <small>{RARITY_RU[o.tier]}{o.kind ? ` · ${KIND[o.kind]}${o.kind === 'rarity' && o.from ? ` (сейчас ${RARITY_RU[o.from]})` : ''}` : ''}</small>
+        <small>{o.sub || <>{RARITY_RU[o.tier]}{o.kind ? ` · ${KIND[o.kind]}${o.kind === 'rarity' && o.from ? ` (сейчас ${RARITY_RU[o.from]})` : ''}` : ''}</>}</small>
       </span>
       {right}
     </button>
@@ -65,25 +66,28 @@ export function TamingCard({ t }) {
   const { openItem } = useApp();
   if (!t) return null;
   const full = t.left === 0;
+  const tierLine = c => c.owned
+    ? `${RARITY_RU[c.minTier]} или выше · есть у тебя (${RARITY_RU[c.owned.tier]}, ур. ${c.owned.level})`
+    : `${RARITY_RU[c.minTier]} или выше`;
   return (
     <Card className="span-6 ps-card" title="Кап Taming" icon={<ItemIcon id="BONE" size={22} />}
       right={<span className={full ? 'gold small' : 'muted small'}>{t.cap}/{t.max}</span>}>
-      <Progress value={(t.cap - 50) / (t.max - 50)} max={full} />
-      {full
-        ? <p className="small">Кап Taming максимальный: сдано {t.sacrificed.length} типов питомцев.</p>
-        : <p className="muted small">Каждый новый тип питомца, сданный в меню <b>Pet Care</b>, поднимает кап Taming на 1 (с 50 до 60). Осталось {t.left} {plural(t.left, 'тип', 'типа', 'типов')}. Уровень Taming усиливает всех питомцев и даёт SkyBlock XP. Свои рабочие питомцы не нужны: дешевле купить отдельного.</p>}
-      {t.sacrificed.length > 0 && <details className="ex-eggs">
-        <summary>Уже сдано: {t.sacrificed.length}</summary>
-        <div className="ps-tags">{t.sacrificed.map(s => <span key={s} className="chip">{s.toLowerCase().split('_').map(w => w[0].toUpperCase() + w.slice(1)).join(' ')}</span>)}</div>
-      </details>}
-      {!full && t.candidates.length > 0 && <>
-        <div className="ex-sec"><span>Самые дешёвые на сдачу</span>{t.picksCount > 0 && <span className="ex-note">{t.picksCount} шт. ≈ {coins(t.totalCost)}</span>}</div>
-        <div className="ps-list">
-          {t.candidates.slice(0, Math.max(t.left, 4)).map((c, i) => <PetRow key={c.type} o={c} onOpen={openItem} right={<span className={`ps-cost ${i < t.left ? '' : 'muted'}`}>{coins(c.cost)}</span>} />)}
-        </div>
-        <p className="muted tiny">Взяты эпические и выше: такие точно подходят под требования Pet Care. Точные требования к редкости видны в самом меню.</p>
-      </>}
-      {!full && !t.candidates.length && <p className="muted small">Цены аукциона ещё не загрузились: кандидаты появятся через минуту.</p>}
+      <RefsProvider refs={t.refs}>
+        <Progress value={(t.cap - 50) / (t.max - 50)} max={full} />
+        <p className={full ? 'small' : 'muted small'}><Rich text={t.text?.intro || ''} /></p>
+        {t.sacrificed.length > 0 && <details className="ex-eggs">
+          <summary>Уже сдано: {t.sacrificed.length}</summary>
+          <div className="ps-tags">{t.sacrificed.map(s => <span key={s} className="chip">{s.toLowerCase().split('_').map(w => w[0].toUpperCase() + w.slice(1)).join(' ')}</span>)}</div>
+        </details>}
+        {!full && t.candidates.length > 0 && <>
+          <div className="ex-sec"><span>Осталось отдать George</span>{t.totalCost > 0 && <span className="ex-note">≈ {coins(t.totalCost)}</span>}</div>
+          <div className="ps-list">
+            {t.candidates.map(c => <PetRow key={c.type} o={{ ...c, sub: tierLine(c) }} onOpen={openItem}
+              right={<span className="ps-cost">{c.owned ? 'есть' : c.cost ? coins(c.cost) : 'нет цены'}</span>} />)}
+          </div>
+          <p className="muted tiny"><Rich text={t.text?.note || ''} /></p>
+        </>}
+      </RefsProvider>
     </Card>
   );
 }

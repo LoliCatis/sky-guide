@@ -11,6 +11,11 @@
 // Что считается «максимумом» — мета-сборка, а не абсолютно всё возможное: например, на меч не советуем
 // Knockback, а из взаимоисключающих чар (Sharpness / Smite / Bane) берём ту, что уже стоит, иначе основную.
 
+import { buildUpgrades, nextUpgrade } from '../lib/acc-upgrades.js';
+
+let upMemo = null;
+const upgradesFor = raw => (upMemo?.raw === raw ? upMemo : (upMemo = { raw, map: buildUpgrades(raw) })).map;
+
 const RARITIES = ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY', 'MYTHIC', 'DIVINE', 'SPECIAL', 'VERY SPECIAL'];
 const MASTER_STARS = ['FIRST_MASTER_STAR', 'SECOND_MASTER_STAR', 'THIRD_MASTER_STAR', 'FOURTH_MASTER_STAR', 'FIFTH_MASTER_STAR'];
 const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
@@ -432,7 +437,8 @@ function extraSteps(it, cls, ctx) {
       const cheapest = ENRICHMENTS.map(e => `TALISMAN_ENRICHMENT_${e}`).map(id => ({ id, p: ctx.priceOf(id) })).filter(x => x.p).sort((a, b) => a.p - b.p)[0];
       s.push({ key: 'enrichment', group: 'core', title: 'Обогащение (Enrichment)', current: en ? title(en.id.replace('TALISMAN_ENRICHMENT_', '')) : 'нет', target: 'любое', done: !!en, cost: en ? 0 : cheapest?.p || null, parts: cheapest ? [{ id: cheapest.id, count: 1, price: cheapest.p }] : [], impact: 1.5, why: 'небольшой стат к аксессуару (Legendary и выше)' });
     }
-    const next = ctx.constants?.misc?.talisman_upgrades?.[it.id]?.[0];
+    const rawUp = ctx.constants?.misc?.talisman_upgrades;
+    const next = rawUp?.[it.id]?.[0] || nextUpgrade(it.id, upgradesFor(rawUp));
     if (next) {
       const p = ctx.priceOf(next), own = ctx.priceOf(it.id);
       s.push({ key: 'acc_upgrade', group: 'core', title: `Следующая версия: ${ctx.getItem(next)?.name || title(next)}`, current: it.name || it.id, target: ctx.getItem(next)?.name || next, done: false, cost: p ? Math.max(p - own, p * 0.1) : null, parts: [{ id: next, count: 1, price: p }], impact: 5, why: 'больше Magical Power; старую версию можно продать', approx: true });

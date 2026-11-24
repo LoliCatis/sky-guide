@@ -35,13 +35,23 @@ test('дешёвые очки: один вариант на тип, сортир
   assert.ok(plan.enough);
 });
 
-test('кап Taming: не предлагает сданные и свои типы, только эпические и выше', () => {
-  const { types } = computePetScore([pet('BEE', 'RARE')]);
-  const prices = { 'BEE;3': 1, 'BAT;3': 5e5, 'BAT;2': 1e5, 'WOLF;4': 2e5, 'SQUID;3': 3e5 };
-  const t = tamingCapPlan({ tamingCap: 58, sacrificed: ['squid'], types, petIds: Object.keys(prices), price: id => prices[id] });
-  assert.equal(t.left, 2);
-  assert.deepEqual(t.candidates.map(c => c.id), ['WOLF;4', 'BAT;3']);
-  assert.equal(t.totalCost, 7e5);
+test('кап Taming: только список George, нужная редкость, сданные пропускаем', () => {
+  const prices = { 'JELLYFISH;3': 9e6, 'JELLYFISH;4': 5e6, 'FROST_WISP;2': 2e5, 'ENDERMAN;4': 1, 'ENDERMAN;5': 3e6, 'GHOUL;3': 2e4, 'RAT;4': 3e4 };
+  const sacrificed = ['black_cat', 'rift_ferret', 'slug', 'spirit', 'giraffe', 'bal', 'baby_yeti'];
+  const t = tamingCapPlan({ tamingCap: 57, sacrificed, pets: [pet('ENDERMAN', 'MYTHIC', 100)], price: id => prices[id] || 0 });
+  assert.equal(t.left, 3);
+  // Ghoul и Rat не в списке George — их не предлагаем; Enderman нужен Mythic, и он уже есть у игрока
+  assert.deepEqual(t.candidates.map(c => c.type), ['ENDERMAN', 'FROST_WISP', 'JELLYFISH']);
+  assert.equal(t.candidates[0].owned.tier, 'MYTHIC');
+  assert.equal(t.candidates[2].id, 'JELLYFISH;4', 'берём самую дешёвую из подходящих редкостей');
+  assert.equal(t.candidates[2].minTier, 'EPIC');
+  assert.equal(t.totalCost, 2e5 + 5e6);
+});
+
+test('кап Taming: Legendary Enderman не подходит — нужен Mythic', () => {
+  const t = tamingCapPlan({ tamingCap: 59, sacrificed: ['BLACK_CAT', 'RIFT_FERRET', 'SLUG', 'SPIRIT', 'GIRAFFE', 'BAL', 'BABY_YETI', 'FROST_WISP', 'JELLYFISH'], pets: [pet('ENDERMAN', 'LEGENDARY')], price: () => 0 });
+  assert.equal(t.candidates.length, 1);
+  assert.equal(t.candidates[0].owned, null);
 });
 
 test('сводка для страницы: план до порога и почти прокачанные питомцы', () => {

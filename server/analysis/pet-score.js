@@ -112,31 +112,61 @@ export function cheapestPlan(options, need) {
 }
 
 /**
- * Кап Taming: сдача (sacrifice) питомцев новых типов в меню Pet Care, +1 к капу за тип, до 60.
- * Кандидаты — типы, которые ещё не сдавались и которых нет в меню питомцев (свои рабочие питомцы не трогаем).
+ * Питомцы для капа Taming. Это не «любой новый тип», а квест NPC George (Pet Care, Hub): он просит
+ * 10 конкретных питомцев не ниже указанной редкости, каждый первый сданный даёт +1 к капу (50 → 60),
+ * порядок любой (вики fandom «George», 0.19.10). Индекс редкости: 0 Common … 5 Mythic.
  */
-export function tamingCapPlan({ tamingCap = TAMING_BASE_CAP, sacrificed = [], types = new Map(), petIds = [], price = () => 0, limit = 8 } = {}) {
+export const TAMING_PETS = [
+  { type: 'ENDERMAN', min: 5 },
+  { type: 'BLACK_CAT', min: 4 },
+  { type: 'RIFT_FERRET', min: 3 },
+  { type: 'SLUG', min: 3 },
+  { type: 'SPIRIT', min: 3 },
+  { type: 'GIRAFFE', min: 3 },
+  { type: 'JELLYFISH', min: 3 },
+  { type: 'BAL', min: 3 },
+  { type: 'BABY_YETI', min: 3 },
+  { type: 'FROST_WISP', min: 2 },
+];
+
+/**
+ * Кап Taming: какие питомцы из списка George ещё не сданы, какая редкость нужна и сколько стоит самый
+ * дешёвый подходящий. Если такой питомец уже есть в меню питомцев — отмечаем (можно сдать своего).
+ */
+export function tamingCapPlan({ tamingCap = TAMING_BASE_CAP, sacrificed = [], pets = [], price = () => 0 } = {}) {
   const left = Math.max(0, TAMING_MAX_CAP - tamingCap);
   const done = new Set(sacrificed.map(t => String(t).toUpperCase()));
-  const cheapest = new Map();
-  for (const id of petIds) {
-    const [type, t] = String(id).split(';');
-    const i = Number(t);
-    if (!type || SKIP_TYPES.has(type) || done.has(type) || types.has(type)) continue;
-    // Epic и выше: такие точно подходят под требования Pet Care (как и в шаге советчика)
-    if (!(i >= 3 && i < RARITIES.length)) continue;
-    const cost = price(id);
-    if (!(cost > 0)) continue;
-    const cur = cheapest.get(type);
-    if (!cur || cost < cur.cost) cheapest.set(type, { type, id, tier: RARITIES[i], cost });
+  const candidates = [];
+  for (const { type, min } of TAMING_PETS) {
+    if (done.has(type)) continue;
+    let best = null;
+    for (let i = min; i < RARITIES.length; i++) {
+      const cost = price(`${type};${i}`);
+      if (cost > 0 && (!best || cost < best.cost)) best = { id: `${type};${i}`, tier: RARITIES[i], cost };
+    }
+    const own = pets.find(p => p.type === type && tierIndex(p.tier) >= min);
+    candidates.push({
+      type, minTier: RARITIES[min],
+      id: best?.id || `${type};${min}`, tier: best?.tier || RARITIES[min], cost: best?.cost || 0,
+      owned: own ? { tier: own.tier, level: own.level } : null,
+    });
   }
-  const candidates = [...cheapest.values()].sort((a, b) => a.cost - b.cost);
+  // Сначала те, что уже есть у игрока, потом по цене; без цены — в конце
+  candidates.sort((a, b) => (b.owned ? 1 : 0) - (a.owned ? 1 : 0) || (a.cost || Infinity) - (b.cost || Infinity));
   const picks = candidates.slice(0, left);
+  // Тексты карточки отдаём с сервера, чтобы к ним можно было подобрать подсказки (textRefs)
+  const text = {
+    intro: left
+      ? `George в Pet Care (Hub) поднимает кап Taming на 1 за каждого питомца из своего списка, всего 10, порядок любой. Осталось ${left} из 10. Уровень Taming усиливает всех питомцев и даёт SkyBlock XP.`
+      : `Кап Taming максимальный: George получил всех 10 питомцев.`,
+    note: 'Подходит питомец указанной редкости или выше. Своего рабочего питомца не отдавай: дешевле купить отдельного на аукционе.',
+  };
   return {
+    text,
     cap: tamingCap, max: TAMING_MAX_CAP, left,
     sacrificed: [...done],
-    candidates: candidates.slice(0, Math.max(limit, left)),
-    totalCost: picks.reduce((s, c) => s + c.cost, 0),
+    candidates,
+    totalCost: picks.reduce((s, c) => s + (c.owned ? 0 : c.cost), 0),
     picksCount: picks.length,
   };
 }
@@ -159,7 +189,7 @@ export function petScoreSummary(member, opts = {}) {
   const taming = tamingCapPlan({
     tamingCap: member?.tamingCap || TAMING_BASE_CAP,
     sacrificed: member?.tamingSacrificedTypes || [],
-    types, petIds: opts.petIds || [], price: opts.price || (() => 0),
+    pets, price: opts.price || (() => 0),
   });
   return {
     score, rarityPoints, maxedPoints, uniqueTypes: types.size, apiScore,

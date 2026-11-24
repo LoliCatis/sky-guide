@@ -101,14 +101,15 @@ test('«Без дела лежит» не предлагает продать р
     { id: 'OLD_DRAGON_HELMET', name: 'Old Dragon Helmet', where: 'Рюкзак 2', value: 8e6 },
   ] };
   const m = ownercatMember();
-  m.tamingCap = 52; m.tamingSacrificedTypes = ['BEE', 'SQUID'];
-  const prices = { 'BEE;3': 10, 'SQUID;3': 10, 'ROCK;3': 20 };
+  m.tamingCap = 52; m.tamingSacrificedTypes = ['SLUG', 'BAL'];
+  const prices = { 'SLUG;3': 10, 'BAL;3': 10, 'ROCK;3': 20, 'JELLYFISH;3': 30 };
   const steps = buildRoadmap(m, null, gear, { price: id => prices[id] || 0, constants: { pets: { pet_types: { BEE: 'x', SQUID: 'x', ROCK: 'x' } } } });
   const idle = steps.find(s => s.id === 'money-idle');
   assert.ok(idle && idle.how.length === 1 && /Old Dragon/.test(idle.how[0]), idle?.how.join('\n'));
   const tc = steps.find(s => s.id === 'pets-taming-cap');
-  const cheapLine = tc.how.find(l => l.startsWith('Дешёвые'));
-  assert.ok(cheapLine && /Rock/.test(cheapLine) && !/Bee|Squid/i.test(cheapLine), cheapLine);
+  // Кап Taming — только список George: Rock там нет, сданные Slug и Bal не повторяем
+  const need = tc.how.filter(l => l.startsWith('Нужен:')).join('\n');
+  assert.ok(/Jellyfish \(Epic или выше\), ~30/.test(need) && !/Rock|Slug|Bal\b/.test(need), need);
 });
 
 import { craftFlips } from '../market/flips.js';

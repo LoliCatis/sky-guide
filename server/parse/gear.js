@@ -3,12 +3,19 @@ import { isGuiItem } from '../lib/gui-items.js';
 import { neu, allAccessories, itemName } from '../neu.js';
 import { priceOf, petPriceOf } from '../prices.js';
 import { PET_TIERS } from '../nbt.js';
+import { buildUpgrades, NO_RECOMB } from '../lib/acc-upgrades.js';
 
 export const MP_BY_RARITY = { COMMON: 3, UNCOMMON: 5, RARE: 8, EPIC: 12, LEGENDARY: 16, MYTHIC: 22, DIVINE: 22, SPECIAL: 3, 'VERY SPECIAL': 5 };
 const RARITY_ORDER = ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY', 'MYTHIC', 'DIVINE', 'SPECIAL', 'VERY SPECIAL'];
 
+// Числятся в NEU как аксессуары, но в сумку не кладутся
+const NOT_IN_BAG = new Set(['RIFT_PRISM']);
+
+let upCache = null;
 function upgradesMap() {
-  return neu.constants.misc?.talisman_upgrades || {};
+  const raw = neu.constants.misc?.talisman_upgrades;
+  if (!upCache || upCache.raw !== raw) upCache = { raw, map: buildUpgrades(raw) };
+  return upCache.map;
 }
 
 // Все предметы, которые "покрывает" данный аксессуар (его младшие версии)
@@ -46,7 +53,8 @@ export function analyzeAccessories(member) {
   const recs = [];
   const all = allAccessories();
   for (const acc of all) {
-    if (owned.has(acc.id) || covered.has(acc.id) || ignored.has(acc.id)) continue;
+    // Rift Prism — не аксессуар для сумки: его употребляют один раз (+11 MP), для него свой шаг mp-rift-prism
+    if (owned.has(acc.id) || covered.has(acc.id) || ignored.has(acc.id) || NOT_IN_BAG.has(acc.id)) continue;
     const accMp = MP_BY_RARITY[acc.rarity] || 0;
     if (!accMp) continue;
     // если владеем младшей версией — считаем прирост
@@ -71,7 +79,7 @@ export function analyzeAccessories(member) {
 
   // Mythic и выше рекомб не поднимает по MP, Special/Very Special — отдельная шкала
   const recombable = ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY'];
-  const notRecomb = list.filter(a => a.active && !a.recomb && recombable.includes(a.rarity));
+  const notRecomb = list.filter(a => a.active && !a.recomb && recombable.includes(a.rarity) && !NO_RECOMB.has(a.id));
   const recombPrice = priceOf('RECOMBOBULATOR_3000');
 
   return {

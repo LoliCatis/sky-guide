@@ -12,6 +12,7 @@ import { moneyMethods, setMoneyOwner } from './analysis/money.js';
 import { SKILLS, SLAYERS } from './i18n/ru.js';
 import { pricesReady, priceOf, prices } from './prices.js';
 import { petScoreSummary } from './analysis/pet-score.js';
+import { enrichGuide } from './guides/refs.js';
 import { chocolateAdvice } from './analysis/chocolate.js';
 import { listByCategory } from './items-ru/index.js';
 import { neu, itemName } from './neu.js';
@@ -130,6 +131,14 @@ export function analyzeMember(m) {
   try { museum = museumSummary(m, { constants: neu.constants, price: priceOf, name: itemName }); } catch (e) { console.warn('[музей]', e.message); }
   let petScore = null;
   try { petScore = petScoreSummary(m, { petIds: allPetIds(), price: priceOf, maxedPrice: id => { const b = prices.bin.get(id); return b?.max || 0; }, name: itemName }); } catch (e) { console.warn('[pet score]', e.message); }
+  // Подсказки по тексту карточки «Кап Taming»
+  if (petScore?.taming?.text) {
+    try {
+      const t = petScore.taming;
+      const text = [t.text.intro, t.text.note, ...t.candidates.map(c => c.name)].join('\n');
+      t.refs = enrichGuide({ status: 'ok', sections: [{ kind: 'text', text }] }, { items: neu.items, constants: neu.constants, price: priceOf }).refs;
+    } catch (e) { console.warn('[taming refs]', e.message); }
+  }
   let chocolate = null;
   try { chocolate = chocolateAdvice(m.extras?.chocolate); } catch (e) { console.warn('[шоколад]', e.message); }
   return { acc, gear, roadmap, map, plan, summary, methods, museum, petScore, chocolate };

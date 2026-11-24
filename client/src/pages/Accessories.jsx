@@ -1,13 +1,13 @@
 import { useMemo, useState } from 'react';
 import { Card, Stat, Tabs, Empty } from '../components/ui.jsx';
 import { ItemIcon } from '../components/ItemIcon.jsx';
-import { coins, num, RARITY_COLOR, RARITY_RU, friendlyError, useHashTab } from '../api.js';
+import { coins, num, RARITY_COLOR, RARITY_RU, friendlyError, useHashTab, usePart } from '../api.js';
 import { useApp } from '../App.jsx';
 import { MaxwellCard } from './Wealth.jsx';
 
 export default function Accessories({ state, sub }) {
   const { openItem } = useApp();
-  const acc = state.analysis?.acc;
+  const acc = usePart(state, 'acc', state.analysis?.acc); // полный список — отдельным куском при открытии раздела
   const m = state.member;
   const [tab, setTab] = useHashTab('accessories', sub, ['buy', 'missing', 'owned'], 'buy');
   const [budget, setBudget] = useState(50);
@@ -22,7 +22,7 @@ export default function Accessories({ state, sub }) {
     }
     return [...best.values()].sort((a, b) => b.gain - a.gain || (a.price || Infinity) - (b.price || Infinity));
   }, [acc]);
-  if (!acc) return null;
+  if (!acc) return <div className="muted small"><div className="spinner" />Загружаю аксессуары…</div>;
   const mqs = mq.trim().toLowerCase();
   const missingShown = mqs ? missing.filter(r => r.name.toLowerCase().includes(mqs) || (RARITY_RU[r.rarity] || '').toLowerCase().includes(mqs)) : missing;
   // Жадный план покупок под бюджет (млн)

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Card, Progress, Empty } from '../components/ui.jsx';
 import { ItemIcon } from '../components/ItemIcon.jsx';
-import { RARITY_COLOR, RARITY_RU, saveLocal } from '../api.js';
+import { RARITY_COLOR, RARITY_RU, saveLocal, usePart } from '../api.js';
 import { useApp } from '../App.jsx';
 import { PetScoreCard, TamingCard } from './PetScore.jsx';
 
@@ -17,6 +17,7 @@ const SORT_KEY = 'sb-pets-sort';
 export default function Pets({ state }) {
   const { openItem } = useApp();
   const pets = state.member?.pets || [];
+  const ps = usePart(state, 'petScore', state.analysis?.petScore); // Pet Score и Taming — отдельным куском
   const [q, setQ] = useState('');
   const [sort, setSortRaw] = useState(() => localStorage.getItem(SORT_KEY) || 'level');
   const [onlyGrow, setOnlyGrow] = useState(false);
@@ -35,8 +36,8 @@ export default function Pets({ state }) {
 
   return (
     <div className="grid">
-      <PetScoreCard ps={state.analysis?.petScore} />
-      <TamingCard t={state.analysis?.petScore?.taming} />
+      <PetScoreCard ps={ps} />
+      <TamingCard t={ps?.taming} />
       <Card className="span-12" title={`Питомцы: ${pets.length}`} right={<span className="muted small">максимального уровня: {maxed} из {pets.length}</span>}>
         <div className="pets-tools">
           <input className="search" placeholder="Найти питомца: dragon, golem, легендарный…" value={q} onChange={e => setQ(e.target.value)} />

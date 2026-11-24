@@ -27,9 +27,12 @@ export default function Stash({ state, sub }) {
   const [tab, setTab] = useHashTab('stash', sub, ['sacks', 'essence'], 'sacks');
   // Обе части грузим сразу: крупные плитки сверху показывают итог каждой, и эссенции видно, даже пока открыты мешки
   // (раньше была мелкая вкладка, и игроки её не замечали)
-  const upd = state?.updatedAt || 0, bz = state?.pricesAt?.bazaar;
-  const sacks = useApi('/sacks', [upd, bz], { keep: true });
-  const ess = useApi('/essence', [upd, bz], { keep: true });
+  // Ждём свежий профиль (не тот, что сохранён в браузере), иначе мешки качались дважды подряд.
+  // Цены Bazaar обновляются каждую минуту, но пересчёт мешков ради них — не чаще раза в 5 минут
+  const upd = state?.updatedAt || 0, live = !!state && !state.fromCache;
+  const priceTick = Math.floor((state?.pricesAt?.bazaar || 0) / 300_000);
+  const sacks = useApi(live ? '/sacks' : null, [upd, priceTick], { keep: true });
+  const ess = useApi(live ? '/essence' : null, [upd, priceTick], { keep: true });
   const sd = sacks.data?.status === 'ok' ? sacks.data : null, ed = ess.data?.status === 'ok' ? ess.data : null;
   const buyable = ed ? ed.types.reduce((s, t) => s + t.buyable, 0) : 0;
   const essCount = ed ? ed.types.filter(t => t.amount > 0).length : 0;

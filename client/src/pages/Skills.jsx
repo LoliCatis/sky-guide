@@ -1,5 +1,5 @@
 import { Card, Progress, Stat, Badge } from '../components/ui.jsx';
-import { num, plural } from '../api.js';
+import { num, plural, usePart } from '../api.js';
 import { useHiddenSteps } from '../hiddenSteps.js';
 import { SKILL_ICON } from './Overview.jsx';
 import ProgressExtras from './ProgressExtras.jsx';
@@ -21,6 +21,8 @@ export default function Skills({ state, sub }) {
   const steps = state.analysis?.roadmap || [];
   const { hidden } = useHiddenSteps(state); // скрытые шаги плана не считаем
   const m = state.member;
+  // Нижние блоки (Chocolate Factory, атрибуты, гонки…) — отдельным куском, когда открыт «Прогресс»
+  const ex = usePart(state, 'extras', m?.extras ? { extras: m.extras, chocolate: state.analysis?.chocolate } : null);
   // #/skills/history — ссылка «все графики» с «Обзора»: сразу к истории
   useEffect(() => {
     if (sub !== 'history') return;
@@ -108,7 +110,7 @@ export default function Skills({ state, sub }) {
         )}
       </Card>
       <HistoryCharts state={state} id="history" />
-      {m.extras && <ProgressExtras m={m} advice={state.analysis?.chocolate} />}
+      {ex?.extras ? <ProgressExtras m={{ ...m, extras: ex.extras }} advice={ex.chocolate} /> : m.hasExtras ? <div className="span-12 muted small"><div className="spinner" />Загружаю остальной прогресс…</div> : null}
     </div>
   );
 }

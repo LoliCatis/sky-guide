@@ -43,3 +43,13 @@ test('поток событий (SSE) идёт как есть', () => withApp(a
   assert.equal(r.headers.get('content-encoding'), null);
   assert.match(await r.text(), /event: x/);
 }));
+
+test('браузеру с br отдаём brotli, и он разжимается в то же самое', () => withApp(async (base, big) => {
+  const { brotliDecompressSync } = await import('node:zlib');
+  const http = await import('node:http');
+  const raw = await new Promise((resolve, reject) => http.get(`${base}/big`, { headers: { 'accept-encoding': 'gzip, deflate, br, zstd' } }, res => {
+    const c = []; res.on('data', d => c.push(d)); res.on('end', () => resolve({ headers: res.headers, body: Buffer.concat(c) }));
+  }).on('error', reject));
+  assert.equal(raw.headers['content-encoding'], 'br');
+  assert.deepEqual(JSON.parse(brotliDecompressSync(raw.body)), big);
+}));

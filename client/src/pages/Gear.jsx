@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Card, Tabs, Empty, CountUp } from '../components/ui.jsx';
 import { ItemIcon } from '../components/ItemIcon.jsx';
-import { coins, itemValue, useApi, api, RARITY_COLOR } from '../api.js';
+import { coins, itemValue, useApi, api, usePart, RARITY_COLOR } from '../api.js';
 import { useApp } from '../App.jsx';
 import PlayerModel from '../components/PlayerModel.jsx';
 
@@ -178,8 +178,9 @@ function setLabel(s) {
 
 export default function Gear({ state }) {
   const { openItem } = useApp();
-  const g = state.analysis?.gear;
-  if (!g) return null;
+  // Полное снаряжение — отдельным куском при открытии раздела (в общем профиле только сводка для «Обзора»)
+  const g = usePart(state, 'gear', state.analysis?.gear);
+  if (!g) return <div className="muted small"><div className="spinner" />Загружаю снаряжение…</div>;
   return (
     <div className="grid">
       <Card title="Надето сейчас" className="span-4">

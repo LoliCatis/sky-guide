@@ -1,5 +1,6 @@
 // Первым: учёт внешних API оборачивает fetch до того, как его возьмут остальные модули (SDK советчика и др.)
 import { apiStats, keySince } from './lib/api-stats.js';
+import { PARTS, statePart, partVersions, lightAnalysis, lightMember } from './lib/state-parts.js';
 import { createStatus } from './status.js';
 import { keyedCallsRecent, resolveUuid } from './hypixel.js';
 import { rankFor } from './rank.js';
@@ -262,17 +263,13 @@ function hideCoopMates(m) {
     coop: m.coop ? { ...m.coop, members: m.coop.members.map(x => (x.self || x.uuid === m.uuid ? x : { ...x, uuid: null })) } : m.coop,
   };
 }
-// Разбор для /api/state без того, что сайт берёт другими запросами или не использует: состояние приходит
-// при каждом открытии и раз в минуту, и с телефона через туннель каждый килобайт заметен (было ~400 КБ, стало ~170 КБ).
-// methods (~170 КБ) — «Заработок» грузит свежий список сам (/api/market/money); у недостающих аксессуаров
-// вместо массива всех расцветок семейства (~65 КБ повторов) — один ключ семейства fk, по нему страница убирает повторы.
+// Разбор для /api/state: тяжёлые куски разделов (снаряжение, аксессуары, нижние блоки «Прогресса», Pet Score, карта)
+// уходят в /api/part/:name (server/lib/state-parts.js), methods (~170 КБ) «Заработок» грузит сам (/api/market/money).
+// Было ~400 КБ (89 КБ сжатый) на каждое открытие и раз в минуту, стало в несколько раз меньше.
 function slimAnalysis(a) {
   if (!a) return a;
   const { methods, ...rest } = a;
-  if (rest.acc?.missing) {
-    rest.acc = { ...rest.acc, missing: rest.acc.missing.map(({ family, ...r }) => ({ ...r, fk: family?.length ? [...family].sort()[0] : r.id })) };
-  }
-  return rest;
+  return lightAnalysis(rest);
 }
 app.get('/api/state', async (req, res) => {
   // Гость без ника: пустое состояние без чьих-либо данных (только время цен рынка для открытых страниц)
@@ -297,12 +294,26 @@ app.get('/api/state', async (req, res) => {
     pricesAt: { bazaar: prices.bazaarAt, auctions: prices.binAt, auctionsError: prices.binError },
     neu: { items: neu.items.size, source: neu.source },
     // Музей без разобранных предметов (их сотни, с описаниями): полный разбор — /api/museum
-    member: m ? { ...m, inv: undefined, collections: undefined, coop: m.coop ? { members: m.coop.members } : null, apiDisabled: !!m.inv?.apiDisabled, museum: m.museum ? { status: m.museum.status, value: m.museum.value, appraisal: m.museum.appraisal, count: m.museum.count } : null } : null,
+    parts: partVersions({ member: v.member, analysis: v.analysis }),
+    member: m ? { ...lightMember(m), inv: undefined, collections: undefined, coop: m.coop ? { members: m.coop.members } : null, apiDisabled: !!m.inv?.apiDisabled, museum: m.museum ? { status: m.museum.status, value: m.museum.value, appraisal: m.museum.appraisal, count: m.museum.count } : null } : null,
     analysis: slimAnalysis(v.analysis),
     feed: v.feed.slice(0, 60),
     // Для мини-графика на «Обзоре» хватает стоимости за 30 дней; полная история всех показателей — /api/history
     history: sliceRange(v.history, 30 * 24 * 3600_000).map(h => ({ t: h.t, nw: h.nw })),
   });
+});
+
+// Кусок раздела выбранного игрока: /api/part/gear?v=<версия из state.parts>.
+// Версия совпала — тот же адрес всегда отдаёт те же данные, браузер хранит ответ у себя и больше не спрашивает.
+// Не совпала (профиль успел обновиться) — отдаём свежие данные с их версией и без долгого кэша.
+app.get('/api/part/:name', async (req, res) => {
+  if (!PARTS[req.params.name]) return res.status(404).json({ error: 'Нет такого раздела' });
+  let v;
+  try { v = await req.sbView(); } catch (e) { return res.json({ status: 'error', error: e.message, errorCode: e.code || null }); }
+  const p = statePart({ member: v.member, analysis: v.analysis }, req.params.name);
+  if (!p) return res.json({ status: 'empty', v: null, data: null });
+  res.set('Cache-Control', req.query.v === p.v ? 'private, max-age=31536000, immutable' : 'private, no-cache');
+  res.type('application/json').send(`{"status":"ok","v":"${p.v}","data":${p.json}}`);
 });
 
 // История всех показателей: /api/history?range=7d|30d|365d|all (по умолчанию all)
@@ -487,7 +498,7 @@ mountCalendarRoutes(app, { // мэр, выборы и календарь соб�
 });
 mountMuseumRoutes(app, { getView: req => req.sbView(), deps: () => ({ constants: neu.constants, price: priceOf, name: id => itemName(id) }) });
 // Мешки и эссенции выбранного игрока: /api/sacks, /api/essence
-mountStashRoutes(app, { getView: req => req.sbView(), deps: () => ({ constants: neu.constants, price: priceOf, name: id => itemName(id), bazaar: id => prices.bazaar.get(id) || null, npc: id => npcPrices.get(id) || 0, owned: collectOwned, items: neu.items, whereToGet: id => getItemRu(id)?.whereToGet || [],
+mountStashRoutes(app, { getView: req => req.sbView(), deps: () => ({ pricesKey: () => `${prices.bazaarAt}:${prices.binAt}`, constants: neu.constants, price: priceOf, name: id => itemName(id), bazaar: id => prices.bazaar.get(id) || null, npc: id => npcPrices.get(id) || 0, owned: collectOwned, items: neu.items, whereToGet: id => getItemRu(id)?.whereToGet || [],
   textRefs: text => enrichGuide({ status: 'ok', sections: [{ kind: 'text', text }] }, { items: neu.items, constants: neu.constants, price: priceOf }).refs }) });
 // Коллекции (тиры, что откроет следующий) и миньоны (слоты, что крафтить, доходность): /api/collections, /api/minions
 mountCollectionRoutes(app, { getView: req => req.sbView(), deps: () => ({ items: neu.items }) });

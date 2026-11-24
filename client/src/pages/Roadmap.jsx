@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Card, Empty, Badge, Tabs, Progress } from '../components/ui.jsx';
-import { coins, useHashTab } from '../api.js';
+import { coins, useHashTab, usePart } from '../api.js';
 import { useHiddenSteps } from '../hiddenSteps.js';
 import { ItemIcon } from '../components/ItemIcon.jsx';
 import { useApp } from '../App.jsx';
@@ -51,6 +51,8 @@ function PurchasePlan({ plan, onStep }) {
 
 export default function Roadmap({ state, sub }) {
   const [view, setView] = useHashTab('roadmap', sub, ['steps', 'map', 'plan'], 'steps');
+  // Карта прогрессии — отдельным куском, только когда открыта её вкладка
+  const map = usePart(view === 'map' ? state : null, 'map', state.analysis?.map);
   const { openItem } = useApp();
   // Скрытые шаги: у вошедшего владельца — на сервере, у гостя — в этом браузере, в чужом плане скрывать нельзя
   const { hidden, mode, hide, unhide, error } = useHiddenSteps(state);
@@ -85,7 +87,7 @@ export default function Roadmap({ state, sub }) {
     <div className="grid">
       <Card className="span-12" title="Персональный план прогрессии" right={<Tabs value={view} onChange={setView} tabs={[{ id: 'steps', label: 'Шаги' }, { id: 'map', label: 'Карта прогрессии' }, { id: 'plan', label: 'План покупок' }]} />}>
         {a?.summary?.headline && <div className="plan-summary">🎯 <Rich text={a.summary.headline} />{a.summary.quickWins ? ` · быстрых побед: ${a.summary.quickWins}` : ''}</div>}
-        {view === 'map' && <ProgressMap map={a?.map} goStep={goStep} />}
+        {view === 'map' && (map || !state.parts?.map ? <ProgressMap map={map} goStep={goStep} /> : <div className="muted small"><div className="spinner" />Загружаю карту…</div>)}
         {view === 'plan' && <PurchasePlan plan={a?.plan} onStep={goStep} />}
         {view === 'steps' && <div className="chips">
           <button className={cat === 'all' ? 'chip active' : 'chip'} onClick={() => setCat('all')}>Все ({steps.length - hiddenSteps.length})</button>

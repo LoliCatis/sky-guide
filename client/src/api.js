@@ -241,6 +241,26 @@ export function useApi(path, deps = [], { keep = false } = {}) {
   return { data: (keep && res.vk === vk) || (res.path === path && res.vk === vk) ? res.data : null, error, errorText };
 }
 
+// Кусок профиля для раздела (снаряжение, аксессуары, нижние блоки «Прогресса», Pet Score, карта): /api/part/:name?v=версия.
+// В /api/state приходят только версии кусков (state.parts), сами данные раздел берёт при открытии.
+// Тот же адрес с той же версией браузер отдаёт из своего кэша без сети. Цены меняются каждую минуту, а с ними и версия
+// снаряжения, — поэтому новую версию из-за одних цен берём не чаще раза в 5 минут; обновился сам профиль — сразу.
+// legacy — то же поле из старого состояния (кэш браузера до этого обновления), пока версий ещё нет.
+const PART_PRICE_MS = 5 * 60_000;
+export function usePart(state, name, legacy = null) {
+  const vk = viewKey(useView());
+  const want = state?.parts?.[name] || null;
+  const upd = state?.updatedAt || 0;
+  const held = useRef(null);
+  let v = want;
+  const h = held.current;
+  if (h && h.vk === vk && want && h.v !== want && h.upd === upd && Date.now() - h.at < PART_PRICE_MS) v = h.v;
+  else if (!h || h.v !== want || h.vk !== vk) held.current = { v: want, upd, vk, at: Date.now() };
+  const res = useApi(v ? `/part/${name}?v=${v}` : null, [], { keep: true });
+  if (!state?.parts) return legacy;
+  return res.data?.status === 'ok' ? res.data.data : null;
+}
+
 export function coins(n) {
   if (n == null || isNaN(n)) return '—';
   const a = Math.abs(n);

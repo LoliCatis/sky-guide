@@ -1,0 +1,40 @@
+{
+  "name": "skyblock-tracker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Личный трекер прогрессии Hypixel SkyBlock на русском",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "concurrently -n server,client \"node --watch server/index.js\" \"vite\"",
+    "build": "vite build",
+    "start": "node server/index.js",
+    "test": "node --test server/test/*.test.js",
+    "tunnel": "node scripts/tunnel.js",
+    "share": "concurrently -n server,tunnel \"node scripts/supervisor.js\" \"node scripts/tunnel.js\"",
+    "serve": "node scripts/supervisor.js",
+    "e2e": "node e2e/smoke.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.12.0",
+    "adm-zip": "^0.5.16",
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0",
+    "pngjs": "^7.0.0",
+    "prismarine-nbt": "^2.7.0"
+  },
+  "devDependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/rubik": "^5.3.0",
+    "@fontsource/pixelify-sans": "^5.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "concurrently": "^9.2.1",
+    "lightweight-charts": "^5.3.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "skinview3d": "^3.4.2",
+    "vite": "^8.3.8"
+  }
+}

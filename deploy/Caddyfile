@@ -1,0 +1,17 @@
+# SITE_DOMAIN: ":80" — без домена (http), "sb.example.ru" — домен с автоматическим SSL
+{$SITE_DOMAIN} {
+	encode zstd gzip
+	# Браузер дальше ходит только по https (по http без домена заголовок браузеры просто не учитывают)
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		-Server
+	}
+	reverse_proxy app:3000 {
+		# Адрес посетителя Caddy передаёт сам (X-Forwarded-For). Подделанные клиентом заголовки убираем,
+		# иначе лимит «ников с одного IP» обходился бы одной строчкой в запросе
+		header_up -CF-Connecting-IP
+		header_up -X-Real-IP
+		# Живые обновления (SSE) — без буфера
+		flush_interval -1
+	}
+}

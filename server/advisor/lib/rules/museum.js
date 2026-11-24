@@ -1,0 +1,78 @@
+// Советы по музею: пожертвовать то, что уже лежит у игрока, дойти до следующей вехи дешевле всего,
+// включить Museum API, если он выключен. Расчёт — server/museum/analyze.js.
+import { analyzeMuseum } from '../../../museum/analyze.js';
+import { fmtCoins, fmtNum, plural } from '../util.js';
+
+const HOW_DONATE = [
+  'Хаб → Museum (рядом с Bazaar и Community Center), Madame Eleanor Q. Goldsworth III открывает меню музея.',
+  'Открой меню музея и кликни по предмету в своём инвентаре → Confirm Donation. Сет брони кладётся целиком: все части должны быть в инвентаре.',
+  'Предмет станет Co-op Soulbound (продать его уже нельзя), но его можно в любой момент забрать обратно кликом в музее: XP останется.',
+];
+
+export function museumRules(ctx, add) {
+  const mu = analyzeMuseum(ctx.m, { constants: ctx.opts?.constants, price: ctx.price, name: ctx.name, owned: ctx.owned });
+  const nm = id => mu.names?.[id] || ctx.name(id);
+  if (mu.status === 'off') {
+    add({
+      id: 'museum-api', cat: 'Музей', priority: 40, effort: 'минуты',
+      title: 'Включи Museum API, чтобы сайт видел музей',
+      why: 'Hypixel не отдаёт музей этого игрока: в настройках выключен Museum API (или музей ещё ни разу не открывали). Без него не посчитать XP музея, вехи и что пожертвовать.',
+      how: ['В игре: SkyBlock Menu → Settings → API Settings → Museum API → включить.', 'Через пару минут нажми «Обновить» на сайте.'],
+      link: 'museum',
+    });
+    return;
+  }
+  if (mu.status !== 'ok') return;
+
+  if (mu.canDonate.length) {
+    const top = mu.canDonate.slice(0, 8);
+    add({
+      id: 'museum-donate-owned', cat: 'Музей', priority: mu.canDonateXp >= 20 ? 74 : 62, effort: 'минуты',
+      title: `Пожертвуй в музей ${mu.canDonate.length} ${plural(mu.canDonate.length, 'предмет', 'предмета', 'предметов')}, что уже есть: +${fmtNum(mu.canDonateXp)} SkyBlock XP`,
+      why: `Они лежат у тебя (${[...new Set(top.flatMap(x => x.where))].slice(0, 3).join(', ')}), но ещё не в музее. Это бесплатный SkyBlock XP${mu.milestonePlan?.free && mu.milestonePlan.reached ? ` и сразу веха музея ${mu.milestonePlan.target}` : ''}. Пожертвованное можно забрать обратно — XP останется.`,
+      how: [...HOW_DONATE, ...top.map(x => `${nm(x.id)} — +${x.gain} XP${x.where?.length ? ` (${x.where.join(', ')})` : ''}`)],
+      items: top.map(x => x.set ? x.items.find(i => /CHESTPLATE/.test(i)) || x.items[0] : x.id),
+      link: 'museum',
+    });
+  }
+
+  const plan = mu.milestonePlan;
+  if (plan && !plan.free && plan.reached && plan.coins > 0) {
+    const buy = plan.steps.filter(s => !s.free);
+    add({
+      id: 'museum-milestone', cat: 'Музей', priority: plan.coins <= Math.max(1_000_000, (ctx.liquid || 0) * 0.02) ? 52 : 38, effort: 'монеты',
+      title: `Веха музея ${plan.target}: не хватает ${mu.milestone.toNext} XP — дешевле всего за ${fmtCoins(plan.coins)}`,
+      why: `Вехи идут каждые 100 SkyBlock XP музея и дают +1% к множителю Bits, +2% к процентам банка и свои награды${mu.milestone.rewardsNext?.length ? ` (следующая: ${mu.milestone.rewardsNext.join(', ')})` : ''}. Сейчас у тебя ${fmtNum(mu.xp)} XP музея, веха ${mu.milestone.n} из ${mu.milestone.max}.`,
+      how: [...buy.slice(0, 8).map(s => `Купить: ${nm(s.id)} — ~${fmtCoins(s.cost)} (+${s.gain} XP)`), 'Потом пожертвуй их в музее (Хаб → Museum).'],
+      items: buy.slice(0, 8).map(s => s.items?.length > 1 ? s.items.find(i => /CHESTPLATE/.test(i)) || s.items[0] : s.id),
+      cost: plan.coins,
+      link: 'museum',
+    });
+  }
+
+  const cheap = mu.bestValue.filter(x => x.cost <= 200_000).slice(0, 6);
+  if (cheap.length >= 3) {
+    const sum = cheap.reduce((s, x) => s + x.cost, 0);
+    const gain = cheap.reduce((s, x) => s + x.gain, 0);
+    add({
+      id: 'museum-cheap', cat: 'Музей', priority: 34, effort: 'монеты',
+      title: `Дешёвый SkyBlock XP: ${cheap.length} ${plural(cheap.length, 'предмет', 'предмета', 'предметов')} для музея за ${fmtCoins(sum)} (+${gain} XP)`,
+      why: 'Самые выгодные по XP за монету предметы, которых нет в твоём музее. Каждый пожертвованный предмет навсегда добавляет SkyBlock XP.',
+      how: cheap.map(x => `Купить: ${nm(x.id)} — ~${fmtCoins(x.cost)} (+${x.gain} XP)`),
+      items: cheap.map(x => x.set ? x.items.find(i => /CHESTPLATE/.test(i)) || x.items[0] : x.id),
+      cost: sum,
+      link: 'museum',
+    });
+  }
+
+  if (mu.milestone.n >= 3 && !mu.appraisal) {
+    add({
+      id: 'museum-appraisal', cat: 'Музей', priority: 18, effort: 'монеты',
+      title: 'Можно оценить музей: Museum Appraisal Service открыт',
+      why: 'Открывается на вехе 3. Разовая услуга (10 млн): Madame Goldsworth оценивает стоимость музея, и она появляется в профиле и в рейтингах. На прогресс не влияет — только если хочешь видеть оценку.',
+      how: ['Хаб → Museum → Madame Eleanor Q. Goldsworth III → Museum Appraisal.'],
+      cost: 10_000_000,
+      link: 'museum',
+    });
+  }
+}

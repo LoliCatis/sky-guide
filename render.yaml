@@ -1,0 +1,25 @@
+# Деплой в облако Render (бесплатный план): Dashboard → New → Blueprint → этот репозиторий.
+# Секреты (HYPIXEL_API_KEY, SITE_PASSWORD, ANTHROPIC_API_KEY) Render спросит при создании, в git они не попадают.
+services:
+  - type: web
+    name: skyblock-tracker
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: HYPIXEL_API_KEY
+        sync: false
+      - key: SITE_PASSWORD
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: PLAYER
+        value: OwnerCat

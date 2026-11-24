@@ -1,0 +1,15 @@
+node_modules/
+dist/
+/data/
+.env
+*.log
+# Личные данные и кэш в папке skyblock (не для репозитория)
+/db/
+/OwnerCat_*.md
+/PLAN_*.md
+# Ресурс-паки не распространяем (лицензии авторов) — каждый кладёт свои
+/packs/*
+!/packs/README.md
+
+# Отчёты тестового прогона живого советчика
+/server/live-advisor/test-run/
